@@ -1,0 +1,17 @@
+jest.mock('react-navigation', () => {
+	return {
+		createAppContainer: () => {
+			return ''
+		},
+		createStackNavigator: () => {
+			return ''
+		},
+		createDrawerNavigator: () => {
+			return ''
+		},
+		createBottomTabNavigator: () => '',
+		Header: {
+			HEIGHT: 100
+		}
+	}
+})
