@@ -1,4 +1,4 @@
-#!/bin/bash -fx
+#!/bin/bash -fe
 if
 	[ "${LUNA_KEYSTORE_PASSWORD}" == "" ] || [ "${LUNA_KEYSTORE_KEY_PASSWORD}" == "" ]
 then

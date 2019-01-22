@@ -1,4 +1,4 @@
-#!/bin/bash -fx
+#!/bin/bash -fe
 if
 	[ "${LUNA_FABRIC_API_KEY}" == "" ] || [ "${LUNA_FABRIC_BUILD_SECRET}" == "" ]
 then
