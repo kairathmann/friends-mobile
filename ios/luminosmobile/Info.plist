@@ -79,7 +79,14 @@
 		<string>rubicon-icon-font.ttf</string>
 		<string>SimpleLineIcons.ttf</string>
 		<string>Zocial.ttf</string>
-		<string>Lato-Regular.ttf</string>
+		<string>AntDesign.ttf</string>
+		<string>FontAwesome5_Brands.ttf</string>
+		<string>FontAwesome5_Regular.ttf</string>
+		<string>FontAwesome5_Solid.ttf</string>
+		<string>Lato.ttf</string>
+		<string>Titillium Web.ttf</string>
+		<string>Titillium Web-Bold.ttf</string>
+		<string>Titillium Web-SemiBold.ttf</string>
 	</array>
 	<key>UIBackgroundModes</key>
 	<array>

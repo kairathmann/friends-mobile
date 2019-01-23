@@ -16,22 +16,22 @@ const store = configuredStore
 
 const width = Dimensions.get('window').width
 EStyleSheet.build({
-  $rem: width > 340 ? 18 : 16,
-  $primaryColor: COLORS.LUNA_PRIMARY_COLOR,
-  $primaryBackgroundColor: COLORS.LUNA_BACKGROUND_COLOR,
-  $lunaNotificationCircle: COLORS.LUNA_NOTIFICATION_CIRCLE_COLOR
+	$rem: width > 340 ? 18 : 16,
+	$voidColor: COLORS.LUMINOS_VOID,
+	$starlightColor: COLORS.LUMINOS_STARLIGHT,
+	$primaryBackgroundColor: COLORS.LUMINOS_BACKGROUND_COLOR
 })
 
 export default class App extends React.Component {
-  componentDidMount () {
-    registerForPushNotifications(configuredStore)
-  }
+	componentDidMount() {
+		registerForPushNotifications(configuredStore)
+	}
 
-  render () {
-    return (
-      <Provider store={ store }>
-        <AppStackNavigatorWithGlobalSupport/>
-      </Provider>
-    )
-  }
+	render() {
+		return (
+			<Provider store={store}>
+				<AppStackNavigatorWithGlobalSupport />
+			</Provider>
+		)
+	}
 }

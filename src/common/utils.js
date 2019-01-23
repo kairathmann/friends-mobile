@@ -1,13 +1,5 @@
 import moment from 'moment'
-import Config from 'react-native-config'
 import I18n from '../../locales/i18n'
-import DefaultFemale from '../assets/images/default_female.png'
-import DefaultMale from '../assets/images/default_male.png'
-import DefaultOther from '../assets/images/default_other.png'
-import { GENDER } from '../enums'
-
-const baseHostForURLs = Config.APP_URL_BASE
-
 
 const getErrorDataFromNetworkException = error => {
 	let errorMessage = ''

@@ -1,36 +1,43 @@
 /* eslint react/display-name: 0 */
 /* eslint react/prop-types: 0 */
-// import React from 'react'
-// import { View } from 'react-native'
-import { createStackNavigator,
-  createAppContainer } from 'react-navigation'
-
-// import { navigationService } from '../services'
+import React from 'react'
+import { createStackNavigator, createAppContainer } from 'react-navigation'
+import { COLORS } from '../styles'
 import WelcomePage from '../views/pages/welcome/welcome-page'
+import PolicyPage from '../views/pages/policy/policy-page'
+import TermsPage from '../views/pages/terms/terms-page'
 
-export const PAGES_NAMES = {
-  WELCOME_PAGE: 'WELCOME_PAGE'
+const PAGES_NAMES = {
+	WELCOME_PAGE: 'WELCOME_PAGE',
+	POLICY: 'POLICY',
+	TERMS: 'TERMS'
 }
 
 const AppStackNavigator = createStackNavigator({
-  WELCOME_PAGE: {
-    screen: WelcomePage,
-    navigationOptions: () => ({
-      header: null
-    })
-  }
+	WELCOME_PAGE: {
+		screen: WelcomePage,
+		navigationOptions: () => ({
+			header: null
+		})
+	},
+	POLICY: {
+		screen: PolicyPage,
+		navigationOptions: () => ({
+			headerTintColor: 'white',
+			headerStyle: { backgroundColor: COLORS.LUMINOS_BACKGROUND_COLOR }
+		})
+	},
+	TERMS: {
+		screen: TermsPage,
+		navigationOptions: () => ({
+			headerTintColor: 'white',
+			headerStyle: { backgroundColor: COLORS.LUMINOS_BACKGROUND_COLOR }
+		})
+	}
 })
 
-// const AppStackNavigatorWithGlobalSupport = () => createAppContainer(AppStackNavigator)
-  {/*<View style={ { flex: 1 } } forceInset={ { top: 'always' } }>*/}
-    {/*<AppStackNavigator*/}
-      {/*ref={ navigatorRef => {*/}
-        {/*navigationService.setTopLevelNavigator(navigatorRef)*/}
-      {/*} }*/}
-      {/*styles={ { position: 'absolute' } }*/}
-    {/*/>*/}
-  {/*</View>*/}
-// )
+const AppNavigator = createAppContainer(AppStackNavigator)
 
+const AppStackNavigatorWithGlobalSupport = () => <AppNavigator />
 
-export const AppStackNavigatorWithGlobalSupport = createAppContainer(AppStackNavigator)
+export { AppStackNavigatorWithGlobalSupport, PAGES_NAMES }
