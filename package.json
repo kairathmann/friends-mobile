@@ -26,13 +26,12 @@
 		"watch": "esw -w --changed src/**",
 		"start": "react-native start",
 		"android-dev": "ENVFILE=.env.development react-native run-android",
-		"android-staging": "ENVFILE=.env.staging react-native run-android",
 		"android-production": "ENVFILE=.env.production react-native run-android",
+		"android-staging": "ENVFILE=.env.staging react-native run-android",
 		"ios": "react-native run-ios",
 		"test": "jest",
 		"build-debug-android": "react-native bundle --dev false --platform android --entry-file index.js --bundle-output ./android/app/build/intermediates/assets/debug/index.android.bundle --assets-dest ./android/app/build/intermediates/res/merged/debug && cd android && ./gradlew assembleDebug && cd .. && mkdir -p ./dist && rm -f ./dist/luna-android-debug.apk && cp ./android/app/build/outputs/apk/app-debug.apk ./dist/luna-android-debug.apk",
 		"build-debug-android-dev": "export ENVFILE=.env.development && npm run build-debug-android",
-		"build-debug-android-staging": "export ENVFILE=.env.staging && npm run build-debug-android",
 		"build-debug-android-production": "export ENVFILE=.env.production && npm run build-debug-android",
 		"build-release-android": "export ENVFILE=.env.production && cd android && ./gradlew assembleRelease && cd .. && mkdir -p ./dist && rm -f ./dist/luna-android-release.apk && cp ./android/app/build/outputs/apk/release/app-release.apk ./dist/luna-android-release.apk"
 	},
@@ -50,6 +49,7 @@
 		]
 	},
 	"dependencies": {
+		"algoliasearch": "3.32.0",
 		"axios": "0.18.0",
 		"create-react-class": "15.6.3",
 		"humps": "^2.0.1",
@@ -67,6 +67,7 @@
 		"react-native-gesture-handler": "^1.0.12",
 		"react-native-i18n": "2.0.15",
 		"react-native-keyboard-aware-scroll-view": "^0.8.0",
+		"react-native-keychain": "3.0.0",
 		"react-native-languages": "3.0.2",
 		"react-native-onesignal": "^3.2.12",
 		"react-native-permissions": "https://github.com/lunalabs/react-native-permissions/tarball/master",

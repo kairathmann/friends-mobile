@@ -7,7 +7,11 @@ import { createFontStyle } from './fontStyleMaker'
 const styles = EStyleSheet.create({
 	content: {
 		flex: 1,
-		backgroundColor: COLORS.LUMINOS_BACKGROUND_COLOR
+		backgroundColor: '$primaryBackgroundColor'
+	},
+	safeAreaView: {
+		flex: 1,
+		backgroundColor: '$primaryBackgroundColor'
 	},
 	scrollableContent: {
 		flexGrow: 1
@@ -15,8 +19,11 @@ const styles = EStyleSheet.create({
 	underline: {
 		textDecorationLine: 'underline'
 	},
+	textCenter: {
+		textAlign: 'center'
+	},
 	errorText: {
-		color: 'red',
+		color: '$errorColor',
 		textAlign: 'center'
 	}
 })

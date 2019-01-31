@@ -16,3 +16,6 @@ export const PROFILE_STATE = {
 	DISABLED: 3,
 	DELETED: 4
 }
+
+export const CITY_MAX_LENGTH = 35
+export const NAME_MAX_LENGTH = 30

@@ -1,8 +1,8 @@
+import { Button as NativeBaseButton, Text } from 'native-base'
 import PropTypes from 'prop-types'
 import React from 'react'
-import { Button as NativeBaseButton, Text } from 'native-base'
 import EStyleSheet from 'react-native-extended-stylesheet'
-import { FONTS, FONTS_STYLES, createFontStyle } from '../../styles'
+import { createFontStyle, FONTS, FONTS_STYLES } from '../../styles'
 
 const Button = ({
 	text,
@@ -10,29 +10,52 @@ const Button = ({
 	disabled,
 	buttonStyle,
 	textStyle,
+	uppercase,
 	nativeProps
-}) => (
-	<NativeBaseButton
-		disabled={disabled}
-		style={[styles.button, buttonStyle || '', disabled ? styles.disabled : '']}
-		onPress={onPress}
-		{...nativeProps}
-	>
-		<Text
-			style={textStyle ? [styles.buttonText, textStyle] : styles.buttonText}
+}) => {
+	let extraButtonStyles = ''
+	if (buttonStyle) {
+		extraButtonStyles = Array.isArray(buttonStyle) ? buttonStyle : [buttonStyle]
+	}
+
+	let extraTextStyles = ''
+	if (textStyle) {
+		extraTextStyles = Array.isArray(textStyle) ? textStyle : [textStyle]
+	}
+
+	return (
+		<NativeBaseButton
+			disabled={disabled}
+			style={[
+				styles.button,
+				...extraButtonStyles,
+				disabled ? styles.disabled : ''
+			]}
+			onPress={onPress}
+			{...nativeProps}
 		>
-			{text.toUpperCase()}
-		</Text>
-	</NativeBaseButton>
-)
+			<Text
+				uppercase={uppercase}
+				style={[styles.buttonText, ...extraTextStyles]}
+			>
+				{text}
+			</Text>
+		</NativeBaseButton>
+	)
+}
+
+Button.defaultProps = {
+	uppercase: true
+}
 
 Button.propTypes = {
 	text: PropTypes.string.isRequired,
 	onPress: PropTypes.func.isRequired,
 	disabled: PropTypes.bool,
-	buttonStyle: PropTypes.object,
-	textStyle: PropTypes.object,
-	nativeProps: PropTypes.object
+	buttonStyle: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+	textStyle: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+	nativeProps: PropTypes.object,
+	uppercase: PropTypes.bool
 }
 
 const styles = EStyleSheet.create({

@@ -1,0 +1,1 @@
+export const SET_PROFILE_INFO = 'SET_PROFILE_INFO'

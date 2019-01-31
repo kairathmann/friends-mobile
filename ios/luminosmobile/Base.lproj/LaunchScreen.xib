@@ -15,7 +15,7 @@
             <rect key="frame" x="0.0" y="0.0" width="480" height="895"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="launch-screen-second.png" translatesAutoresizingMaskIntoConstraints="NO" id="1p4-dA-r44">
+                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="launch_screen.jpg" translatesAutoresizingMaskIntoConstraints="NO" id="1p4-dA-r44">
                     <rect key="frame" x="0.0" y="0.0" width="480" height="895"/>
                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                 </imageView>
@@ -27,6 +27,6 @@
         </view>
     </objects>
     <resources>
-        <image name="launch-screen-second.png" width="3283" height="1866"/>
+        <image name="launch_screen.jpg" width="2048" height="1866"/>
     </resources>
 </document>

@@ -1,3 +1,6 @@
 export const LUMINOS_BACKGROUND_COLOR = '#11151C'
 export const LUMINOS_VOID = '#141930'
 export const LUMINOS_STARLIGHT = '#F2C94C'
+export const LUMINOS_ERROR = '#FF5F5F'
+export const LUMINOS_GREY = 'rgba(255,255,255,0.8)'
+export const LUMINOS_ACCENT = '#58e2c2'

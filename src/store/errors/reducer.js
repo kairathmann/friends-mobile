@@ -1,6 +1,6 @@
 const errorReducer = (state = {}, action) => {
 	const { type, payload } = action
-	const matches = /(.*)_(REQUEST|FAILURE)/.exec(type)
+	const matches = /(.*)_(REQUEST|FAILURE|CLEAR_ERROR)/.exec(type)
 
 	// not a *_REQUEST / *_FAILURE actions, so we ignore them
 	if (!matches) return state
@@ -11,7 +11,7 @@ const errorReducer = (state = {}, action) => {
 		// Store errorMessage
 		// e.g. stores errorMessage when receiving GET_TODOS_FAILURE
 		//      else clear errorMessage when receiving GET_TODOS_REQUEST
-		[requestName]: requestState === 'FAILURE' ? payload.message : ''
+		[requestName]: requestState === 'FAILURE' ? payload : ''
 	}
 }
 

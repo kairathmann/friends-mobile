@@ -5,25 +5,23 @@ const getErrorDataFromNetworkException = error => {
 	let errorMessage = ''
 	if (error.response) {
 		if (error.response.status >= 500) {
-			errorMessage = I18n.t('common.errors.server_error')
+			errorMessage = I18n.t('errors.server_error')
 		} else {
-			const errorCode = error.response.data.code
+			const errorCode = error.response.data
 			switch (error.response.status) {
 				case 401:
-					errorMessage = I18n.t('common.errors.not_authenticated')
+					errorMessage = I18n.t('errors.not_authenticated')
 					break
 				case 400:
-					errorMessage = I18n.t(
-						`common.errors.${errorCode || 'incorrect_request'}`
-					)
+					errorMessage = I18n.t(`errors.${errorCode || 'incorrect_request'}`)
 					break
 				case 404:
-					errorMessage = I18n.t('common.errors.resource_not_found')
+					errorMessage = I18n.t('errors.resource_not_found')
 					break
 			}
 		}
 	} else if (error.request) {
-		errorMessage = I18n.t('common.errors.no_internet_connection')
+		errorMessage = I18n.t('errors.no_internet_connection')
 	} else {
 		throw error
 	}

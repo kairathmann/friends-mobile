@@ -1,24 +1,33 @@
 import { Container, Content, Text } from 'native-base'
-import EStyleSheet from 'react-native-extended-stylesheet'
 import PropTypes from 'prop-types'
 import React from 'react'
+import { connect } from 'react-redux'
 import { Image, ImageBackground, StatusBar, View } from 'react-native'
-import SplashScreen from 'react-native-splash-screen'
-import Button from '../../../components/Button'
+import EStyleSheet from 'react-native-extended-stylesheet'
 import I18n from '../../../../locales/i18n'
+import SplashBackground from '../../../assets/images/welcome-page-splash-background.jpg'
+import LogoWhite from '../../../assets/logos/logo-white.png'
+import Button from '../../../components/Button'
+import { PAGES_NAMES } from '../../../navigation/pages'
+import { startup } from './scenario-actions'
 import {
-	styles as commonStyles,
+	createFontStyle,
 	FONTS,
 	FONTS_STYLES,
-	createFontStyle
+	styles as commonStyles
 } from '../../../styles'
-import { PAGES_NAMES } from '../../../navigation/pages'
-import LanternLogoWhite from '../../../assets/logos/lantern-logo-white.png'
-import SplashBackground from '../../../assets/images/welcome-page-splash-background.png'
 
 class WelcomePage extends React.Component {
 	componentDidMount() {
-		SplashScreen.hide()
+		this.props.startup()
+	}
+
+	goToAuthPage = () => {
+		this.props.navigation.navigate(PAGES_NAMES.AUTH_PHONE_NUMBER_PAGE)
+	}
+
+	goToTelegramAuthPage = () => {
+		this.props.navigation.navigate(PAGES_NAMES.AUTH_TELEGRAM_EMAIL_PAGE)
 	}
 
 	render() {
@@ -38,7 +47,7 @@ class WelcomePage extends React.Component {
 							<View style={styles.logo}>
 								<Image
 									resizeMode="contain"
-									source={LanternLogoWhite}
+									source={LogoWhite}
 									style={styles.logoImage}
 								/>
 								<Text style={styles.logoTitle} adjustsFontSizeToFit>
@@ -54,14 +63,14 @@ class WelcomePage extends React.Component {
 										...styles.button,
 										...styles.signUpButtonCustom
 									}}
+									onPress={this.goToAuthPage}
 									textStyle={styles.signUpButtonTextCustom}
-									text={I18n.t('welcome_page.signup')}
-								/>
-								<Button
-									buttonStyle={styles.button}
-									text={I18n.t('welcome_page.login')}
+									text={I18n.t('welcome_page.get_started')}
 								/>
 								<View style={styles.termsContainer}>
+									<Text style={styles.terms}>
+										{I18n.t('welcome_page.legal_terms_beggining')}
+									</Text>
 									<Text
 										style={[styles.terms, commonStyles.underline]}
 										onPress={() => {
@@ -80,6 +89,17 @@ class WelcomePage extends React.Component {
 										{I18n.t('welcome_page.privacy_policy')}
 									</Text>
 								</View>
+								<Button
+									buttonStyle={styles.button}
+									onPress={this.goToTelegramAuthPage}
+									textStyle={styles.telegramButtonTextCustom}
+									text={I18n.t('welcome_page.transfer_from_telegram')}
+								/>
+								<View style={styles.termsContainer}>
+									<Text style={styles.terms}>
+										{I18n.t('welcome_page.transfer_from_telegram_explanation')}
+									</Text>
+								</View>
 							</View>
 						</Content>
 					</ImageBackground>
@@ -90,7 +110,8 @@ class WelcomePage extends React.Component {
 }
 
 WelcomePage.propTypes = {
-	navigation: PropTypes.object.isRequired
+	navigation: PropTypes.object.isRequired,
+	startup: PropTypes.func.isRequired
 }
 
 const styles = EStyleSheet.create({
@@ -100,6 +121,7 @@ const styles = EStyleSheet.create({
 	},
 	buttonsContainer: {
 		flexGrow: 1,
+		justifyContent: 'flex-end',
 		alignItems: 'center',
 		marginTop: '1rem',
 		marginBottom: '1rem'
@@ -124,10 +146,10 @@ const styles = EStyleSheet.create({
 		width: '8rem'
 	},
 	logoTitle: {
-		...createFontStyle(FONTS.LATO),
-		fontSize: '2.8rem',
+		...createFontStyle(FONTS.LATO, FONTS_STYLES.BOLD),
 		marginTop: '1.5rem',
-		letterSpacing: '0.08rem',
+		fontSize: '3rem',
+		letterSpacing: -0.5,
 		color: 'white'
 	},
 	descriptionTitle: {
@@ -136,18 +158,27 @@ const styles = EStyleSheet.create({
 		marginTop: '0.5rem',
 		letterSpacing: 1.25,
 		lineHeight: 24,
-		color: 'white'
+		color: '$greyColor'
 	},
 	signUpButtonCustom: {
+		height: 50,
 		borderColor: '$starlightColor',
 		backgroundColor: '$starlightColor'
 	},
 	signUpButtonTextCustom: {
-		color: '$voidColor'
+		color: '$voidColor',
+		fontSize: 16
+	},
+	telegramButtonTextCustom: {
+		fontSize: 14
 	},
 	termsContainer: {
+		marginLeft: 25,
+		marginRight: 25,
+		flexWrap: 'wrap',
 		justifyContent: 'center',
-		flexDirection: 'row'
+		flexDirection: 'row',
+		marginBottom: 12
 	},
 	terms: {
 		...createFontStyle(FONTS.LATO),
@@ -160,4 +191,13 @@ const styles = EStyleSheet.create({
 	}
 })
 
-export default WelcomePage
+const mapDispatchToProps = dispatch => {
+	return {
+		startup: () => dispatch(startup())
+	}
+}
+
+export default connect(
+	null,
+	mapDispatchToProps
+)(WelcomePage)

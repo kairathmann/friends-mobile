@@ -11,7 +11,8 @@ const FONTS_MAPPING = {
 	},
 	[fonts.LATO]: {
 		weights: {
-			Normal: '400'
+			Normal: '400',
+			Bold: '700'
 		}
 	}
 }
