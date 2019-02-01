@@ -48,7 +48,7 @@ export default function roundsReducer(state = initialState, { type, payload }) {
 				currentRounds: payload.filter(
 					rr => moment(rr.from) < now && moment(rr.to) > now
 				),
-				futureRounds: payload.filter(rr => moment(rr.from) < now),
+				futureRounds: payload.filter(rr => moment(rr.from) > now),
 				pastRounds: payload.filter(rr => moment(rr.to) <= now)
 			}
 		default:

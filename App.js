@@ -1,5 +1,4 @@
-import 'moment/locale/de'
-import 'moment/locale/pl'
+import moment from 'moment'
 import { Root } from 'native-base'
 import React from 'react'
 import { Dimensions } from 'react-native'
@@ -13,6 +12,8 @@ import { COLORS } from './src/styles'
 
 configureApi()
 const store = configuredStore
+
+moment.locale('en')
 
 const width = Dimensions.get('window').width
 EStyleSheet.build({

@@ -22,11 +22,11 @@ export default function RoundDetails({ round, onJoinClick, onResignClick }) {
 						</View>
 						<View style={styles.upcomingBottom}>
 							<Text style={[styles.upcomingDate, { flex: 1 }]}>
-								{moment(round.from).toNow()}
+								{moment(round.from).fromNow(true)}
 							</Text>
 							<TouchableOpacity onPress={onResignClick}>
 								<Text style={styles.declineText}>
-									{i18n.t('home.upcoming_resign')}{' '}
+									{i18n.t('home.upcoming_resign')}
 								</Text>
 							</TouchableOpacity>
 						</View>
