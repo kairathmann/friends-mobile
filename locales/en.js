@@ -18,6 +18,8 @@ export default {
 		not_authenticated: 'You are logged out',
 		phone_number_invalid: 'Please enter correct phone number.',
 		email_invalid: 'Please enter correct email address',
+		color_missing: 'Please select color before continuing.',
+		color_invalid_id: 'Invalid color selection, please try again.',
 		verification_failed:
 			'SMS Verification failed. Please try to resend verification code.',
 		no_internet_connection: 'Oops, could not connect to our services',

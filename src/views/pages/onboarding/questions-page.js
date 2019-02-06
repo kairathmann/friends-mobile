@@ -8,6 +8,7 @@ import { connect } from 'react-redux'
 import i18n from '../../../../locales/i18n'
 import { NavigationBottomBar } from '../../../components/NavigationBottomBar/NavigationBottomBar'
 import { OnboardingHeader } from '../../../components/OnboardingHeader/OnboardingHeader'
+import UserColorAwareComponent from '../../../components/UserColorAwareComponent'
 import Question from '../../../components/Question/Question'
 import {
 	createErrorMessageSelector,
@@ -67,14 +68,19 @@ class QuestionsPage extends React.Component {
 									/>
 								</View>
 							))}
-							<NavigationBottomBar
-								rightDisabled={
-									Object.keys(this.state.answers).length !==
-									this.props.questions.length
-								}
-								onLeftClick={() => this.props.navigation.goBack()}
-								onRightClick={this.handleFinish}
-							/>
+							<UserColorAwareComponent>
+								{color => (
+									<NavigationBottomBar
+										rightDisabled={
+											Object.keys(this.state.answers).length !==
+											this.props.questions.length
+										}
+										onLeftClick={() => this.props.navigation.goBack()}
+										onRightClick={this.handleFinish}
+										rightArrowColor={color}
+									/>
+								)}
+							</UserColorAwareComponent>
 						</Content>
 					</Container>
 				</SafeAreaView>

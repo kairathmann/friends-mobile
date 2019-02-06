@@ -29,9 +29,11 @@ import WelcomePage from '../views/pages/welcome/welcome-page'
 import AuthPagePhoneNumberPage from '../views/pages/onboarding/auth-phone-number-page'
 import AuthPageTokenVerificationPage from '../views/pages/onboarding/auth-phone-token-verification-page'
 import AuthTelegramEmailPage from '../views/pages/onboarding/auth-telegram-email-page'
+import IdentificationPage from '../views/pages/onboarding/identification-page'
 
 const PAGES_NAMES = {
 	WELCOME_PAGE: 'WELCOME_PAGE',
+	IDENTIFICATION_PAGE: 'IDENTIFICATION_PAGE',
 	BASEINFO_PAGE: 'BASEINFO_PAGE',
 	NOTIFICATION_CHECK_PAGE: 'NOTIFICATION_CHECK_PAGE',
 	QUESTIONS_PAGE: 'QUESTIONS_PAGE',
@@ -115,6 +117,12 @@ const HomeBottomBar = createBottomTabNavigator(
 const AppStackNavigator = createStackNavigator({
 	WELCOME_PAGE: {
 		screen: WelcomePage,
+		navigationOptions: () => ({
+			header: null
+		})
+	},
+	IDENTIFICATION_PAGE: {
+		screen: IdentificationPage,
 		navigationOptions: () => ({
 			header: null
 		})

@@ -12,6 +12,7 @@ import i18n from '../../../../locales/i18n'
 import { NavigationBottomBar } from '../../../components/NavigationBottomBar/NavigationBottomBar'
 import { OnboardingHeader } from '../../../components/OnboardingHeader/OnboardingHeader'
 import TextInput from '../../../components/TextInput/TextInput'
+import UserColorAwareComponent from '../../../components/UserColorAwareComponent'
 import { CITY_MAX_LENGTH, NAME_MAX_LENGTH } from '../../../enums'
 import {
 	createErrorMessageSelector,
@@ -71,7 +72,8 @@ class BaseinfoPage extends React.Component {
 	handleSave = () => {
 		this.props.saveData({
 			name: this.state.name,
-			city: this.state.city
+			city: this.state.city,
+			color: this.props.color
 		})
 	}
 
@@ -111,103 +113,119 @@ class BaseinfoPage extends React.Component {
 					backgroundColor={COLORS.LUMINOS_BACKGROUND_COLOR}
 				/>
 				<SafeAreaView style={commonStyles.safeAreaView}>
-					<Container style={commonStyles.content}>
-						<Content
-							contentContainerStyle={[
-								commonStyles.scrollableContent,
-								styles.center
-							]}
-						>
-							{this.props.isLoading && <Spinner color={'white'} />}
-							<OnboardingHeader
-								pageNumber={2}
-								leftText={i18n.t('onboarding.sign_up')}
-								totalPage={4}
-							/>
-							<View style={styles.avatarContainer}>
-								<View style={styles.avatar} />
-								<Text
-									style={[
-										styles.text,
-										styles.lato,
-										styles.completeText,
-										styles.verticalSpace
+					<UserColorAwareComponent>
+						{color => (
+							<Container style={commonStyles.content}>
+								<Content
+									contentContainerStyle={[
+										commonStyles.scrollableContent,
+										styles.center
 									]}
 								>
-									{i18n.t('onboarding.complete_profile')}
-								</Text>
-							</View>
-							<View style={styles.formContainer}>
-								<Text style={[styles.text, styles.textHeader, styles.space]}>
-									{i18n.t('onboarding.public_profile').toUpperCase()}
-								</Text>
-								{this.props.isTelegramUser &&
-									(this.state.city !== '' || this.state.name !== '') && (
+									{this.props.isLoading && <Spinner color={'white'} />}
+									<OnboardingHeader
+										pageNumber={2}
+										leftText={i18n.t('onboarding.sign_up')}
+										totalPage={4}
+									/>
+									<View style={styles.avatarContainer}>
+										<View style={[styles.avatar, { backgroundColor: color }]} />
 										<Text
 											style={[
 												styles.text,
 												styles.lato,
 												styles.completeText,
-												styles.verticalSpace,
-												commonStyles.textCenter
+												styles.verticalSpace
 											]}
 										>
-											{i18n.t('onboarding.telegram_up_to_date')}
+											{i18n.t('onboarding.complete_profile')}
 										</Text>
-									)}
-								<View style={[styles.space, styles.horizontalSpace]}>
-									<TextInput
-										label={i18n.t('onboarding.name_warning')}
-										value={this.state.name}
-										placeholder={'Name'}
-										maxLength={NAME_MAX_LENGTH}
-										onChange={text => this.handleNameChange(text)}
-									/>
-								</View>
-								<View
-									style={[
-										styles.space,
-										styles.horizontalSpace,
-										{ flexDirection: 'row' }
-									]}
-								>
-									<View style={{ flex: 1 }}>
-										<TextInput
-											value={this.state.city}
-											placeholder={'City'}
-											status={this.state.cityError ? 'error' : 'normal'}
-											errorMessage={
-												this.state.cityError
-													? i18n.t('onboarding.city_error')
-													: ''
-											}
-											containerStyle={{ flexGrow: 1 }}
-											maxLength={CITY_MAX_LENGTH}
-											onChange={text => this.handleCityChange(text)}
-										/>
 									</View>
-									{this.state.cityLoading && (
-										<Spinner color={LUMINOS_ACCENT} style={styles.spinner} />
-									)}
-								</View>
-								<Text style={[styles.text, styles.textHeader, styles.space]}>
-									{i18n.t('onboarding.secret_profile').toUpperCase()}
-								</Text>
-								<Text style={[styles.text, styles.lato, styles.indent]}>
-									{i18n.t('onboarding.secret_profile_info')}
-								</Text>
-							</View>
-							<NavigationBottomBar
-								leftDisabled={true}
-								rightDisabled={
-									this.state.cityLoading ||
-									this.props.isLoading ||
-									!this.validate()
-								}
-								onRightClick={this.handleSave}
-							/>
-						</Content>
-					</Container>
+									<View style={styles.formContainer}>
+										<Text
+											style={[styles.text, styles.textHeader, styles.space]}
+										>
+											{i18n.t('onboarding.public_profile').toUpperCase()}
+										</Text>
+										{this.props.isTelegramUser &&
+											(this.state.city !== '' || this.state.name !== '') && (
+												<Text
+													style={[
+														styles.text,
+														styles.lato,
+														styles.completeText,
+														styles.verticalSpace,
+														commonStyles.textCenter
+													]}
+												>
+													{i18n.t('onboarding.telegram_up_to_date')}
+												</Text>
+											)}
+										<View style={[styles.space, styles.horizontalSpace]}>
+											<TextInput
+												label={i18n.t('onboarding.name_warning')}
+												value={this.state.name}
+												placeholder={'Name'}
+												maxLength={NAME_MAX_LENGTH}
+												onChange={text => this.handleNameChange(text)}
+											/>
+										</View>
+										<View
+											style={[
+												styles.space,
+												styles.horizontalSpace,
+												{ flexDirection: 'row' }
+											]}
+										>
+											<View style={{ flex: 1 }}>
+												<TextInput
+													value={this.state.city}
+													placeholder={'City'}
+													status={this.state.cityError ? 'error' : 'normal'}
+													errorMessage={
+														this.state.cityError
+															? i18n.t('onboarding.city_error')
+															: ''
+													}
+													containerStyle={{ flexGrow: 1 }}
+													maxLength={CITY_MAX_LENGTH}
+													onChange={text => this.handleCityChange(text)}
+												/>
+											</View>
+											{this.state.cityLoading && (
+												<Spinner
+													color={LUMINOS_ACCENT}
+													style={styles.spinner}
+												/>
+											)}
+										</View>
+										<Text
+											style={[styles.text, styles.textHeader, styles.space]}
+										>
+											{i18n.t('onboarding.secret_profile').toUpperCase()}
+										</Text>
+										<Text style={[styles.text, styles.lato, styles.indent]}>
+											{i18n.t('onboarding.secret_profile_info')}
+										</Text>
+									</View>
+									<NavigationBottomBar
+										leftDisabled={
+											this.props.navigation.getParam('goBackArrowDisabled') ===
+											true
+										}
+										rightDisabled={
+											this.state.cityLoading ||
+											this.props.isLoading ||
+											!this.validate()
+										}
+										onLeftClick={() => this.props.navigation.goBack()}
+										onRightClick={this.handleSave}
+										rightArrowColor={color}
+									/>
+								</Content>
+							</Container>
+						)}
+					</UserColorAwareComponent>
 				</SafeAreaView>
 			</React.Fragment>
 		)
@@ -228,8 +246,7 @@ const styles = EStyleSheet.create({
 		height: 120,
 		borderWidth: 4,
 		borderRadius: 60,
-		borderColor: '#e2e0e0',
-		backgroundColor: '#58e2c2'
+		borderColor: '#e2e0e0'
 	},
 	completeText: {
 		fontSize: 15
@@ -275,7 +292,8 @@ BaseinfoPage.propTypes = {
 	isLoading: PropTypes.bool.isRequired,
 	isTelegramUser: PropTypes.bool.isRequired,
 	firstName: PropTypes.string,
-	city: PropTypes.string
+	city: PropTypes.string,
+	color: PropTypes.number.isRequired
 }
 
 const mapStateToProps = state => {
@@ -284,7 +302,8 @@ const mapStateToProps = state => {
 		isLoading: createLoadingSelector(['UPLOAD_INFO'])(state),
 		isTelegramUser: state.auth.isTelegramUser,
 		firstName: state.profile.firstName,
-		city: state.profile.city
+		city: state.profile.city,
+		color: state.profile.color.id
 	}
 }
 

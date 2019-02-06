@@ -32,6 +32,9 @@ export const getUserLandingPageBasedOnUserInfo = (
 	userInfo,
 	questionsLeftToAnswers
 ) => {
+	if (!userInfo.color) {
+		return PAGES_NAMES.IDENTIFICATION_PAGE
+	}
 	if (userInfo.firstName === '' && userInfo.city === '') {
 		return PAGES_NAMES.BASEINFO_PAGE
 	}
