@@ -15,11 +15,15 @@ export default class QuestionItem extends React.Component {
 	}
 
 	render() {
-		const { text, answers, selectedAnswer } = this.props
+		const { text, answers, selectedAnswer, answered } = this.props
+
+		const answersToShow = answered
+			? answers.filter(an => an.id === selectedAnswer)
+			: answers
 		return (
 			<View>
 				<Text style={styles.text}>{text}</Text>
-				{answers.map(ans => (
+				{answersToShow.map(ans => (
 					<Answer
 						key={ans.id}
 						isSelected={ans.id === selectedAnswer}
@@ -45,5 +49,10 @@ QuestionItem.propTypes = {
 	text: PropTypes.string.isRequired,
 	answers: PropTypes.array.isRequired,
 	selectedAnswer: PropTypes.number,
-	onChangeAnswer: PropTypes.func.isRequired
+	onChangeAnswer: PropTypes.func.isRequired,
+	answered: PropTypes.bool.isRequired
+}
+
+QuestionItem.defaultProps = {
+	answered: false
 }

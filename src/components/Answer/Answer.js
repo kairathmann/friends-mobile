@@ -37,7 +37,7 @@ const styles = EStyleSheet.create({
 		paddingTop: 14
 	},
 	selected: {
-		backgroundColor: 'white'
+		backgroundColor: '$greyColor'
 	},
 	unselected: {
 		backgroundColor: 'transparent'
