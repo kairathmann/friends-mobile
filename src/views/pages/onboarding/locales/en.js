@@ -25,5 +25,7 @@ export default {
 	identification_page_title: 'Welcome!',
 	identification_page_description:
 		'To get started, first pick your identification...',
-	identification_page_choose_color_section_header: 'Choose your color'
+	identification_page_choose_color_section_header: 'Choose your color',
+	identification_page_choose_emoji_section_header: 'Choose your emoji',
+	identification_page_avatar_preview_section_header: 'Icon preview'
 }

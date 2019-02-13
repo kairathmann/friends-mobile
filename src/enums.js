@@ -19,3 +19,5 @@ export const PROFILE_STATE = {
 
 export const CITY_MAX_LENGTH = 35
 export const NAME_MAX_LENGTH = 30
+
+export const DEFAULT_EMOJIS = ['🌈', '🌊', '🍵', '📚', '👾', '🎶', '📿']

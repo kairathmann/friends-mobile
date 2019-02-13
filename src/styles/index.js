@@ -25,6 +25,23 @@ const styles = EStyleSheet.create({
 	errorText: {
 		color: '$errorColor',
 		textAlign: 'center'
+	},
+	emojiCircleSmall: {
+		width: 64,
+		height: 64,
+		borderRadius: 32,
+		backgroundColor: '$darkColor'
+	},
+	emojiContainer: {
+		flex: 1,
+		justifyContent: 'center',
+		alignItems: 'center'
+	},
+	emojiSmall: {
+		fontSize: 26
+	},
+	emojiSelected: {
+		backgroundColor: '#424755'
 	}
 })
 

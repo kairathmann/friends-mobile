@@ -20,6 +20,7 @@ export default {
 		email_invalid: 'Please enter correct email address',
 		color_missing: 'Please select color before continuing.',
 		color_invalid_id: 'Invalid color selection, please try again.',
+		emoji_missing: 'Please select emoji before continuing.',
 		verification_failed:
 			'SMS Verification failed. Please try to resend verification code.',
 		no_internet_connection: 'Oops, could not connect to our services',

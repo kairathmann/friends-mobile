@@ -44,11 +44,11 @@ import {
 import { setProfileInfo } from '../../../store/profile/actions'
 import { setAvailableColors } from '../../../store/colors/actions'
 
-export function uploadInfo({ name, city, color }) {
+export function uploadInfo({ name, city, color, emoji }) {
 	return async dispatch => {
 		try {
 			dispatch(uploadInfoStart())
-			const result = await api.uploadBaseInfo({ name, city, color })
+			const result = await api.uploadBaseInfo({ name, city, color, emoji })
 			dispatch(uploadInfoSuccess(result))
 			if (Platform.OS === 'android') {
 				register(configuredStore)
@@ -207,3 +207,6 @@ export function fetchQuestions() {
 
 export const updateUserColorSelection = color => dispatch =>
 	dispatch(setProfileInfo({ color }))
+
+export const updateUserEmojiSelection = emoji => dispatch =>
+	dispatch(setProfileInfo({ emoji }))

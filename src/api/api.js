@@ -72,12 +72,12 @@ export default {
 		axios.post('legacy/', {
 			email
 		}),
-	uploadBaseInfo: async ({ name, city, color }) => {
+	uploadBaseInfo: async ({ name, city, color, emoji }) => {
 		const authToken = await tokenService.getToken()
 		return axios
 			.put(
 				'self/',
-				{ first_name: name, city, color },
+				{ first_name: name, city, color, emoji },
 				{ headers: { 'X-Authorization': `Bearer ${authToken}` } }
 			)
 			.then(result => result.data)

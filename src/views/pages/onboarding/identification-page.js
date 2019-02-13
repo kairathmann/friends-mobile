@@ -7,19 +7,26 @@ import EStyleSheet from 'react-native-extended-stylesheet'
 import { connect } from 'react-redux'
 import I18n from '../../../../locales/i18n'
 import ColorSelector from '../../../components/ColorSelector'
+import EmojiSelector from '../../../components/EmojiSelector'
 import { NavigationBottomBar } from '../../../components/NavigationBottomBar/NavigationBottomBar'
 import { OnboardingHeader } from '../../../components/OnboardingHeader/OnboardingHeader'
 import { createFontStyle, styles as commonStyles } from '../../../styles'
 import UserColorAwareComponent from '../../../components/UserColorAwareComponent'
+import LoggedInUserAvatar from '../../../components/LoggedInUserAvatar'
 import * as COLORS from '../../../styles/colors'
 import * as FONTS from '../../../styles/fonts'
 import * as FONTS_STYLES from '../../../styles/fontStyles'
-import { updateUserColorSelection } from './scenario-actions'
+import {
+	updateUserColorSelection,
+	updateUserEmojiSelection
+} from './scenario-actions'
 import { PAGES_NAMES } from '../../../navigation/pages'
+import { DEFAULT_EMOJIS } from '../../../enums'
 
 class IdentificationPage extends React.Component {
 	state = {
 		validColor: true,
+		validEmoji: true,
 		validationEnabled: false
 	}
 
@@ -32,10 +39,19 @@ class IdentificationPage extends React.Component {
 		}
 	}
 
+	handleEmojiChange = newEmoji => {
+		this.props.updateUserEmojiSelection(newEmoji)
+	}
+
 	validateForm = () => {
 		this.setState({
-			phoneNumberValid: this.validateColor(this.props.selectedColor)
+			validColor: this.validateColor(this.props.selectedColor),
+			validEmoji: this.validateEmoji(this.props.selectedEmoji)
 		})
+	}
+
+	validateEmoji = selectedEmoji => {
+		return selectedEmoji !== ''
 	}
 
 	validateColor = selectedColor => {
@@ -48,18 +64,19 @@ class IdentificationPage extends React.Component {
 
 	handleSave = () => {
 		this.setState({ validationEnabled: true }, () => {
-			const { selectedColor } = this.props
+			const { selectedColor, selectedEmoji } = this.props
 			const validColor = this.validateColor(selectedColor)
-			if (validColor) {
+			const validEmoji = this.validateEmoji(selectedEmoji)
+			if (validColor && validEmoji) {
 				this.props.navigation.navigate(PAGES_NAMES.BASEINFO_PAGE)
 			} else {
-				this.setState({ validColor })
+				this.setState({ validColor, validEmoji })
 			}
 		})
 	}
 
 	renderColorPickers = () => (
-		<View>
+		<View style={styles.spaceBetweenSections}>
 			<Text style={[styles.text, styles.textHeader, styles.space]}>
 				{I18n.t(
 					'onboarding.identification_page_choose_color_section_header'
@@ -75,8 +92,40 @@ class IdentificationPage extends React.Component {
 		</View>
 	)
 
+	renderEmojiPickers = () => (
+		<View style={styles.spaceBetweenSections}>
+			<Text style={[styles.text, styles.textHeader, styles.space]}>
+				{I18n.t(
+					'onboarding.identification_page_choose_emoji_section_header'
+				).toUpperCase()}
+			</Text>
+			<EmojiSelector
+				preselectedEmojis={DEFAULT_EMOJIS}
+				selectedEmoji={this.props.selectedEmoji}
+				onSelectionChange={this.handleEmojiChange}
+			/>
+		</View>
+	)
+
+	renderUserAvatarPreview = () => (
+		<View style={styles.userAvatarContainer}>
+			<View style={styles.userAvatarTextHeader}>
+				<Text style={[styles.text, styles.textHeader, styles.space]}>
+					{I18n.t(
+						'onboarding.identification_page_avatar_preview_section_header'
+					).toUpperCase()}
+				</Text>
+			</View>
+			<LoggedInUserAvatar />
+		</View>
+	)
+
 	renderContent = () => (
-		<View style={styles.formContainer}>{this.renderColorPickers()}</View>
+		<View style={styles.formContainer}>
+			{this.renderColorPickers()}
+			{this.renderEmojiPickers()}
+			{this.renderUserAvatarPreview()}
+		</View>
 	)
 
 	render() {
@@ -109,7 +158,8 @@ class IdentificationPage extends React.Component {
 									<NavigationBottomBar
 										leftDisabled
 										rightDisabled={
-											this.state.validationEnabled && !this.state.validColor
+											this.state.validationEnabled &&
+											(!this.state.validColor || !this.state.validEmoji)
 										}
 										onRightClick={() => this.handleSave()}
 										rightArrowColor={color}
@@ -129,7 +179,9 @@ const styles = EStyleSheet.create({
 		flex: 1,
 		justifyContent: 'center',
 		marginLeft: 25,
-		marginRight: 25
+		marginRight: 25,
+		marginTop: 32,
+		marginBottom: 32
 	},
 	headerText: {
 		...createFontStyle(FONTS.LATO),
@@ -161,12 +213,26 @@ const styles = EStyleSheet.create({
 	},
 	formContainer: {
 		margin: 16
+	},
+	spaceBetweenSections: {
+		marginBottom: 30
+	},
+	userAvatarContainer: {
+		flex: 1,
+		flexDirection: 'row'
+	},
+	userAvatarTextHeader: {
+		marginTop: 20,
+		flex: 1,
+		alignSelf: 'flex-start'
 	}
 })
 
 IdentificationPage.propTypes = {
 	navigation: PropTypes.object.isRequired,
 	updateUserColorSelection: PropTypes.func.isRequired,
+	updateUserEmojiSelection: PropTypes.func.isRequired,
+	selectedEmoji: PropTypes.string.isRequired,
 	selectedColor: PropTypes.shape({
 		id: PropTypes.number.isRequired,
 		hexValue: PropTypes.string.isRequired
@@ -181,6 +247,7 @@ IdentificationPage.propTypes = {
 
 const mapStateToProps = state => {
 	return {
+		selectedEmoji: state.profile.emoji,
 		selectedColor: state.profile.color,
 		availableColors: state.colors.colors
 	}
@@ -188,7 +255,9 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
 	return {
-		updateUserColorSelection: color => dispatch(updateUserColorSelection(color))
+		updateUserColorSelection: color =>
+			dispatch(updateUserColorSelection(color)),
+		updateUserEmojiSelection: emoji => dispatch(updateUserEmojiSelection(emoji))
 	}
 }
 

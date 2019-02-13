@@ -150,7 +150,7 @@ const styles = EStyleSheet.create({
 	upcomingContainer: {
 		width: '100%',
 		flex: 1,
-		backgroundColor: '#242937',
+		backgroundColor: '$darkColor',
 		borderRadius: 4,
 		padding: 16,
 		marginBottom: 32

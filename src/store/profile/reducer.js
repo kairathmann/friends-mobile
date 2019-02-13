@@ -1,12 +1,14 @@
 import { SET_PROFILE_INFO } from './action-types'
 import { SET_COLORS } from '../colors/action-types'
+import { DEFAULT_EMOJIS } from '../../enums'
 
 const initialState = {
 	id: '',
 	city: '',
 	firstName: '',
 	username: '',
-	color: ''
+	color: '',
+	emoji: DEFAULT_EMOJIS[0]
 }
 
 export default function profileReducer(
@@ -18,7 +20,8 @@ export default function profileReducer(
 			return {
 				...state,
 				...payload,
-				color: payload.color ? payload.color : state.color
+				color: payload.color ? payload.color : state.color,
+				emoji: payload.emoji ? payload.emoji : state.emoji
 			}
 		// when colors are fetched from the server, automatically fill default color to the first one if user does not have any selected
 		case SET_COLORS:

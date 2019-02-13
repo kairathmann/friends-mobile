@@ -71,7 +71,7 @@ const styles = EStyleSheet.create({
 		marginBottom: 20
 	},
 	signleColorCircle: {
-		paddingLeft: 8,
-		paddingRight: 8
+		marginLeft: 8,
+		marginRight: 8
 	}
 })

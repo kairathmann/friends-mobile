@@ -95,7 +95,7 @@ const styles = EStyleSheet.create({
 		paddingBottom: 24,
 		paddingLeft: 16,
 		paddingRight: 16,
-		backgroundColor: '#242937',
+		backgroundColor: '$darkColor',
 		marginLeft: 16,
 		marginRight: 16,
 		marginTop: 0,
