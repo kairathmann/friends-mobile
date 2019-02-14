@@ -29,7 +29,7 @@ const styles = EStyleSheet.create({
 		height: '100%',
 		borderWidth: 1,
 		borderRadius: 16,
-		borderColor: 'white',
+		borderColor: '$greyColor',
 		flex: 1,
 		justifyContent: 'center',
 		marginBottom: 8,

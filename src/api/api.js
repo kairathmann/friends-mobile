@@ -90,6 +90,14 @@ export default {
 			})
 			.then(result => result.data)
 	},
+	fetchAnsweredQuestions: async () => {
+		const authToken = await tokenService.getToken()
+		return axios
+			.get('questions/answered', {
+				headers: { 'X-Authorization': `Bearer ${authToken}` }
+			})
+			.then(result => result.data)
+	},
 	uploadAnswers: async answers => {
 		const authToken = await tokenService.getToken()
 		return axios

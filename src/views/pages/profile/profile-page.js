@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import { Image, StatusBar, TouchableOpacity, View } from 'react-native'
 import EStyleSheet from 'react-native-extended-stylesheet'
+import HelpQuestionsIcon from '../../../assets/images/help_questions_icon.png'
 import { connect } from 'react-redux'
 import { SafeAreaView } from 'react-navigation'
 import {
@@ -11,8 +12,8 @@ import {
 	FONTS_STYLES,
 	styles as commonStyles
 } from '../../../styles'
-import I18n from '../../../../locales/i18n'
 import * as COLORS from '../../../styles/colors'
+import I18n from '../../../../locales/i18n'
 import LoggedInUserAvatar from '../../../components/LoggedInUserAvatar'
 import YourProfileIcon from '../../../assets/images/your_profile_icon.png'
 import { PAGES_NAMES } from '../../../navigation/pages'
@@ -65,8 +66,33 @@ class ProfilePage extends React.Component {
 		</BigCard>
 	)
 
+	renderMatchingQuestionsCard = () => (
+		<View style={styles.matchingQuestionCardSpacing}>
+			<BigCard
+				onPress={() => {
+					this.props.navigation.navigate(PAGES_NAMES.MATCHING_QUESTIONS_PAGE)
+				}}
+			>
+				<Image
+					source={HelpQuestionsIcon}
+					resizeMode="contain"
+					style={styles.bigCardIcon}
+				/>
+				<View style={styles.flexFull}>
+					<Text style={styles.bigCardText}>
+						{I18n.t('profile_page.matching_questions').toUpperCase()}
+					</Text>
+				</View>
+				<ChevronIcon />
+			</BigCard>
+		</View>
+	)
+
 	renderSettingsSection = () => (
-		<View style={styles.settingsContainer}>{this.renderYourProfileCard()}</View>
+		<View style={styles.settingsContainer}>
+			{this.renderYourProfileCard()}
+			{this.renderMatchingQuestionsCard()}
+		</View>
 	)
 
 	renderTermsOfServiceCard = () => (
@@ -254,6 +280,9 @@ const styles = EStyleSheet.create({
 	},
 	signOutSpacing: {
 		marginTop: 28
+	},
+	matchingQuestionCardSpacing: {
+		marginTop: 5
 	}
 })
 

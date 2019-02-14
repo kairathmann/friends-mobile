@@ -7,7 +7,10 @@ import Answer from '../Answer/Answer'
 
 export default class QuestionItem extends React.Component {
 	shouldComponentUpdate = nextProps => {
-		return nextProps.selectedAnswer !== this.props.selectedAnswer
+		return (
+			nextProps.selectedAnswer !== this.props.selectedAnswer ||
+			nextProps.answered !== this.props.answered
+		)
 	}
 
 	changeAnswer = answer => {
@@ -20,6 +23,7 @@ export default class QuestionItem extends React.Component {
 		const answersToShow = answered
 			? answers.filter(an => an.id === selectedAnswer)
 			: answers
+
 		return (
 			<View>
 				<Text style={styles.text}>{text}</Text>
@@ -39,7 +43,7 @@ export default class QuestionItem extends React.Component {
 const styles = EStyleSheet.create({
 	text: {
 		...createFontStyle(),
-		color: 'white',
+		color: '#fff',
 		fontSize: 20,
 		marginBottom: 16
 	}
