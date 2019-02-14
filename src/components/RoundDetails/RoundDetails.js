@@ -2,68 +2,53 @@ import moment from 'moment'
 import { Text, View } from 'native-base'
 import PropTypes from 'prop-types'
 import React from 'react'
-import { ScrollView, TouchableOpacity } from 'react-native'
+import { TouchableOpacity } from 'react-native'
 import EStyleSheet from 'react-native-extended-stylesheet'
 import i18n from '../../../locales/i18n'
-import { LUMINOS_ACCENT, LUMINOS_BACKGROUND_COLOR } from '../../styles/colors'
-import Button from '../Button/Button'
+import LoggedInUserAvatar from '../LoggedInUserAvatar'
 
-export default function RoundDetails({ round, onJoinClick, onResignClick }) {
+export default function RoundDetails({ round, onResignClick }) {
 	return (
-		<ScrollView>
-			<View style={styles.contentContainer}>
-				{round.subscribed && (
-					<View style={styles.upcomingContainer}>
-						<View style={styles.upcomingTop}>
-							<Text style={[styles.subheader, { flex: 1 }]}>
-								{i18n.t('home.upcoming_title')}
-							</Text>
-							<View style={styles.smallerAvatar} />
-						</View>
-						<View style={styles.upcomingBottom}>
-							<Text style={[styles.upcomingDate, { flex: 1 }]}>
-								{moment(round.from).fromNow(true)}
-							</Text>
-							<TouchableOpacity onPress={onResignClick}>
-								<Text style={styles.declineText}>
-									{i18n.t('home.upcoming_resign')}
-								</Text>
-							</TouchableOpacity>
-						</View>
+		<View style={styles.contentContainer}>
+			{round.subscribed && (
+				<View style={styles.upcomingContainer}>
+					<View style={styles.upcomingTop}>
+						<Text style={[styles.subheader, { flex: 1, marginRight: 10 }]}>
+							{i18n.t('home.upcoming_title')}
+						</Text>
+						<LoggedInUserAvatar circleSize={50} emojiSize={15} />
 					</View>
-				)}
-				<View style={styles.topContainer}>
-					<View style={{ flex: 1 }}>
-						<Text style={styles.title}>{`${i18n.t('home.downtime')} Round #${
-							round.id
-						} `}</Text>
+					<View style={styles.upcomingBottom}>
+						<Text style={styles.upcomingDate}>
+							{moment(round.from).fromNow(true)}
+						</Text>
+						<TouchableOpacity onPress={onResignClick}>
+							<Text style={styles.declineText}>
+								{i18n.t('home.upcoming_resign')}
+							</Text>
+						</TouchableOpacity>
 					</View>
-					<View style={styles.avatar} />
 				</View>
-				<Text style={styles.subheader}>{i18n.t('home.date')}</Text>
-				<Text style={styles.date}>{`${moment(round.from).format('MMM Do')} - ${
-					round.to ? moment(round.to).format('MMM Do') : '...'
-				}`}</Text>
-				<Text style={styles.description}>{round.description}</Text>
-				{!round.subscribed && (
-					<Button
-						onPress={onJoinClick}
-						textStyle={{ color: LUMINOS_BACKGROUND_COLOR }}
-						buttonStyle={{
-							borderColor: LUMINOS_ACCENT,
-							backgroundColor: LUMINOS_ACCENT
-						}}
-						text={i18n.t('home.join_round')}
-					/>
-				)}
+			)}
+			<View style={styles.topContainer}>
+				<View style={{ flex: 1 }}>
+					<Text style={styles.title}>{`${i18n.t('home.downtime')} Round #${
+						round.id
+					} `}</Text>
+				</View>
+				<View style={styles.avatar} />
 			</View>
-		</ScrollView>
+			<Text style={styles.subheader}>{i18n.t('home.date')}</Text>
+			<Text style={styles.date}>{`${moment(round.from).format('MMM Do')} - ${
+				round.to ? moment(round.to).format('MMM Do') : '...'
+			}`}</Text>
+			<Text style={styles.description}>{round.description}</Text>
+		</View>
 	)
 }
 
 RoundDetails.propTypes = {
 	round: PropTypes.object.isRequired,
-	onJoinClick: PropTypes.func.isRequired,
 	onResignClick: PropTypes.func.isRequired
 }
 
@@ -95,14 +80,6 @@ const styles = EStyleSheet.create({
 		borderColor: '#e2e0e0',
 		backgroundColor: '#58e2c2'
 	},
-	smallerAvatar: {
-		width: 40,
-		height: 40,
-		borderWidth: 3,
-		borderRadius: 20,
-		borderColor: '#e2e0e0',
-		backgroundColor: '#58e2c2'
-	},
 	description: {
 		lineHeight: 24,
 		fontSize: 16,
@@ -122,7 +99,8 @@ const styles = EStyleSheet.create({
 		fontSize: 36,
 		letterSpacing: 0.25,
 		color: 'white',
-		textAlign: 'left'
+		textAlign: 'left',
+		flex: 1
 	},
 	title: {
 		fontSize: 36,

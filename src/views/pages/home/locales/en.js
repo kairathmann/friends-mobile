@@ -8,7 +8,7 @@ export default {
 	no_rounds: 'You did not participate in any round :(',
 	date: 'Date',
 	downtime: 'Get ready for ',
-	join_round: 'Join this room!',
+	join_round: 'Join this round!',
 	upcoming_title: 'You’re signed up for this round coming in...',
 	upcoming_resign: 'I can’t make it anymore'
 }
