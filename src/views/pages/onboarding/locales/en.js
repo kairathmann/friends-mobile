@@ -6,6 +6,7 @@ export default {
 	secret_profile_info:
 		'These information will NOT be publically visible, but will be considered during matching.',
 	name_warning: 'Keep in mind, other people will call you by this',
+	city_placeholder: 'City',
 	city_error: `We coudn't find this location. Please try again`,
 	notifications_right: 'Give us right to notifications',
 	questions_prompt: 'Now, the most important part: tell us who you are.',

@@ -3,19 +3,20 @@ import React from 'react'
 import { StatusBar } from 'react-native'
 import { SafeAreaView } from 'react-navigation'
 import { Container, Content, Text, View } from 'native-base'
-import EStyleSheet from 'react-native-extended-stylesheet'
 import { connect } from 'react-redux'
 import I18n from '../../../../locales/i18n'
 import ColorSelector from '../../../components/ColorSelector'
 import EmojiSelector from '../../../components/EmojiSelector'
 import { NavigationBottomBar } from '../../../components/NavigationBottomBar/NavigationBottomBar'
 import { OnboardingHeader } from '../../../components/OnboardingHeader/OnboardingHeader'
-import { createFontStyle, styles as commonStyles } from '../../../styles'
+import {
+	styles as commonStyles,
+	CommonOnboardingStyles,
+	IdentificationPageStyles
+} from '../../../styles'
 import UserColorAwareComponent from '../../../components/UserColorAwareComponent'
 import LoggedInUserAvatar from '../../../components/LoggedInUserAvatar'
 import * as COLORS from '../../../styles/colors'
-import * as FONTS from '../../../styles/fonts'
-import * as FONTS_STYLES from '../../../styles/fontStyles'
 import {
 	updateUserColorSelection,
 	updateUserEmojiSelection
@@ -76,8 +77,14 @@ class IdentificationPage extends React.Component {
 	}
 
 	renderColorPickers = () => (
-		<View style={styles.spaceBetweenSections}>
-			<Text style={[styles.text, styles.textHeader, styles.space]}>
+		<View style={IdentificationPageStyles.spaceBetweenSections}>
+			<Text
+				style={[
+					CommonOnboardingStyles.text,
+					CommonOnboardingStyles.textHeader,
+					CommonOnboardingStyles.space
+				]}
+			>
 				{I18n.t(
 					'onboarding.identification_page_choose_color_section_header'
 				).toUpperCase()}
@@ -93,8 +100,14 @@ class IdentificationPage extends React.Component {
 	)
 
 	renderEmojiPickers = () => (
-		<View style={styles.spaceBetweenSections}>
-			<Text style={[styles.text, styles.textHeader, styles.space]}>
+		<View style={IdentificationPageStyles.spaceBetweenSections}>
+			<Text
+				style={[
+					CommonOnboardingStyles.text,
+					CommonOnboardingStyles.textHeader,
+					CommonOnboardingStyles.space
+				]}
+			>
 				{I18n.t(
 					'onboarding.identification_page_choose_emoji_section_header'
 				).toUpperCase()}
@@ -108,9 +121,15 @@ class IdentificationPage extends React.Component {
 	)
 
 	renderUserAvatarPreview = () => (
-		<View style={styles.userAvatarContainer}>
-			<View style={styles.userAvatarTextHeader}>
-				<Text style={[styles.text, styles.textHeader, styles.space]}>
+		<View style={IdentificationPageStyles.userAvatarContainer}>
+			<View style={IdentificationPageStyles.userAvatarTextHeader}>
+				<Text
+					style={[
+						CommonOnboardingStyles.text,
+						CommonOnboardingStyles.textHeader,
+						CommonOnboardingStyles.space
+					]}
+				>
 					{I18n.t(
 						'onboarding.identification_page_avatar_preview_section_header'
 					).toUpperCase()}
@@ -121,7 +140,7 @@ class IdentificationPage extends React.Component {
 	)
 
 	renderContent = () => (
-		<View style={styles.formContainer}>
+		<View style={CommonOnboardingStyles.formContainer}>
 			{this.renderColorPickers()}
 			{this.renderEmojiPickers()}
 			{this.renderUserAvatarPreview()}
@@ -144,11 +163,11 @@ class IdentificationPage extends React.Component {
 								leftText={I18n.t('onboarding.sign_up')}
 								totalPage={3}
 							/>
-							<View style={styles.descriptionContainer}>
-								<Text style={styles.headerText}>
+							<View style={IdentificationPageStyles.descriptionContainer}>
+								<Text style={IdentificationPageStyles.headerText}>
 									{I18n.t('onboarding.identification_page_title')}
 								</Text>
-								<Text style={[styles.descriptionText]}>
+								<Text style={[IdentificationPageStyles.descriptionText]}>
 									{I18n.t('onboarding.identification_page_description')}
 								</Text>
 							</View>
@@ -173,60 +192,6 @@ class IdentificationPage extends React.Component {
 		)
 	}
 }
-
-const styles = EStyleSheet.create({
-	descriptionContainer: {
-		flex: 1,
-		justifyContent: 'center',
-		marginLeft: 25,
-		marginRight: 25,
-		marginTop: 32,
-		marginBottom: 32
-	},
-	headerText: {
-		...createFontStyle(FONTS.LATO),
-		textAlign: 'center',
-		color: 'white',
-		fontSize: 40,
-		letterSpacing: 1
-	},
-	descriptionText: {
-		...createFontStyle(FONTS.LATO),
-		textAlign: 'center',
-		color: 'white',
-		marginTop: 15,
-		fontSize: 14,
-		lineHeight: 18,
-		letterSpacing: 1
-	},
-	text: {
-		...createFontStyle(FONTS.TITILLIUM, FONTS_STYLES.SEMI_BOLD),
-		color: 'white',
-		fontSize: 12
-	},
-	textHeader: {
-		letterSpacing: 2,
-		lineHeight: 16
-	},
-	space: {
-		marginBottom: 12
-	},
-	formContainer: {
-		margin: 16
-	},
-	spaceBetweenSections: {
-		marginBottom: 30
-	},
-	userAvatarContainer: {
-		flex: 1,
-		flexDirection: 'row'
-	},
-	userAvatarTextHeader: {
-		marginTop: 20,
-		flex: 1,
-		alignSelf: 'flex-start'
-	}
-})
 
 IdentificationPage.propTypes = {
 	navigation: PropTypes.object.isRequired,

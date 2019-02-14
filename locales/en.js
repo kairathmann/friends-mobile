@@ -1,11 +1,15 @@
 import { en as onboarding } from '../src/views/pages/onboarding/locales'
 import { en as welcome_page } from '../src/views/pages/welcome/locales'
 import { en as home } from '../src/views/pages/home/locales'
+import { en as profile_page } from '../src/views/pages/profile/locales'
+import { en as edit_profile_page } from '../src/views/pages/edit-profile/locales'
 
 export default {
 	welcome_page,
 	onboarding,
 	home,
+	profile_page,
+	edit_profile_page,
 	commons: {
 		name: 'Name',
 		phone_number: 'Phone Number',

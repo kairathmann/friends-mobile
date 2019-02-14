@@ -3,6 +3,11 @@ import * as COLORS from './colors'
 import * as FONTS from './fonts'
 import * as FONTS_STYLES from './fontStyles'
 import { createFontStyle } from './fontStyleMaker'
+import {
+	CommonOnboardingStyles,
+	BaseInfoStyles,
+	IdentificationPageStyles
+} from './onboarding'
 
 const styles = EStyleSheet.create({
 	content: {
@@ -45,4 +50,13 @@ const styles = EStyleSheet.create({
 	}
 })
 
-export { createFontStyle, COLORS, FONTS, FONTS_STYLES, styles }
+export {
+	createFontStyle,
+	COLORS,
+	FONTS,
+	FONTS_STYLES,
+	styles,
+	BaseInfoStyles,
+	CommonOnboardingStyles,
+	IdentificationPageStyles
+}

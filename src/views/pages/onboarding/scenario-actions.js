@@ -48,7 +48,20 @@ export function uploadInfo({ name, city, color, emoji }) {
 	return async dispatch => {
 		try {
 			dispatch(uploadInfoStart())
-			const result = await api.uploadBaseInfo({ name, city, color, emoji })
+			const result = await api.uploadBaseInfo({
+				name,
+				city,
+				color: color.id,
+				emoji
+			})
+			dispatch(
+				setProfileInfo({
+					city,
+					firstName: name,
+					color,
+					emoji
+				})
+			)
 			dispatch(uploadInfoSuccess(result))
 			if (Platform.OS === 'android') {
 				register(configuredStore)

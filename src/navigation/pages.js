@@ -28,6 +28,7 @@ import AuthPageTokenVerificationPage from '../views/pages/onboarding/auth-phone-
 import AuthTelegramEmailPage from '../views/pages/onboarding/auth-telegram-email-page'
 import IdentificationPage from '../views/pages/onboarding/identification-page'
 import UserColorAwareComponent from '../components/UserColorAwareComponent'
+import EditProfilePage from '../views/pages/edit-profile'
 
 const PAGES_NAMES = {
 	WELCOME_PAGE: 'WELCOME_PAGE',
@@ -44,7 +45,8 @@ const PAGES_NAMES = {
 	HOME_PAGE: 'HOME_PAGE',
 	PROFILE_TAB: 'PROFILE_PAGE',
 	CHAT_TAB: 'CHAT_PAGE',
-	HOME_TAB: 'HOME_NESTED_PAGE'
+	HOME_TAB: 'HOME_NESTED_PAGE',
+	EDIT_PROFILE_PAGE: 'EDIT_PROFILE_PAGE'
 }
 
 const BottomBarNavigationIcon = ({ focused, icon }) => (
@@ -185,6 +187,12 @@ const AppStackNavigator = createStackNavigator({
 	},
 	HOME_PAGE: {
 		screen: HomeBottomBar,
+		navigationOptions: () => ({
+			header: null
+		})
+	},
+	EDIT_PROFILE_PAGE: {
+		screen: EditProfilePage,
 		navigationOptions: () => ({
 			header: null
 		})

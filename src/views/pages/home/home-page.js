@@ -7,7 +7,6 @@ import EStyleSheet from 'react-native-extended-stylesheet'
 import { SafeAreaView } from 'react-navigation'
 import { connect } from 'react-redux'
 import I18n from '../../../../locales/i18n'
-import i18n from '../../../../locales/i18n'
 import PastRound from '../../../components/PastRound/PastRound'
 import RoundDetails from '../../../components/RoundDetails/RoundDetails'
 import RoundDowntime from '../../../components/RoundWarnings/RoundDowntime'
@@ -106,7 +105,7 @@ class HomePage extends React.Component {
 							>
 								{this.props.pastRounds.length === 0 && (
 									<Text style={styles.emptyListText}>
-										{i18n.t('home.no_rounds')}
+										{I18n.t('home.no_rounds')}
 									</Text>
 								)}
 								{this.props.pastRounds.map(round => (
