@@ -16,6 +16,7 @@ import * as COLORS from '../../../styles/colors'
 import LoggedInUserAvatar from '../../../components/LoggedInUserAvatar'
 import YourProfileIcon from '../../../assets/images/your_profile_icon.png'
 import { PAGES_NAMES } from '../../../navigation/pages'
+import { logOutUser } from '../../common-scenarios'
 
 const ChevronIcon = () => (
 	<Icon style={styles.cardIcon} type={'MaterialIcons'} name={'chevron-right'} />
@@ -102,7 +103,11 @@ class ProfilePage extends React.Component {
 
 	renderSignOutCard = () => (
 		<View style={styles.signOutSpacing}>
-			<SmallCard onPress={() => {}}>
+			<SmallCard
+				onPress={() => {
+					this.props.logOutUser()
+				}}
+			>
 				<View style={styles.flexFull}>
 					<Text style={styles.smallCardText}>
 						{I18n.t('profile_page.sign_out')}
@@ -155,14 +160,8 @@ class ProfilePage extends React.Component {
 ProfilePage.propTypes = {
 	navigation: PropTypes.object.isRequired,
 	firstName: PropTypes.string.isRequired,
-	city: PropTypes.string.isRequired
-}
-
-const mapStateToProps = state => {
-	return {
-		firstName: state.profile.firstName,
-		city: state.profile.city
-	}
+	city: PropTypes.string.isRequired,
+	logOutUser: PropTypes.func.isRequired
 }
 
 const styles = EStyleSheet.create({
@@ -258,7 +257,20 @@ const styles = EStyleSheet.create({
 	}
 })
 
+const mapStateToProps = state => {
+	return {
+		firstName: state.profile.firstName,
+		city: state.profile.city
+	}
+}
+
+const mapDispatchToProps = dispatch => {
+	return {
+		logOutUser: () => dispatch(logOutUser())
+	}
+}
+
 export default connect(
 	mapStateToProps,
-	null
+	mapDispatchToProps
 )(ProfilePage)

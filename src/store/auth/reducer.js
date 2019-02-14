@@ -4,6 +4,7 @@ import {
 	SMS_CODE_SUCCESS,
 	SMS_TOKEN_VERIFICATION_SUCCESS
 } from './action-types'
+import { LOGOUT_USER_AND_CLEAR_DATA } from '../global/action-types'
 
 const initialState = {
 	phoneNumberCountryCode: '',
@@ -34,6 +35,8 @@ export default function authReducer(state = initialState, { type, payload }) {
 				phoneNumber: '',
 				lastDateSmsCodeSent: ''
 			}
+		case LOGOUT_USER_AND_CLEAR_DATA:
+			return initialState
 		default:
 			return state
 	}

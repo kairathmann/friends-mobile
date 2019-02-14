@@ -4,6 +4,7 @@ import {
 	JOIN_ROUND_REQUEST,
 	RESIGN_ROUND_REQUEST
 } from './action-types'
+import { LOGOUT_USER_AND_CLEAR_DATA } from '../global/action-types'
 
 const initialState = {
 	pastRounds: [],
@@ -51,6 +52,8 @@ export default function roundsReducer(state = initialState, { type, payload }) {
 				futureRounds: payload.filter(rr => moment(rr.from) > now),
 				pastRounds: payload.filter(rr => moment(rr.to) <= now)
 			}
+		case LOGOUT_USER_AND_CLEAR_DATA:
+			return initialState
 		default:
 			return state
 	}

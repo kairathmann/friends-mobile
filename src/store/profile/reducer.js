@@ -1,6 +1,7 @@
 import { SET_PROFILE_INFO } from './action-types'
 import { SET_COLORS } from '../colors/action-types'
 import { DEFAULT_EMOJIS } from '../../enums'
+import { LOGOUT_USER_AND_CLEAR_DATA } from '../global/action-types'
 
 const initialState = {
 	id: '',
@@ -29,6 +30,8 @@ export default function profileReducer(
 				...state,
 				color: state.color === '' ? payload[0] : state.color
 			}
+		case LOGOUT_USER_AND_CLEAR_DATA:
+			return initialState
 		default:
 			return state
 	}
