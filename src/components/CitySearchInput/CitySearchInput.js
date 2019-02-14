@@ -25,6 +25,20 @@ class CitySearchInput extends React.Component {
 		cityLoading: false
 	}
 
+	__isMounted = false
+
+	callOnCitySearchError = () => {
+		if (this.__isMounted) {
+			this.props.onSearchEndError()
+		}
+	}
+
+	callOnCitySearchSuccess = city => {
+		if (this.__isMounted) {
+			this.props.onSearchEndSuccess(city)
+		}
+	}
+
 	handleCityChange = city => {
 		LayoutAnimation.configureNext(LayoutAnimation.Presets.spring)
 		this.props.onSearchStart()
@@ -48,34 +62,44 @@ class CitySearchInput extends React.Component {
 			},
 			(err, res) => {
 				if (err) {
-					this.props.onSearchEndError()
-					return this.setState({
-						cityLoading: false,
-						cityError: true
-					})
+					this.callOnCitySearchError()
+					if (this.__isMounted) {
+						this.setState({
+							cityLoading: false,
+							cityError: true
+						})
+					}
+					return
 				}
 				const foundExactMatches = res.hits.filter(
 					h => h._rankingInfo.nbExactWords === city.split(' ').length
 				)
 				if (foundExactMatches.length > 0) {
-					this.props.onSearchEndSuccess(city)
+					this.callOnCitySearchSuccess(city)
 				} else {
-					this.props.onSearchEndError()
+					this.callOnCitySearchError()
 				}
-				this.setState({
-					cityError: foundExactMatches.length === 0,
-					cityLoading: false
-				})
+				if (this.__isMounted) {
+					this.setState({
+						cityError: foundExactMatches.length === 0,
+						cityLoading: false
+					})
+				}
 			}
 		)
 	}, DEBOUNCE_TIMEOUT_MS)
 
 	componentDidMount() {
+		this.__isMounted = true
 		// need to check it in componentDidMount because handleCityChange is using setState
 		// and calling setState inside constructor is forbidden as component is not mounted yet then
 		if (this.state.city !== '' && this.props.validateOnMount) {
 			this.handleCityChange(this.state.city)
 		}
+	}
+
+	componentWillUnmount() {
+		this.__isMounted = false
 	}
 
 	render() {
