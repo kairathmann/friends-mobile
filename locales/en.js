@@ -38,7 +38,11 @@ export default {
 		city_missing: 'City field is missing',
 		first_name_missing: 'Name field is missing',
 		cannot_join: 'Cannot join to this round',
-		cannot_resign: 'Your request failed. Try again later'
+		cannot_resign: 'Your request failed. Try again later',
+		cannot_fetch_chats: 'Cannot fetch chats. Try again later.',
+		invalid_round: 'Round does not exist, please refresh list',
+		user_not_subscribed: "You haven't signed up for this round",
+		round_hasnt_started: "Round hasn't started yet"
 	},
 	navigator: {
 		home: 'Luminos',

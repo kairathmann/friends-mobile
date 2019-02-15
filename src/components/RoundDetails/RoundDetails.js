@@ -16,7 +16,11 @@ export default function RoundDetails({ round, onResignClick }) {
 						<Text style={[styles.subheader, { flex: 1, marginRight: 10 }]}>
 							{i18n.t('home.upcoming_title')}
 						</Text>
-						<LoggedInUserAvatar circleSize={50} emojiSize={15} />
+						<LoggedInUserAvatar
+							circleSize={50}
+							emojiSize={15}
+							borderWidth={2}
+						/>
 					</View>
 					<View style={styles.upcomingBottom}>
 						<Text style={styles.upcomingDate}>

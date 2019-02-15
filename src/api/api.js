@@ -18,6 +18,14 @@ export default {
 			)
 			.then(result => result.data)
 	},
+	fetchRoundChats: async roundId => {
+		const authToken = await tokenService.getToken()
+		return axios
+			.get(`rounds/${roundId}/chats`, {
+				headers: { 'X-Authorization': `Bearer ${authToken}` }
+			})
+			.then(result => result.data)
+	},
 	resignRound: async round => {
 		const authToken = await tokenService.getToken()
 		return axios
