@@ -3,6 +3,11 @@ import * as COLORS from './colors'
 import * as FONTS from './fonts'
 import * as FONTS_STYLES from './fontStyles'
 import { createFontStyle } from './fontStyleMaker'
+import {
+	CommonOnboardingStyles,
+	BaseInfoStyles,
+	IdentificationPageStyles
+} from './onboarding'
 
 const styles = EStyleSheet.create({
 	content: {
@@ -25,7 +30,33 @@ const styles = EStyleSheet.create({
 	errorText: {
 		color: '$errorColor',
 		textAlign: 'center'
+	},
+	emojiCircleSmall: {
+		width: 64,
+		height: 64,
+		borderRadius: 32,
+		backgroundColor: '$darkColor'
+	},
+	emojiContainer: {
+		flex: 1,
+		justifyContent: 'center',
+		alignItems: 'center'
+	},
+	emojiSmall: {
+		fontSize: 26
+	},
+	emojiSelected: {
+		backgroundColor: '#424755'
 	}
 })
 
-export { createFontStyle, COLORS, FONTS, FONTS_STYLES, styles }
+export {
+	createFontStyle,
+	COLORS,
+	FONTS,
+	FONTS_STYLES,
+	styles,
+	BaseInfoStyles,
+	CommonOnboardingStyles,
+	IdentificationPageStyles
+}

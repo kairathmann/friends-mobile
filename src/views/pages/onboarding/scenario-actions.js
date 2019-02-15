@@ -42,12 +42,26 @@ import {
 	uploadInfoSuccess
 } from '../../../store/onboarding/actions'
 import { setProfileInfo } from '../../../store/profile/actions'
+import { setAvailableColors } from '../../../store/colors/actions'
 
-export function uploadInfo({ name, city }) {
+export function uploadInfo({ name, city, color, emoji }) {
 	return async dispatch => {
 		try {
 			dispatch(uploadInfoStart())
-			const result = await api.uploadBaseInfo({ name, city })
+			const result = await api.uploadBaseInfo({
+				name,
+				city,
+				color: color.id,
+				emoji
+			})
+			dispatch(
+				setProfileInfo({
+					city,
+					firstName: name,
+					color,
+					emoji
+				})
+			)
 			dispatch(uploadInfoSuccess(result))
 			if (Platform.OS === 'android') {
 				register(configuredStore)
@@ -102,7 +116,8 @@ export const sendVerificationCode = (
 				error: tokenStored.error
 			})
 		}
-		let destinationPageForUser = PAGES_NAMES.BASEINFO_PAGE
+		const availableColors = await api.getAvailableColors()
+		let destinationPageForUser = PAGES_NAMES.IDENTIFICATION_PAGE
 		let questionsToAnswer = []
 		// telegram user always goes to onboarding so execute extra logic only if user is non telegram import
 		if (!isTelegramUser) {
@@ -119,8 +134,11 @@ export const sendVerificationCode = (
 			)
 		}
 		dispatch(smsTokenVerificationSuccess())
+		dispatch(setAvailableColors(availableColors))
 		dispatch(setProfileInfo(userInfoWithoutToken))
-		navigateAndResetNavigation(destinationPageForUser)
+		navigateAndResetNavigation(destinationPageForUser, {
+			goBackArrowDisabled: true
+		})
 	} catch (err) {
 		const error = getErrorDataFromNetworkException(err)
 		dispatch(smsTokenVerificationError(error))
@@ -199,3 +217,9 @@ export function fetchQuestions() {
 		}
 	}
 }
+
+export const updateUserColorSelection = color => dispatch =>
+	dispatch(setProfileInfo({ color }))
+
+export const updateUserEmojiSelection = emoji => dispatch =>
+	dispatch(setProfileInfo({ emoji }))

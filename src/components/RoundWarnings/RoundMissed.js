@@ -1,18 +1,15 @@
 import { Text, View } from 'native-base'
 import React from 'react'
-import { ScrollView } from 'react-native'
 import EStyleSheet from 'react-native-extended-stylesheet'
 import i18n from '../../../locales/i18n'
 
 export default function RoundMissed() {
 	return (
-		<ScrollView>
-			<View style={styles.missedContainer}>
-				<Text style={styles.emoji}>😵</Text>
-				<Text style={styles.textBig}>{i18n.t('home.missed_big')}</Text>
-				<Text style={styles.textSmall}>{i18n.t('home.missed_small')}</Text>
-			</View>
-		</ScrollView>
+		<View style={styles.missedContainer}>
+			<Text style={styles.emoji}>😵</Text>
+			<Text style={styles.textBig}>{i18n.t('home.missed_big')}</Text>
+			<Text style={styles.textSmall}>{i18n.t('home.missed_small')}</Text>
+		</View>
 	)
 }
 

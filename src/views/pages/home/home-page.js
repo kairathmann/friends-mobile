@@ -1,30 +1,84 @@
 import _ from 'lodash'
-import { Container, Tab, Tabs, Text } from 'native-base'
+import { Container, Fab, Icon, Tab, Tabs, Text } from 'native-base'
 import PropTypes from 'prop-types'
 import React from 'react'
-import { StatusBar } from 'react-native'
+import { RefreshControl, ScrollView, StatusBar, View } from 'react-native'
 import EStyleSheet from 'react-native-extended-stylesheet'
 import { SafeAreaView } from 'react-navigation'
 import { connect } from 'react-redux'
 import I18n from '../../../../locales/i18n'
-import i18n from '../../../../locales/i18n'
 import PastRound from '../../../components/PastRound/PastRound'
 import RoundDetails from '../../../components/RoundDetails/RoundDetails'
 import RoundDowntime from '../../../components/RoundWarnings/RoundDowntime'
 import RoundMissed from '../../../components/RoundWarnings/RoundMissed'
+import UserColorAwareComponent from '../../../components/UserColorAwareComponent'
 import {
 	createErrorMessageSelector,
 	createLoadingSelector
 } from '../../../store/utils/selectors'
-import { styles as commonStyles } from '../../../styles'
+import { createFontStyle, styles as commonStyles } from '../../../styles'
 import * as COLORS from '../../../styles/colors'
+import * as FONTS from '../../../styles/fonts'
+import * as FONTS_STYLES from '../../../styles/fontStyles'
 import { LUMINOS_ACCENT } from '../../../styles/colors'
 import { fetchMyRounds, joinRound, resignRound } from './scenario-actions'
 
+const JoinRoundButton = ({ onPress }) => (
+	<UserColorAwareComponent>
+		{color => (
+			<Fab
+				active
+				containerStyle={styles.joinRoundButtonContainer}
+				style={[
+					{
+						backgroundColor: color
+					},
+					styles.joinRoundButtonContainer
+				]}
+				position="bottomRight"
+				onPress={onPress}
+			>
+				<View style={styles.joinRoundButtonChildrenContainer}>
+					<Icon
+						type="MaterialIcons"
+						name="add"
+						style={styles.joinRoundButtonIcon}
+					/>
+					<Text style={styles.joinRoundButtonText}>
+						{I18n.t('home.join_round').toUpperCase()}
+					</Text>
+				</View>
+			</Fab>
+		)}
+	</UserColorAwareComponent>
+)
+
+JoinRoundButton.propTypes = {
+	onPress: PropTypes.func.isRequired
+}
+
+const ScrollViewWithPullToRefresh = ({ children, isLoading, onRefresh }) => (
+	<ScrollView
+		refreshControl={
+			<RefreshControl refreshing={isLoading} onRefresh={onRefresh} />
+		}
+	>
+		{children}
+	</ScrollView>
+)
+
+ScrollViewWithPullToRefresh.propTypes = {
+	children: PropTypes.node.isRequired,
+	isLoading: PropTypes.bool.isRequired,
+	onRefresh: PropTypes.func.isRequired
+}
+
 class HomePage extends React.Component {
 	componentDidMount() {
-		this.props.fetchPastRounds()
+		this.fetchRounds()
 	}
+
+	fetchRounds = this.props.fetchRounds
 
 	getComponentForCurrentRounds = () => {
 		const {
@@ -37,23 +91,43 @@ class HomePage extends React.Component {
 			return null
 		}
 		if (future.length === 0 && current.length === 0) {
-			return <RoundDowntime />
+			return (
+				<ScrollViewWithPullToRefresh
+					isLoading={isLoading}
+					onRefresh={this.fetchRounds}
+				>
+					<RoundDowntime />
+				</ScrollViewWithPullToRefresh>
+			)
 		}
 		if (
 			future.length === 0 &&
 			current.length !== 0 &&
 			!_.some(current, 'subscribed')
 		) {
-			return <RoundMissed />
+			return (
+				<ScrollViewWithPullToRefresh
+					isLoading={isLoading}
+					onRefresh={this.fetchRounds}
+				>
+					<RoundMissed />
+				</ScrollViewWithPullToRefresh>
+			)
 		}
 
 		if (future.length !== 0) {
 			return (
-				<RoundDetails
-					round={future[0]}
-					onResignClick={this.handleResign}
-					onJoinClick={this.handleJoin}
-				/>
+				<React.Fragment>
+					<ScrollViewWithPullToRefresh
+						isLoading={isLoading}
+						onRefresh={this.fetchRounds}
+					>
+						<RoundDetails round={future[0]} onResignClick={this.handleResign} />
+					</ScrollViewWithPullToRefresh>
+					{!future[0].subscribed && (
+						<JoinRoundButton onPress={this.handleJoin} />
+					)}
+				</React.Fragment>
 			)
 		}
 	}
@@ -104,17 +178,22 @@ class HomePage extends React.Component {
 								tabStyle={styles.tabStyle}
 								heading={I18n.t('tabs.my').toUpperCase()}
 							>
-								{this.props.pastRounds.length === 0 && (
-									<Text style={styles.emptyListText}>
-										{i18n.t('home.no_rounds')}
-									</Text>
-								)}
-								{this.props.pastRounds.map(round => (
-									<PastRound
-										key={`past-round-index-${round.id}`}
-										round={round}
-									/>
-								))}
+								<ScrollViewWithPullToRefresh
+									isLoading={this.props.isLoading}
+									onRefresh={this.fetchRounds}
+								>
+									{this.props.pastRounds.length === 0 && (
+										<Text style={styles.emptyListText}>
+											{I18n.t('home.no_rounds')}
+										</Text>
+									)}
+									{this.props.pastRounds.map(round => (
+										<PastRound
+											key={`past-round-index-${round.id}`}
+											round={round}
+										/>
+									))}
+								</ScrollViewWithPullToRefresh>
 							</Tab>
 						</Tabs>
 					</Container>
@@ -147,13 +226,39 @@ const styles = EStyleSheet.create({
 		paddingRight: 32,
 		paddingTop: 32,
 		textAlign: 'center'
+	},
+	joinRoundButton: {
+		flex: 1,
+		borderRadius: 49,
+		width: 200
+	},
+	joinRoundButtonContainer: {
+		width: 230,
+		height: 60,
+		bottom: 5
+	},
+	joinRoundButtonChildrenContainer: {
+		flex: 1,
+		flexDirection: 'row',
+		alignItems: 'center'
+	},
+	joinRoundButtonIcon: {
+		color: 'black',
+		fontSize: 30
+	},
+	joinRoundButtonText: {
+		...createFontStyle(FONTS.TITILLIUM, FONTS_STYLES.SEMI_BOLD),
+		color: 'black',
+		fontSize: 15,
+		letterSpacing: 1.25,
+		marginLeft: 10
 	}
 })
 
 HomePage.propTypes = {
 	navigation: PropTypes.object,
 	pastRounds: PropTypes.array.isRequired,
-	fetchPastRounds: PropTypes.func.isRequired,
+	fetchRounds: PropTypes.func.isRequired,
 	futureRounds: PropTypes.array.isRequired,
 	currentRounds: PropTypes.array.isRequired,
 	joinRound: PropTypes.func.isRequired,
@@ -173,7 +278,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
 	return {
-		fetchPastRounds: data => dispatch(fetchMyRounds(data)),
+		fetchRounds: data => dispatch(fetchMyRounds(data)),
 		joinRound: round => dispatch(joinRound(round)),
 		resignRound: round => dispatch(resignRound(round))
 	}

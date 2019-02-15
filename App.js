@@ -22,7 +22,8 @@ EStyleSheet.build({
 	$starlightColor: COLORS.LUMINOS_STARLIGHT,
 	$primaryBackgroundColor: COLORS.LUMINOS_BACKGROUND_COLOR,
 	$errorColor: COLORS.LUMINOS_ERROR,
-	$greyColor: COLORS.LUMINOS_GREY
+	$greyColor: COLORS.LUMINOS_GREY,
+	$darkColor: COLORS.LUMINOS_DARK
 })
 
 export default class App extends React.Component {

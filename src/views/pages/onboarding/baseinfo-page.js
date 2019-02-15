@@ -1,65 +1,53 @@
-import algoliasearch from 'algoliasearch'
-import debounce from 'lodash/debounce'
 import { Container, Content, Spinner, Text, View } from 'native-base'
 import PropTypes from 'prop-types'
 import React from 'react'
-import { LayoutAnimation, StatusBar } from 'react-native'
+import { StatusBar } from 'react-native'
 import { SafeAreaView } from 'react-navigation'
-import Config from 'react-native-config'
-import EStyleSheet from 'react-native-extended-stylesheet'
 import { connect } from 'react-redux'
-import i18n from '../../../../locales/i18n'
+import I18n from '../../../../locales/i18n'
 import { NavigationBottomBar } from '../../../components/NavigationBottomBar/NavigationBottomBar'
 import { OnboardingHeader } from '../../../components/OnboardingHeader/OnboardingHeader'
 import TextInput from '../../../components/TextInput/TextInput'
-import { CITY_MAX_LENGTH, NAME_MAX_LENGTH } from '../../../enums'
+import CitySearchInput from '../../../components/CitySearchInput'
+import UserColorAwareComponent from '../../../components/UserColorAwareComponent'
+import LoggedInUserAvatar from '../../../components/LoggedInUserAvatar'
+import { NAME_MAX_LENGTH } from '../../../enums'
 import {
 	createErrorMessageSelector,
 	createLoadingSelector
 } from '../../../store/utils/selectors'
-import { createFontStyle, styles as commonStyles } from '../../../styles'
+import {
+	styles as commonStyles,
+	BaseInfoStyles,
+	CommonOnboardingStyles
+} from '../../../styles'
 import * as COLORS from '../../../styles/colors'
-import { LUMINOS_ACCENT } from '../../../styles/colors'
-import * as FONTS from '../../../styles/fonts'
-import * as FONTS_STYLES from '../../../styles/fontStyles'
 import { uploadInfo } from './scenario-actions'
-
-const places = algoliasearch.initPlaces(
-	Config.APP_ALGOLIA_APP_ID,
-	Config.APP_ALGOLIA_API_KEY
-)
 
 class BaseinfoPage extends React.Component {
 	state = {
-		name: this.props.isTelegramUser ? this.props.firstName : '',
-		city: this.props.isTelegramUser ? this.props.city : '',
+		name: this.props.firstName,
+		city: this.props.city,
 		cityError: false,
 		cityLoading: false
 	}
 
-	componentDidMount() {
-		// need to check it in componentDidMount because handleCityChange is using setState
-		// and calling setState inside constructor is forbidden as component is not mounted yet then
-		if (this.props.isTelegramUser && this.state.city !== '') {
-			this.handleCityChange(this.state.city)
-		}
+	onCitySearchStart = () => {
+		this.setState({ cityLoading: true })
+	}
+
+	onCitySearchEndError = () => {
+		this.setState({ cityLoading: false, cityError: true })
+	}
+
+	onCitySearchEndSuccess = city => {
+		this.setState({ cityLoading: false, cityError: false, city })
 	}
 
 	handleNameChange = text => {
 		this.setState({
 			name: text
 		})
-	}
-
-	handleCityChange = city => {
-		LayoutAnimation.configureNext(LayoutAnimation.Presets.spring)
-		this.setState(
-			{
-				city,
-				cityLoading: true
-			},
-			this.askForPlaces
-		)
 	}
 
 	validate = () => {
@@ -71,36 +59,38 @@ class BaseinfoPage extends React.Component {
 	handleSave = () => {
 		this.props.saveData({
 			name: this.state.name,
-			city: this.state.city
+			city: this.state.city,
+			color: this.props.color,
+			emoji: this.props.emoji
 		})
 	}
 
-	askForPlaces = debounce(() => {
-		const { city } = this.state
-		places.search(
-			{
-				query: this.state.city,
-				type: 'city',
-				hitsPerPage: 3,
-				getRankingInfo: true
-			},
-			(err, res) => {
-				if (err) {
-					return this.setState({
-						cityLoading: false,
-						cityError: true
-					})
-				}
-				const foundExactMatches = res.hits.filter(
-					h => h._rankingInfo.nbExactWords === city.split(' ').length
-				)
-				this.setState({
-					cityError: foundExactMatches.length === 0,
-					cityLoading: false
-				})
-			}
-		)
-	}, 2500)
+	renderUserNameInput = () => (
+		<View
+			style={[
+				CommonOnboardingStyles.space,
+				CommonOnboardingStyles.horizontalSpace
+			]}
+		>
+			<TextInput
+				label={I18n.t('onboarding.name_warning')}
+				value={this.state.name}
+				placeholder={'Name'}
+				maxLength={NAME_MAX_LENGTH}
+				onChange={text => this.handleNameChange(text)}
+			/>
+		</View>
+	)
+
+	renderUserCityInput = () => (
+		<CitySearchInput
+			city={this.state.city}
+			onSearchStart={this.onCitySearchStart}
+			onSearchEndError={this.onCitySearchEndError}
+			onSearchEndSuccess={this.onCitySearchEndSuccess}
+			validateOnMount={this.props.isTelegramUser}
+		/>
+	)
 
 	render() {
 		return (
@@ -112,100 +102,89 @@ class BaseinfoPage extends React.Component {
 				/>
 				<SafeAreaView style={commonStyles.safeAreaView}>
 					<Container style={commonStyles.content}>
-						<Content
-							contentContainerStyle={[
-								commonStyles.scrollableContent,
-								styles.center
-							]}
-						>
+						<Content contentContainerStyle={commonStyles.scrollableContent}>
 							{this.props.isLoading && <Spinner color={'white'} />}
 							<OnboardingHeader
 								pageNumber={2}
-								leftText={i18n.t('onboarding.sign_up')}
+								leftText={I18n.t('onboarding.sign_up')}
 								totalPage={4}
 							/>
-							<View style={styles.avatarContainer}>
-								<View style={styles.avatar} />
+							<View style={BaseInfoStyles.avatarContainer}>
+								<LoggedInUserAvatar />
 								<Text
 									style={[
-										styles.text,
-										styles.lato,
-										styles.completeText,
-										styles.verticalSpace
+										CommonOnboardingStyles.text,
+										BaseInfoStyles.lato,
+										CommonOnboardingStyles.completeText,
+										CommonOnboardingStyles.verticalSpace
 									]}
 								>
-									{i18n.t('onboarding.complete_profile')}
+									{I18n.t('onboarding.complete_profile')}
 								</Text>
 							</View>
-							<View style={styles.formContainer}>
-								<Text style={[styles.text, styles.textHeader, styles.space]}>
-									{i18n.t('onboarding.public_profile').toUpperCase()}
+							<View style={CommonOnboardingStyles.formContainer}>
+								<Text
+									style={[
+										CommonOnboardingStyles.text,
+										CommonOnboardingStyles.textHeader,
+										CommonOnboardingStyles.space
+									]}
+								>
+									{I18n.t('onboarding.public_profile').toUpperCase()}
 								</Text>
 								{this.props.isTelegramUser &&
-									(this.state.city !== '' || this.state.name !== '') && (
+									(this.props.city !== '' || this.props.firstName !== '') && (
 										<Text
 											style={[
-												styles.text,
-												styles.lato,
-												styles.completeText,
-												styles.verticalSpace,
+												CommonOnboardingStyles.text,
+												BaseInfoStyles.lato,
+												CommonOnboardingStyles.completeText,
+												CommonOnboardingStyles.verticalSpace,
 												commonStyles.textCenter
 											]}
 										>
-											{i18n.t('onboarding.telegram_up_to_date')}
+											{I18n.t('onboarding.telegram_up_to_date')}
 										</Text>
 									)}
-								<View style={[styles.space, styles.horizontalSpace]}>
-									<TextInput
-										label={i18n.t('onboarding.name_warning')}
-										value={this.state.name}
-										placeholder={'Name'}
-										maxLength={NAME_MAX_LENGTH}
-										onChange={text => this.handleNameChange(text)}
-									/>
-								</View>
-								<View
+								{this.renderUserNameInput()}
+								{this.renderUserCityInput()}
+								<Text
 									style={[
-										styles.space,
-										styles.horizontalSpace,
-										{ flexDirection: 'row' }
+										CommonOnboardingStyles.text,
+										CommonOnboardingStyles.textHeader,
+										CommonOnboardingStyles.space
 									]}
 								>
-									<View style={{ flex: 1 }}>
-										<TextInput
-											value={this.state.city}
-											placeholder={'City'}
-											status={this.state.cityError ? 'error' : 'normal'}
-											errorMessage={
-												this.state.cityError
-													? i18n.t('onboarding.city_error')
-													: ''
-											}
-											containerStyle={{ flexGrow: 1 }}
-											maxLength={CITY_MAX_LENGTH}
-											onChange={text => this.handleCityChange(text)}
-										/>
-									</View>
-									{this.state.cityLoading && (
-										<Spinner color={LUMINOS_ACCENT} style={styles.spinner} />
-									)}
-								</View>
-								<Text style={[styles.text, styles.textHeader, styles.space]}>
-									{i18n.t('onboarding.secret_profile').toUpperCase()}
+									{I18n.t('onboarding.secret_profile').toUpperCase()}
 								</Text>
-								<Text style={[styles.text, styles.lato, styles.indent]}>
-									{i18n.t('onboarding.secret_profile_info')}
+								<Text
+									style={[
+										CommonOnboardingStyles.text,
+										BaseInfoStyles.lato,
+										CommonOnboardingStyles.indent
+									]}
+								>
+									{I18n.t('onboarding.secret_profile_info')}
 								</Text>
 							</View>
-							<NavigationBottomBar
-								leftDisabled={true}
-								rightDisabled={
-									this.state.cityLoading ||
-									this.props.isLoading ||
-									!this.validate()
-								}
-								onRightClick={this.handleSave}
-							/>
+							<UserColorAwareComponent>
+								{color => (
+									<NavigationBottomBar
+										leftDisabled={
+											this.props.navigation.getParam('goBackArrowDisabled') ===
+											true
+										}
+										rightDisabled={
+											this.state.cityLoading ||
+											this.props.isLoading ||
+											!this.validate()
+										}
+										onLeftClick={() => this.props.navigation.goBack()}
+										onRightClick={this.handleSave}
+										rightArrowColor={color}
+									/>
+								)}
+							</UserColorAwareComponent>
 						</Content>
 					</Container>
 				</SafeAreaView>
@@ -213,57 +192,6 @@ class BaseinfoPage extends React.Component {
 		)
 	}
 }
-
-const styles = EStyleSheet.create({
-	formContainer: {
-		margin: 16
-	},
-	avatarContainer: {
-		alignItems: 'center',
-		justifyContent: 'center',
-		marginTop: 32
-	},
-	avatar: {
-		width: 120,
-		height: 120,
-		borderWidth: 4,
-		borderRadius: 60,
-		borderColor: '#e2e0e0',
-		backgroundColor: '#58e2c2'
-	},
-	completeText: {
-		fontSize: 15
-	},
-	text: {
-		...createFontStyle(FONTS.TITILLIUM, FONTS_STYLES.SEMI_BOLD),
-		color: 'white',
-		fontSize: 12
-	},
-	textHeader: {
-		letterSpacing: 2,
-		lineHeight: 16
-	},
-	indent: {
-		marginLeft: 12
-	},
-	space: {
-		marginBottom: 12
-	},
-	verticalSpace: {
-		marginTop: 20,
-		marginBottom: 20
-	},
-	horizontalSpace: {
-		marginLeft: 8,
-		marginRight: 8
-	},
-	lato: {
-		...createFontStyle()
-	},
-	spinner: {
-		paddingLeft: 8
-	}
-})
 
 BaseinfoPage.defaultProps = {
 	isTelegramUser: false
@@ -275,7 +203,12 @@ BaseinfoPage.propTypes = {
 	isLoading: PropTypes.bool.isRequired,
 	isTelegramUser: PropTypes.bool.isRequired,
 	firstName: PropTypes.string,
-	city: PropTypes.string
+	city: PropTypes.string,
+	color: PropTypes.shape({
+		id: PropTypes.number.isRequired,
+		hexValue: PropTypes.string.isRequired
+	}).isRequired,
+	emoji: PropTypes.string.isRequired
 }
 
 const mapStateToProps = state => {
@@ -284,7 +217,9 @@ const mapStateToProps = state => {
 		isLoading: createLoadingSelector(['UPLOAD_INFO'])(state),
 		isTelegramUser: state.auth.isTelegramUser,
 		firstName: state.profile.firstName,
-		city: state.profile.city
+		city: state.profile.city,
+		color: state.profile.color,
+		emoji: state.profile.emoji
 	}
 }
 

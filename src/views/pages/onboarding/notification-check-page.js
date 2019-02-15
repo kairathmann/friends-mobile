@@ -8,6 +8,7 @@ import i18n from '../../../../locales/i18n'
 import Button from '../../../components/Button/Button'
 import { NavigationBottomBar } from '../../../components/NavigationBottomBar/NavigationBottomBar'
 import { OnboardingHeader } from '../../../components/OnboardingHeader/OnboardingHeader'
+import UserColorAwareComponent from '../../../components/UserColorAwareComponent'
 import { PAGES_NAMES } from '../../../navigation/pages'
 import { register } from '../../../services/pushNotificationService'
 import configuredStore from '../../../store'
@@ -44,14 +45,19 @@ class NotificationCheckPage extends React.Component {
 									text={'Allow push notifications'}
 								/>
 							</View>
-							<NavigationBottomBar
-								onLeftClick={() => this.props.navigation.goBack()}
-								onRightClick={() =>
-									this.props.navigation.navigate(
-										PAGES_NAMES.QUESTIONS_BEFORE_PAGE
-									)
-								}
-							/>
+							<UserColorAwareComponent>
+								{color => (
+									<NavigationBottomBar
+										onLeftClick={() => this.props.navigation.goBack()}
+										onRightClick={() =>
+											this.props.navigation.navigate(
+												PAGES_NAMES.QUESTIONS_BEFORE_PAGE
+											)
+										}
+										rightArrowColor={color}
+									/>
+								)}
+							</UserColorAwareComponent>
 						</Content>
 					</Container>
 				</SafeAreaView>

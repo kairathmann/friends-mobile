@@ -1,4 +1,5 @@
 import { FETCH_QUESTIONS_SUCCESS } from './action-types'
+import { LOGOUT_USER_AND_CLEAR_DATA } from '../global/action-types'
 
 const initialState = {
 	name: '',
@@ -16,6 +17,8 @@ export default function onboardingReducer(
 				...state,
 				questions: payload
 			}
+		case LOGOUT_USER_AND_CLEAR_DATA:
+			return initialState
 		default:
 			return state
 	}

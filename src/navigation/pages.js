@@ -9,11 +9,8 @@ import {
 } from 'react-navigation'
 import I18n from '../../locales/i18n'
 import ChatIcon from '../assets/images/bottom_chat_icon.png'
-import ChatIconGreen from '../assets/images/bottom_chat_icon_green.png'
-import Lantern from '../assets/images/bottom_home_icon.png'
-import LanternGreen from '../assets/images/bottom_home_icon_green.png'
+import HomeIcon from '../assets/images/bottom_home_icon.png'
 import ProfileIcon from '../assets/images/bottom_profile_icon.png'
-import ProfileIconGreen from '../assets/images/bottom_profile_icon_green.png'
 import * as navigationService from '../services/navigationService'
 import { COLORS } from '../styles'
 import ChatPage from '../views/pages/chat/chat-page'
@@ -29,9 +26,14 @@ import WelcomePage from '../views/pages/welcome/welcome-page'
 import AuthPagePhoneNumberPage from '../views/pages/onboarding/auth-phone-number-page'
 import AuthPageTokenVerificationPage from '../views/pages/onboarding/auth-phone-token-verification-page'
 import AuthTelegramEmailPage from '../views/pages/onboarding/auth-telegram-email-page'
+import IdentificationPage from '../views/pages/onboarding/identification-page'
+import UserColorAwareComponent from '../components/UserColorAwareComponent'
+import EditProfilePage from '../views/pages/edit-profile'
+import MatchingQuestionsPage from '../views/pages/matching-questions/matching-questions-page'
 
 const PAGES_NAMES = {
 	WELCOME_PAGE: 'WELCOME_PAGE',
+	IDENTIFICATION_PAGE: 'IDENTIFICATION_PAGE',
 	BASEINFO_PAGE: 'BASEINFO_PAGE',
 	NOTIFICATION_CHECK_PAGE: 'NOTIFICATION_CHECK_PAGE',
 	QUESTIONS_PAGE: 'QUESTIONS_PAGE',
@@ -44,8 +46,25 @@ const PAGES_NAMES = {
 	HOME_PAGE: 'HOME_PAGE',
 	PROFILE_TAB: 'PROFILE_PAGE',
 	CHAT_TAB: 'CHAT_PAGE',
-	HOME_TAB: 'HOME_NESTED_PAGE'
+	HOME_TAB: 'HOME_NESTED_PAGE',
+	EDIT_PROFILE_PAGE: 'EDIT_PROFILE_PAGE',
+	MATCHING_QUESTIONS_PAGE: 'MATCHING_QUESTIONS_PAGE'
 }
+
+const BottomBarNavigationIcon = ({ focused, icon }) => (
+	<UserColorAwareComponent>
+		{color => (
+			<Image
+				style={{
+					width: 20,
+					height: 20,
+					tintColor: focused ? color : COLORS.LUMINOS_GREY
+				}}
+				source={icon}
+			/>
+		)}
+	</UserColorAwareComponent>
+)
 
 const HomeBottomBar = createBottomTabNavigator(
 	{
@@ -54,12 +73,7 @@ const HomeBottomBar = createBottomTabNavigator(
 			navigationOptions: () => ({
 				title: I18n.t('navigator.chat'),
 				tabBarIcon: ({ focused }) => {
-					return (
-						<Image
-							style={{ width: 22, height: 22 }}
-							source={focused ? ChatIconGreen : ChatIcon}
-						/>
-					)
+					return <BottomBarNavigationIcon focused={focused} icon={ChatIcon} />
 				},
 				header: null
 			})
@@ -69,12 +83,7 @@ const HomeBottomBar = createBottomTabNavigator(
 			navigationOptions: () => ({
 				title: I18n.t('navigator.home'),
 				tabBarIcon: ({ focused }) => {
-					return (
-						<Image
-							style={{ width: 16, height: 20 }}
-							source={focused ? LanternGreen : Lantern}
-						/>
-					)
+					return <BottomBarNavigationIcon focused={focused} icon={HomeIcon} />
 				},
 				header: null
 			})
@@ -85,10 +94,7 @@ const HomeBottomBar = createBottomTabNavigator(
 				title: I18n.t('navigator.profile'),
 				tabBarIcon: ({ focused }) => {
 					return (
-						<Image
-							style={{ width: 20, height: 20 }}
-							source={focused ? ProfileIconGreen : ProfileIcon}
-						/>
+						<BottomBarNavigationIcon focused={focused} icon={ProfileIcon} />
 					)
 				},
 				header: null
@@ -115,6 +121,12 @@ const HomeBottomBar = createBottomTabNavigator(
 const AppStackNavigator = createStackNavigator({
 	WELCOME_PAGE: {
 		screen: WelcomePage,
+		navigationOptions: () => ({
+			header: null
+		})
+	},
+	IDENTIFICATION_PAGE: {
+		screen: IdentificationPage,
 		navigationOptions: () => ({
 			header: null
 		})
@@ -177,6 +189,18 @@ const AppStackNavigator = createStackNavigator({
 	},
 	HOME_PAGE: {
 		screen: HomeBottomBar,
+		navigationOptions: () => ({
+			header: null
+		})
+	},
+	EDIT_PROFILE_PAGE: {
+		screen: EditProfilePage,
+		navigationOptions: () => ({
+			header: null
+		})
+	},
+	MATCHING_QUESTIONS_PAGE: {
+		screen: MatchingQuestionsPage,
 		navigationOptions: () => ({
 			header: null
 		})

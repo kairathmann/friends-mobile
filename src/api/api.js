@@ -72,12 +72,12 @@ export default {
 		axios.post('legacy/', {
 			email
 		}),
-	uploadBaseInfo: async ({ name, city }) => {
+	uploadBaseInfo: async ({ name, city, color, emoji }) => {
 		const authToken = await tokenService.getToken()
 		return axios
 			.put(
 				'self/',
-				{ first_name: name, city },
+				{ first_name: name, city, color, emoji },
 				{ headers: { 'X-Authorization': `Bearer ${authToken}` } }
 			)
 			.then(result => result.data)
@@ -90,6 +90,14 @@ export default {
 			})
 			.then(result => result.data)
 	},
+	fetchAnsweredQuestions: async () => {
+		const authToken = await tokenService.getToken()
+		return axios
+			.get('questions/answered', {
+				headers: { 'X-Authorization': `Bearer ${authToken}` }
+			})
+			.then(result => result.data)
+	},
 	uploadAnswers: async answers => {
 		const authToken = await tokenService.getToken()
 		return axios
@@ -98,6 +106,12 @@ export default {
 				{ answer_ids: answers },
 				{ headers: { 'X-Authorization': `Bearer ${authToken}` } }
 			)
+			.then(result => result.data)
+	},
+	getAvailableColors: async () => {
+		const authToken = await tokenService.getToken()
+		return axios
+			.get('colors/', { headers: { 'X-Authorization': `Bearer ${authToken}` } })
 			.then(result => result.data)
 	}
 }

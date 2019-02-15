@@ -30,10 +30,10 @@
 		"android-staging": "ENVFILE=.env.staging react-native run-android",
 		"ios": "react-native run-ios",
 		"test": "jest",
-		"build-debug-android": "react-native bundle --dev false --platform android --entry-file index.js --bundle-output ./android/app/build/intermediates/assets/debug/index.android.bundle --assets-dest ./android/app/build/intermediates/res/merged/debug && cd android && ./gradlew assembleDebug && cd .. && mkdir -p ./dist && rm -f ./dist/luna-android-debug.apk && cp ./android/app/build/outputs/apk/app-debug.apk ./dist/luna-android-debug.apk",
+		"build-debug-android": "react-native bundle --dev false --platform android --entry-file index.js --bundle-output ./android/app/build/intermediates/assets/debug/index.android.bundle --assets-dest ./android/app/build/intermediates/res/merged/debug && cd android && ./gradlew assembleDebug && cd .. && mkdir -p ./dist && rm -f ./dist/luminos-android-debug.apk && cp ./android/app/build/outputs/apk/app-debug.apk ./dist/luminos-android-debug.apk",
 		"build-debug-android-dev": "export ENVFILE=.env.development && npm run build-debug-android",
 		"build-debug-android-production": "export ENVFILE=.env.production && npm run build-debug-android",
-		"build-release-android": "export ENVFILE=.env.production && cd android && ./gradlew assembleRelease && cd .. && mkdir -p ./dist && rm -f ./dist/luna-android-release.apk && cp ./android/app/build/outputs/apk/release/app-release.apk ./dist/luna-android-release.apk"
+		"build-release-android": "export ENVFILE=.env.production && cd android && ./gradlew assembleRelease && cd .. && mkdir -p ./dist && rm -f ./dist/luminos-android-release.apk && cp ./android/app/build/outputs/apk/release/app-release.apk ./dist/luminos-android-release.apk"
 	},
 	"jest": {
 		"preset": "react-native",
@@ -62,6 +62,7 @@
 		"react-native-camera": "https://github.com/lunalabs/react-native-camera/tarball/master",
 		"react-native-circular-progress": "1.1.0",
 		"react-native-config": "0.11.7",
+		"react-native-emoji-input": "https://github.com/lunalabs/react-native-emoji-input/tarball/v1.3.0",
 		"react-native-extended-stylesheet": "0.11.1",
 		"react-native-fabric": "https://github.com/lunalabs/react-native-fabric/tarball/master",
 		"react-native-gesture-handler": "^1.0.12",

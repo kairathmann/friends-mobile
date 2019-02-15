@@ -1,7 +1,11 @@
+import { LOGOUT_USER_AND_CLEAR_DATA } from '../global/action-types'
+
 const loadingReducer = (state = {}, action) => {
 	const { type } = action
 	const matches = /(.*)_(REQUEST|SUCCESS|FAILURE)/.exec(type)
-
+	if (type === LOGOUT_USER_AND_CLEAR_DATA) {
+		return {}
+	}
 	// not a *_REQUEST / *_SUCCESS /  *_FAILURE actions, so we ignore them
 	if (!matches) return state
 

@@ -6,6 +6,7 @@ export default {
 	secret_profile_info:
 		'These information will NOT be publically visible, but will be considered during matching.',
 	name_warning: 'Keep in mind, other people will call you by this',
+	city_placeholder: 'City',
 	city_error: `We coudn't find this location. Please try again`,
 	notifications_right: 'Give us right to notifications',
 	questions_prompt: 'Now, the most important part: tell us who you are.',
@@ -21,5 +22,11 @@ export default {
 	phone_number_placeholder: 'Your Phone Number',
 	auth_verification_code_description: 'Input the code below',
 	resend_code_label: 'resend code',
-	telegram_up_to_date: 'Are these up to date?'
+	telegram_up_to_date: 'Are these up to date?',
+	identification_page_title: 'Welcome!',
+	identification_page_description:
+		'To get started, first pick your identification...',
+	identification_page_choose_color_section_header: 'Choose your color',
+	identification_page_choose_emoji_section_header: 'Choose your emoji',
+	identification_page_avatar_preview_section_header: 'Icon preview'
 }

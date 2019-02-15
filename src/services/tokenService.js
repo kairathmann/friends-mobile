@@ -18,3 +18,7 @@ export const getToken = async () => {
 		return ''
 	}
 }
+
+export const removeToken = async () => {
+	await Keychain.resetGenericPassword()
+}

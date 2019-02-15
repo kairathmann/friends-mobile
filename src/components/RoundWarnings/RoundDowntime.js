@@ -1,18 +1,15 @@
 import { Text, View } from 'native-base'
-import { ScrollView } from 'react-native'
 import React from 'react'
 import EStyleSheet from 'react-native-extended-stylesheet'
 import i18n from '../../../locales/i18n'
 
 export default function RoundDowntime() {
 	return (
-		<ScrollView>
-			<View style={styles.downtimeContainer}>
-				<Text style={styles.emoji}>😳</Text>
-				<Text style={styles.textBig}>{i18n.t('home.downtime_big')}</Text>
-				<Text style={styles.textSmall}>{i18n.t('home.downtime_small')}</Text>
-			</View>
-		</ScrollView>
+		<View style={styles.downtimeContainer}>
+			<Text style={styles.emoji}>😳</Text>
+			<Text style={styles.textBig}>{i18n.t('home.downtime_big')}</Text>
+			<Text style={styles.textSmall}>{i18n.t('home.downtime_small')}</Text>
+		</View>
 	)
 }
 

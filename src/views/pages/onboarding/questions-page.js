@@ -8,6 +8,7 @@ import { connect } from 'react-redux'
 import i18n from '../../../../locales/i18n'
 import { NavigationBottomBar } from '../../../components/NavigationBottomBar/NavigationBottomBar'
 import { OnboardingHeader } from '../../../components/OnboardingHeader/OnboardingHeader'
+import UserColorAwareComponent from '../../../components/UserColorAwareComponent'
 import Question from '../../../components/Question/Question'
 import {
 	createErrorMessageSelector,
@@ -67,14 +68,19 @@ class QuestionsPage extends React.Component {
 									/>
 								</View>
 							))}
-							<NavigationBottomBar
-								rightDisabled={
-									Object.keys(this.state.answers).length !==
-									this.props.questions.length
-								}
-								onLeftClick={() => this.props.navigation.goBack()}
-								onRightClick={this.handleFinish}
-							/>
+							<UserColorAwareComponent>
+								{color => (
+									<NavigationBottomBar
+										rightDisabled={
+											Object.keys(this.state.answers).length !==
+											this.props.questions.length
+										}
+										onLeftClick={() => this.props.navigation.goBack()}
+										onRightClick={this.handleFinish}
+										rightArrowColor={color}
+									/>
+								)}
+							</UserColorAwareComponent>
 						</Content>
 					</Container>
 				</SafeAreaView>
@@ -89,7 +95,7 @@ const styles = EStyleSheet.create({
 		paddingBottom: 24,
 		paddingLeft: 16,
 		paddingRight: 16,
-		backgroundColor: '#242937',
+		backgroundColor: '$darkColor',
 		marginLeft: 16,
 		marginRight: 16,
 		marginTop: 0,
