@@ -15,14 +15,14 @@ export function fetchQuestions() {
 	return async dispatch => {
 		try {
 			dispatch(fetchQuestionsStarted())
-			const result = await Promise.all([
+			const [unanswered, answered] = await Promise.all([
 				api.fetchQuestions(),
 				api.fetchAnsweredQuestions()
 			])
 			dispatch(
 				fetchQuestionsSuccess({
-					answered: _.uniqBy(result[1], 'id'),
-					unanswered: result[0]
+					answered,
+					unanswered
 				})
 			)
 		} catch (err) {

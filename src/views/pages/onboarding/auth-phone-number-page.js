@@ -264,7 +264,7 @@ const styles = EStyleSheet.create({
 		lineHeight: 16,
 		fontSize: 13,
 		letterSpacing: 0.4,
-		color: 'rgba(255,255,255,.6)'
+		color: '$strongGreyColor'
 	}
 })
 

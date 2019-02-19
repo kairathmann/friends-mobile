@@ -28,5 +28,9 @@ export default {
 		'To get started, first pick your identification...',
 	identification_page_choose_color_section_header: 'Choose your color',
 	identification_page_choose_emoji_section_header: 'Choose your emoji',
-	identification_page_avatar_preview_section_header: 'Icon preview'
+	identification_page_avatar_preview_section_header: 'Icon preview',
+	finish_later: 'finish later',
+	finish_later_alert_title: 'Incomplete Profile',
+	finish_later_alert_message:
+		'You must answer to all of the available questions to participate in round. Are you sure you want to skip remaining ones?'
 }

@@ -9,7 +9,8 @@ export const NavigationBottomBar = ({
 	rightDisabled,
 	leftDisabled,
 	rightArrowColor,
-	customRightIcon
+	customRightIcon,
+	centerComponent
 }) => (
 	<View style={styles.bottom}>
 		<View style={styles.bar}>
@@ -19,6 +20,7 @@ export const NavigationBottomBar = ({
 				name={'arrow-back'}
 				style={[styles.leftArrow, leftDisabled && styles.disabled]}
 			/>
+			{centerComponent}
 			<Icon
 				onPress={rightDisabled ? () => {} : onRightClick}
 				type={'MaterialIcons'}
@@ -67,5 +69,6 @@ NavigationBottomBar.propTypes = {
 	rightDisabled: PropTypes.bool,
 	leftDisabled: PropTypes.bool,
 	rightArrowColor: PropTypes.string,
-	customRightIcon: PropTypes.string
+	customRightIcon: PropTypes.string,
+	centerComponent: PropTypes.node
 }

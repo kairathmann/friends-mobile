@@ -6,6 +6,7 @@ import { getErrorDataFromNetworkException } from '../../../common/utils'
 import { PAGES_NAMES } from '../../../navigation/pages'
 import { tokenService } from '../../../services'
 import {
+	calculateOnboardingSteps,
 	getUserLandingPageBasedOnUserInfo,
 	navigate,
 	navigateAndResetNavigation
@@ -37,6 +38,8 @@ import {
 	saveAnswersFailure,
 	saveAnswersStart,
 	saveAnswersSuccess,
+	showPreviousOnboardingQuestion,
+	updateOnboardingConfig,
 	uploadInfoFailure,
 	uploadInfoStart,
 	uploadInfoSuccess
@@ -45,7 +48,7 @@ import { setProfileInfo } from '../../../store/profile/actions'
 import { setAvailableColors } from '../../../store/colors/actions'
 
 export function uploadInfo({ name, city, color, emoji }) {
-	return async dispatch => {
+	return async (dispatch, getState) => {
 		try {
 			dispatch(uploadInfoStart())
 			const result = await api.uploadBaseInfo({
@@ -65,7 +68,12 @@ export function uploadInfo({ name, city, color, emoji }) {
 			dispatch(uploadInfoSuccess(result))
 			if (Platform.OS === 'android') {
 				register(configuredStore)
-				navigate(PAGES_NAMES.QUESTIONS_BEFORE_PAGE)
+				const questionsToBeAnswered = getState().onboarding.questions
+				if (questionsToBeAnswered.length === 0) {
+					navigateAndResetNavigation(PAGES_NAMES.HOME_PAGE)
+				} else {
+					navigate(PAGES_NAMES.QUESTIONS_BEFORE_PAGE)
+				}
 			} else {
 				navigate(PAGES_NAMES.NOTIFICATION_CHECK_PAGE)
 			}
@@ -118,24 +126,29 @@ export const sendVerificationCode = (
 		}
 		const availableColors = await api.getAvailableColors()
 		let destinationPageForUser = PAGES_NAMES.IDENTIFICATION_PAGE
-		let questionsToAnswer = []
 		// telegram user always goes to onboarding so execute extra logic only if user is non telegram import
 		if (!isTelegramUser) {
-			// only send extra request for questions if user has filled basic info already
-			if (
-				userInfoWithoutToken.firstName !== '' &&
-				userInfoWithoutToken.city !== ''
-			) {
-				questionsToAnswer = await api.fetchQuestions()
-			}
 			destinationPageForUser = getUserLandingPageBasedOnUserInfo(
-				userInfoWithoutToken,
-				questionsToAnswer
+				userInfoWithoutToken
 			)
+		}
+		let onboardingMaxSteps = 0
+		let onboardingSteps = {}
+		// fetch questions only if we are not suppose to be redirected to Home Page aka we need to stay in onboarding
+		if (destinationPageForUser !== PAGES_NAMES.HOME_PAGE) {
+			const availableQuestions = await api.fetchQuestions()
+			const onboardingStepsConfig = calculateOnboardingSteps(
+				destinationPageForUser,
+				availableQuestions
+			)
+			onboardingMaxSteps = onboardingStepsConfig.maxSteps
+			onboardingSteps = onboardingStepsConfig.configurationPerPage
+			dispatch(fetchQuestionsSuccess(availableQuestions))
 		}
 		dispatch(smsTokenVerificationSuccess())
 		dispatch(setAvailableColors(availableColors))
 		dispatch(setProfileInfo(userInfoWithoutToken))
+		dispatch(updateOnboardingConfig(onboardingMaxSteps, onboardingSteps))
 		navigateAndResetNavigation(destinationPageForUser, {
 			goBackArrowDisabled: true
 		})
@@ -190,16 +203,19 @@ export const clearSmsTokenVerificationErrorState = () => dispatch =>
 export const clearTelegramEmailErrorState = () => dispatch =>
 	dispatch(clearTelegramEmailError())
 
-export function saveAnswers(answers) {
+export function saveAnswer(answer, shouldGoToHomePage) {
 	return async dispatch => {
 		try {
 			dispatch(saveAnswersStart())
-			const answersIds = _.values(answers).map(ans => ans.selected)
+			const answersIds = _.values(answer).map(ans => ans.selected)
 			await api.uploadAnswers(answersIds)
 			dispatch(saveAnswersSuccess())
-			navigateAndResetNavigation(PAGES_NAMES.HOME_PAGE)
+			if (shouldGoToHomePage) {
+				navigateAndResetNavigation(PAGES_NAMES.HOME_PAGE)
+			}
 		} catch (err) {
 			const error = getErrorDataFromNetworkException(err)
+			showErrorToast(error)
 			dispatch(saveAnswersFailure(error))
 		}
 	}
@@ -223,3 +239,6 @@ export const updateUserColorSelection = color => dispatch =>
 
 export const updateUserEmojiSelection = emoji => dispatch =>
 	dispatch(setProfileInfo({ emoji }))
+
+export const showPreviousQuestion = () => dispatch =>
+	dispatch(showPreviousOnboardingQuestion())

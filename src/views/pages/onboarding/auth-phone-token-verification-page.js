@@ -318,8 +318,14 @@ const styles = EStyleSheet.create({
 		width: 60,
 		height: 60,
 		borderRadius: 10,
-		paddingRight: 0,
-		paddingLeft: 0
+		'@media ios': {
+			paddingRight: 12,
+			paddingLeft: 12
+		},
+		'@media android': {
+			paddingRight: 16,
+			paddingLeft: 16
+		}
 	},
 	verificationCodeControlCaptions: {
 		flex: 1,

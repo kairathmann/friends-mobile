@@ -16,7 +16,10 @@ export default {
 		name: 'Name',
 		phone_number: 'Phone Number',
 		concluded: 'Concluded',
-		not: 'Missed'
+		not: 'Missed',
+		cancel: 'Cancel',
+		proceed: 'Proceed',
+		confirm: 'Confirm'
 	},
 	errors: {
 		cannot_save_answers: 'Cannot save answers. Try again later.',
@@ -39,6 +42,8 @@ export default {
 		first_name_missing: 'Name field is missing',
 		cannot_join: 'Cannot join to this round',
 		cannot_resign: 'Your request failed. Try again later',
+		answer_ids_invalid: "Couldn't save your answer. Try again",
+		answer_ids_unknown: 'There is no such answer',
 		cannot_fetch_chats: 'Cannot fetch chats. Try again later.',
 		invalid_round: 'Round does not exist, please refresh list',
 		user_not_subscribed: "You haven't signed up for this round",

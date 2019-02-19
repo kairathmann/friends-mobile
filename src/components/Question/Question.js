@@ -18,7 +18,13 @@ export default class QuestionItem extends React.Component {
 	}
 
 	render() {
-		const { text, answers, selectedAnswer, answered } = this.props
+		const {
+			text,
+			answers,
+			selectedAnswer,
+			answered,
+			fullScreenMode
+		} = this.props
 
 		const answersToShow = answered
 			? answers.filter(an => an.id === selectedAnswer)
@@ -26,7 +32,16 @@ export default class QuestionItem extends React.Component {
 
 		return (
 			<View>
-				<Text style={styles.text}>{text}</Text>
+				<Text
+					style={[
+						styles.text,
+						fullScreenMode
+							? styles.fullScreenSizeModeText
+							: styles.regularModeTex
+					]}
+				>
+					{text}
+				</Text>
 				{answersToShow.map(ans => (
 					<Answer
 						key={ans.id}
@@ -43,9 +58,14 @@ export default class QuestionItem extends React.Component {
 const styles = EStyleSheet.create({
 	text: {
 		...createFontStyle(),
-		color: '#fff',
-		fontSize: 20,
+		color: 'white',
 		marginBottom: 16
+	},
+	regularModeText: {
+		fontSize: 20
+	},
+	fullScreenSizeModeText: {
+		fontSize: 36
 	}
 })
 
@@ -54,9 +74,11 @@ QuestionItem.propTypes = {
 	answers: PropTypes.array.isRequired,
 	selectedAnswer: PropTypes.number,
 	onChangeAnswer: PropTypes.func.isRequired,
-	answered: PropTypes.bool.isRequired
+	answered: PropTypes.bool.isRequired,
+	fullScreenMode: PropTypes.bool
 }
 
 QuestionItem.defaultProps = {
-	answered: false
+	answered: false,
+	fullScreenMode: false
 }

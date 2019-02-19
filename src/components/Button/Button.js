@@ -60,6 +60,7 @@ Button.propTypes = {
 
 const styles = EStyleSheet.create({
 	button: {
+		elevation: 0,
 		backgroundColor: 'transparent',
 		borderWidth: 1,
 		borderColor: 'white',

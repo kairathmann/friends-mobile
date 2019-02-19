@@ -25,6 +25,7 @@ import { PAGES_NAMES } from '../../../navigation/pages'
 import { DEFAULT_EMOJIS } from '../../../enums'
 
 class IdentificationPage extends React.Component {
+	PAGE_NAME = PAGES_NAMES.IDENTIFICATION_PAGE
 	state = {
 		validColor: true,
 		validEmoji: true,
@@ -159,9 +160,9 @@ class IdentificationPage extends React.Component {
 					<Container style={commonStyles.content}>
 						<Content contentContainerStyle={commonStyles.scrollableContent}>
 							<OnboardingHeader
-								pageNumber={1}
+								pageNumber={this.props.onboardingStepsConfig[this.PAGE_NAME]}
 								leftText={I18n.t('onboarding.sign_up')}
-								totalPage={3}
+								totalPage={this.props.onboardingMaxSteps}
 							/>
 							<View style={IdentificationPageStyles.descriptionContainer}>
 								<Text style={IdentificationPageStyles.headerText}>
@@ -207,14 +208,18 @@ IdentificationPage.propTypes = {
 			id: PropTypes.number.isRequired,
 			hexValue: PropTypes.string.isRequired
 		})
-	).isRequired
+	).isRequired,
+	onboardingMaxSteps: PropTypes.number.isRequired,
+	onboardingStepsConfig: PropTypes.object.isRequired
 }
 
 const mapStateToProps = state => {
 	return {
 		selectedEmoji: state.profile.emoji,
 		selectedColor: state.profile.color,
-		availableColors: state.colors.colors
+		availableColors: state.colors.colors,
+		onboardingMaxSteps: state.onboarding.onboardingMaxSteps,
+		onboardingStepsConfig: state.onboarding.onboardingStepsConfig
 	}
 }
 

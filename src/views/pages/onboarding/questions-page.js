@@ -1,7 +1,7 @@
-import { Container, Content, View, Spinner } from 'native-base'
+import { Container, Content, View, Spinner, Text } from 'native-base'
 import PropTypes from 'prop-types'
 import React from 'react'
-import { StatusBar } from 'react-native'
+import { BackHandler, StatusBar } from 'react-native'
 import { SafeAreaView } from 'react-navigation'
 import EStyleSheet from 'react-native-extended-stylesheet'
 import { connect } from 'react-redux'
@@ -10,22 +10,50 @@ import { NavigationBottomBar } from '../../../components/NavigationBottomBar/Nav
 import { OnboardingHeader } from '../../../components/OnboardingHeader/OnboardingHeader'
 import UserColorAwareComponent from '../../../components/UserColorAwareComponent'
 import Question from '../../../components/Question/Question'
-import {
-	createErrorMessageSelector,
-	createLoadingSelector
-} from '../../../store/utils/selectors'
+import { createLoadingSelector } from '../../../store/utils/selectors'
+import { createFontStyle, FONTS } from '../../../styles'
 import { COLORS, styles as commonStyles } from '../../../styles/index'
-import { saveAnswers } from './scenario-actions'
+import { saveAnswer, showPreviousQuestion } from './scenario-actions'
+import { MIN_AMOUNT_OF_ANSWERED_QUESTIONS } from '../../../enums'
+import { navigationService } from '../../../services'
+import { PAGES_NAMES } from '../../../navigation/pages'
+import Alert from '../../../components/Alert'
 
 class QuestionsPage extends React.Component {
+	PAGE_NAME = PAGES_NAMES.QUESTIONS_PAGE
 	state = {
-		answers: {}
+		showPopupAlert: false,
+		answer: {}
+	}
+
+	componentDidMount() {
+		BackHandler.addEventListener('hardwareBackPress', this.goBack)
+	}
+
+	componentWillUnmount() {
+		BackHandler.removeEventListener('hardwareBackPress', this.goBack)
+	}
+
+	openAlert = () => {
+		if (!this.state.showPopupAlert) {
+			this.setState({ showPopupAlert: true })
+		}
+	}
+
+	hideAlert = () => {
+		if (this.state.showPopupAlert) {
+			this.setState({ showPopupAlert: false })
+		}
+	}
+
+	continueToHomePage = () => {
+		this.hideAlert()
+		navigationService.navigateAndResetNavigation(PAGES_NAMES.HOME_PAGE)
 	}
 
 	onChangeAnswer = (question, answer) => {
 		this.setState({
-			answers: {
-				...this.state.answers,
+			answer: {
 				[question.id]: {
 					selected: answer.id
 				}
@@ -33,12 +61,27 @@ class QuestionsPage extends React.Component {
 		})
 	}
 
-	handleFinish = () => {
-		this.props.saveAnswers(this.state.answers)
+	goBack = () => {
+		const { currentQuestionToDisplayIndex } = this.props
+		if (currentQuestionToDisplayIndex === 0) {
+			this.props.navigation.goBack()
+		} else {
+			this.props.showPreviousQuestion()
+		}
+		return true
+	}
+
+	saveAnswer = () => {
+		const { currentQuestionToDisplayIndex, questions } = this.props
+		const shouldRedirectToHomePage =
+			currentQuestionToDisplayIndex + 1 === questions.length ||
+			questions.length === 0
+		this.props.saveAnswer(this.state.answer, shouldRedirectToHomePage)
 	}
 
 	render() {
-		const { questions } = this.props
+		const { answer, showPopupAlert } = this.state
+		const { currentQuestionToDisplayIndex, questions } = this.props
 		return (
 			<React.Fragment>
 				<StatusBar
@@ -46,38 +89,76 @@ class QuestionsPage extends React.Component {
 					backgroundColor={COLORS.LUMINOS_BACKGROUND_COLOR}
 				/>
 				<SafeAreaView style={commonStyles.safeAreaView}>
-					<Container style={commonStyles.content}>
-						<Content contentContainerStyle={commonStyles.scrollableContent}>
-							{this.props.isLoading && <Spinner color={'white'} />}
-							<OnboardingHeader
-								pageNumber={3}
-								leftText={i18n.t('onboarding.sign_up')}
-								totalPage={4}
+					<UserColorAwareComponent>
+						{color => (
+							<Alert
+								visible={showPopupAlert}
+								onDismiss={this.hideAlert}
+								animationDurationMs={500}
+								title={i18n.t('onboarding.finish_later_alert_title')}
+								message={i18n.t('onboarding.finish_later_alert_message')}
+								actionButtonCallback={this.continueToHomePage}
+								actionButtonText={i18n.t('commons.proceed')}
+								actionButtonStyle={{ color }}
 							/>
-							{questions.map(q => (
-								<View key={q.id} style={styles.questionContainer}>
-									<Question
-										answers={q.answers}
-										text={q.text}
-										selectedAnswer={
-											this.state.answers[q.id]
-												? this.state.answers[q.id].selected
-												: null
-										}
-										onChangeAnswer={answer => this.onChangeAnswer(q, answer)}
-									/>
-								</View>
-							))}
+						)}
+					</UserColorAwareComponent>
+					<Container style={commonStyles.content}>
+						{this.props.isLoading && <Spinner color="white" />}
+						<Content contentContainerStyle={commonStyles.scrollableContent}>
+							<OnboardingHeader
+								pageNumber={
+									this.props.onboardingStepsConfig[this.PAGE_NAME] +
+									currentQuestionToDisplayIndex
+								}
+								leftText={i18n.t('onboarding.sign_up')}
+								totalPage={this.props.onboardingMaxSteps}
+							/>
+							{questions.length > 0 &&
+								currentQuestionToDisplayIndex < questions.length && (
+									<View style={styles.questionContainer}>
+										<Question
+											fullScreenMode
+											answers={questions[currentQuestionToDisplayIndex].answers}
+											text={questions[currentQuestionToDisplayIndex].text}
+											selectedAnswer={
+												answer[questions[currentQuestionToDisplayIndex].id]
+													? answer[questions[currentQuestionToDisplayIndex].id]
+															.selected
+													: null
+											}
+											onChangeAnswer={answer =>
+												this.onChangeAnswer(
+													questions[currentQuestionToDisplayIndex],
+													answer
+												)
+											}
+										/>
+									</View>
+								)}
 							<UserColorAwareComponent>
 								{color => (
 									<NavigationBottomBar
 										rightDisabled={
-											Object.keys(this.state.answers).length !==
-											this.props.questions.length
+											currentQuestionToDisplayIndex < questions.length &&
+											!this.state.answer[
+												questions[currentQuestionToDisplayIndex].id
+											]
 										}
-										onLeftClick={() => this.props.navigation.goBack()}
-										onRightClick={this.handleFinish}
+										onLeftClick={this.goBack}
+										onRightClick={this.saveAnswer}
 										rightArrowColor={color}
+										centerComponent={
+											currentQuestionToDisplayIndex + 1 >
+											MIN_AMOUNT_OF_ANSWERED_QUESTIONS ? (
+												<Text
+													onPress={this.openAlert}
+													style={styles.finishLaterText}
+												>
+													{i18n.t('onboarding.finish_later')}
+												</Text>
+											) : null
+										}
 									/>
 								)}
 							</UserColorAwareComponent>
@@ -95,33 +176,48 @@ const styles = EStyleSheet.create({
 		paddingBottom: 24,
 		paddingLeft: 16,
 		paddingRight: 16,
-		backgroundColor: '$darkColor',
 		marginLeft: 16,
 		marginRight: 16,
 		marginTop: 0,
-		marginBottom: 8,
-		borderRadius: 4
+		marginBottom: 8
+	},
+	finishLaterText: {
+		...createFontStyle(FONTS.LATO),
+		fontSize: 13,
+		lineHeight: 16,
+		color: '$greyColor',
+		letterSpacing: 0.4,
+		textDecorationLine: 'underline'
 	}
 })
 
 QuestionsPage.propTypes = {
 	navigation: PropTypes.object,
 	questions: PropTypes.array.isRequired,
-	saveAnswers: PropTypes.func.isRequired,
-	isLoading: PropTypes.bool.isRequired
+	saveAnswer: PropTypes.func.isRequired,
+	isLoading: PropTypes.bool.isRequired,
+	currentQuestionToDisplayIndex: PropTypes.number.isRequired,
+	onboardingMaxSteps: PropTypes.number.isRequired,
+	onboardingStepsConfig: PropTypes.object.isRequired,
+	showPreviousQuestion: PropTypes.func.isRequired
 }
 
 const mapStateToProps = state => {
 	return {
 		questions: state.onboarding.questions,
-		error: createErrorMessageSelector(['SAVE_ANSWERS'])(state),
-		isLoading: createLoadingSelector(['SAVE_ANSWERS'])(state)
+		currentQuestionToDisplayIndex:
+			state.onboarding.currentQuestionToDisplayIndex,
+		isLoading: createLoadingSelector(['SAVE_ANSWERS'])(state),
+		onboardingMaxSteps: state.onboarding.onboardingMaxSteps,
+		onboardingStepsConfig: state.onboarding.onboardingStepsConfig
 	}
 }
 
 const mapDispatchToProps = dispatch => {
 	return {
-		saveAnswers: data => dispatch(saveAnswers(data))
+		saveAnswer: (data, shouldRedirectToHomePage) =>
+			dispatch(saveAnswer(data, shouldRedirectToHomePage)),
+		showPreviousQuestion: () => dispatch(showPreviousQuestion())
 	}
 }
 
