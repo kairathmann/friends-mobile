@@ -6,7 +6,7 @@ import i18n from '../../../locales/i18n'
 export default function RoundDowntime() {
 	return (
 		<View style={styles.downtimeContainer}>
-			<Text style={styles.emoji}>😳</Text>
+			<Text style={styles.emoji}>🏗</Text>
 			<Text style={styles.textBig}>{i18n.t('home.downtime_big')}</Text>
 			<Text style={styles.textSmall}>{i18n.t('home.downtime_small')}</Text>
 		</View>

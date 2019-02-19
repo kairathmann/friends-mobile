@@ -60,6 +60,7 @@ JoinRoundButton.propTypes = {
 
 const ScrollViewWithPullToRefresh = ({ children, isLoading, onRefresh }) => (
 	<ScrollView
+		contentContainerStyle={commonStyles.scrollableContent}
 		refreshControl={
 			<RefreshControl refreshing={isLoading} onRefresh={onRefresh} />
 		}

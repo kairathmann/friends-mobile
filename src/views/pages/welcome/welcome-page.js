@@ -67,6 +67,12 @@ class WelcomePage extends React.Component {
 									textStyle={styles.signUpButtonTextCustom}
 									text={I18n.t('welcome_page.get_started')}
 								/>
+								<Button
+									buttonStyle={styles.button}
+									onPress={this.goToTelegramAuthPage}
+									textStyle={styles.telegramButtonTextCustom}
+									text={I18n.t('welcome_page.transfer_from_telegram')}
+								/>
 								<View style={styles.termsContainer}>
 									<Text style={styles.terms}>
 										{I18n.t('welcome_page.legal_terms_beggining')}
@@ -87,17 +93,6 @@ class WelcomePage extends React.Component {
 										}}
 									>
 										{I18n.t('welcome_page.privacy_policy')}
-									</Text>
-								</View>
-								<Button
-									buttonStyle={styles.button}
-									onPress={this.goToTelegramAuthPage}
-									textStyle={styles.telegramButtonTextCustom}
-									text={I18n.t('welcome_page.transfer_from_telegram')}
-								/>
-								<View style={styles.termsContainer}>
-									<Text style={styles.terms}>
-										{I18n.t('welcome_page.transfer_from_telegram_explanation')}
 									</Text>
 								</View>
 							</View>
@@ -170,15 +165,15 @@ const styles = EStyleSheet.create({
 		fontSize: 16
 	},
 	telegramButtonTextCustom: {
-		fontSize: 14
+		fontSize: 13,
+		color: '$greyColor'
 	},
 	termsContainer: {
-		marginLeft: 25,
-		marginRight: 25,
 		flexWrap: 'wrap',
 		justifyContent: 'center',
 		flexDirection: 'row',
-		marginBottom: 12
+		marginBottom: 12,
+		maxWidth: 256
 	},
 	terms: {
 		...createFontStyle(FONTS.LATO),

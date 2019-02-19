@@ -47,13 +47,16 @@ class NotificationCheckPage extends React.Component {
 								totalPage={this.props.onboardingMaxSteps}
 							/>
 							<View style={styles.indent}>
-								<Text style={styles.text}>
-									{i18n.t('onboarding.notifications_right')}
+								<Text style={styles.header}>
+									{i18n.t('onboarding.notifications_page_header')}
+								</Text>
+								<Text style={styles.description}>
+									{i18n.t('onboarding.notifications_page_description')}
 								</Text>
 								<Button
 									buttonStyle={styles.spaceAbove}
 									onPress={this.handleCheckNotifications}
-									text={'Allow push notifications'}
+									text={i18n.t('onboarding.notifications_button')}
 								/>
 							</View>
 							<UserColorAwareComponent>
@@ -81,12 +84,23 @@ const styles = EStyleSheet.create({
 	spaceAbove: {
 		marginTop: 32
 	},
-	text: {
+	header: {
 		...createFontStyle(),
 		color: 'white',
-		fontSize: 36,
+		fontSize: 32,
 		textAlign: 'center',
-		marginTop: 48
+		marginTop: 48,
+		marginBottom: 30
+	},
+	description: {
+		...createFontStyle(),
+		marginLeft: 10,
+		marginRight: 10,
+		color: 'white',
+		fontSize: 14,
+		lineHeight: 24,
+		letterSpacing: 0.1,
+		textAlign: 'center'
 	}
 })
 

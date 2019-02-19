@@ -107,6 +107,7 @@ class CitySearchInput extends React.Component {
 			<View style={styles.container}>
 				<View style={styles.fullFlex}>
 					<TextInput
+						label={I18n.t('onboarding.city_warning')}
 						value={this.state.city}
 						placeholder={I18n.t('onboarding.city_placeholder')}
 						status={this.state.cityError ? 'error' : 'normal'}
