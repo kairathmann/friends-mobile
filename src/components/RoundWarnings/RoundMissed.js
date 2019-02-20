@@ -6,7 +6,7 @@ import i18n from '../../../locales/i18n'
 export default function RoundMissed() {
 	return (
 		<View style={styles.missedContainer}>
-			<Text style={styles.emoji}>😵</Text>
+			<Text style={styles.emoji}>😳</Text>
 			<Text style={styles.textBig}>{i18n.t('home.missed_big')}</Text>
 			<Text style={styles.textSmall}>{i18n.t('home.missed_small')}</Text>
 		</View>

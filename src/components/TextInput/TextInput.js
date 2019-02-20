@@ -83,7 +83,7 @@ const styles = EStyleSheet.create({
 	},
 	labelText: {
 		...createFontStyle(),
-		color: 'rgba(255,255,255,.6)',
+		color: '$strongGreyColor',
 		marginTop: 4,
 		marginBottom: 8,
 		marginLeft: 16,

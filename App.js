@@ -23,6 +23,7 @@ EStyleSheet.build({
 	$primaryBackgroundColor: COLORS.LUMINOS_BACKGROUND_COLOR,
 	$errorColor: COLORS.LUMINOS_ERROR,
 	$greyColor: COLORS.LUMINOS_GREY,
+	$strongGreyColor: COLORS.LUMINOS_STRONG_GREY,
 	$darkColor: COLORS.LUMINOS_DARK
 })
 

@@ -23,8 +23,10 @@ import {
 } from '../../../styles'
 import * as COLORS from '../../../styles/colors'
 import { uploadInfo } from './scenario-actions'
+import { PAGES_NAMES } from '../../../navigation/pages'
 
 class BaseinfoPage extends React.Component {
+	PAGE_NAME = PAGES_NAMES.BASEINFO_PAGE
 	state = {
 		name: this.props.firstName,
 		city: this.props.city,
@@ -105,9 +107,9 @@ class BaseinfoPage extends React.Component {
 						<Content contentContainerStyle={commonStyles.scrollableContent}>
 							{this.props.isLoading && <Spinner color={'white'} />}
 							<OnboardingHeader
-								pageNumber={2}
+								pageNumber={this.props.onboardingStepsConfig[this.PAGE_NAME]}
 								leftText={I18n.t('onboarding.sign_up')}
-								totalPage={4}
+								totalPage={this.props.onboardingMaxSteps}
 							/>
 							<View style={BaseInfoStyles.avatarContainer}>
 								<LoggedInUserAvatar />
@@ -208,7 +210,9 @@ BaseinfoPage.propTypes = {
 		id: PropTypes.number.isRequired,
 		hexValue: PropTypes.string.isRequired
 	}).isRequired,
-	emoji: PropTypes.string.isRequired
+	emoji: PropTypes.string.isRequired,
+	onboardingMaxSteps: PropTypes.number.isRequired,
+	onboardingStepsConfig: PropTypes.object.isRequired
 }
 
 const mapStateToProps = state => {
@@ -219,7 +223,9 @@ const mapStateToProps = state => {
 		firstName: state.profile.firstName,
 		city: state.profile.city,
 		color: state.profile.color,
-		emoji: state.profile.emoji
+		emoji: state.profile.emoji,
+		onboardingMaxSteps: state.onboarding.onboardingMaxSteps,
+		onboardingStepsConfig: state.onboarding.onboardingStepsConfig
 	}
 }
 

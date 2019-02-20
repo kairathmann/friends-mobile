@@ -5,9 +5,11 @@ import {
 	SAVE_ANSWERS_FAILURE,
 	SAVE_ANSWERS_REQUEST,
 	SAVE_ANSWERS_SUCCESS,
+	SHOW_PREVIOUS_ONBOARDING_QUESTION,
 	UPLOAD_INFO_FAILURE,
 	UPLOAD_INFO_REQUEST,
-	UPLOAD_INFO_SUCCESS
+	UPLOAD_INFO_SUCCESS,
+	UPDATE_ONBOARDING_CONFIG
 } from './action-types'
 
 export function uploadInfoStart() {
@@ -69,3 +71,15 @@ export function saveAnswersSuccess(result) {
 		payload: result
 	}
 }
+
+export const updateOnboardingConfig = (maxSteps, stepsConfig) => ({
+	type: UPDATE_ONBOARDING_CONFIG,
+	payload: {
+		maxSteps,
+		stepsConfig
+	}
+})
+
+export const showPreviousOnboardingQuestion = () => ({
+	type: SHOW_PREVIOUS_ONBOARDING_QUESTION
+})

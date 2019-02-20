@@ -8,6 +8,7 @@ import { SafeAreaView } from 'react-navigation'
 import { connect } from 'react-redux'
 import I18n from '../../../../locales/i18n'
 import PastRound from '../../../components/PastRound/PastRound'
+import RoundConversationWaitroom from '../../../components/RoundConversationWaitroom/RoundConversationWaitroom'
 import RoundDetails from '../../../components/RoundDetails/RoundDetails'
 import RoundDowntime from '../../../components/RoundWarnings/RoundDowntime'
 import RoundMissed from '../../../components/RoundWarnings/RoundMissed'
@@ -59,6 +60,7 @@ JoinRoundButton.propTypes = {
 
 const ScrollViewWithPullToRefresh = ({ children, isLoading, onRefresh }) => (
 	<ScrollView
+		contentContainerStyle={commonStyles.scrollableContent}
 		refreshControl={
 			<RefreshControl refreshing={isLoading} onRefresh={onRefresh} />
 		}
@@ -115,6 +117,9 @@ class HomePage extends React.Component {
 			)
 		}
 
+		if (current.length !== 0) {
+			return <RoundConversationWaitroom round={current[0]} />
+		}
 		if (future.length !== 0) {
 			return (
 				<React.Fragment>

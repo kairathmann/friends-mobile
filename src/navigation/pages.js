@@ -30,26 +30,7 @@ import IdentificationPage from '../views/pages/onboarding/identification-page'
 import UserColorAwareComponent from '../components/UserColorAwareComponent'
 import EditProfilePage from '../views/pages/edit-profile'
 import MatchingQuestionsPage from '../views/pages/matching-questions/matching-questions-page'
-
-const PAGES_NAMES = {
-	WELCOME_PAGE: 'WELCOME_PAGE',
-	IDENTIFICATION_PAGE: 'IDENTIFICATION_PAGE',
-	BASEINFO_PAGE: 'BASEINFO_PAGE',
-	NOTIFICATION_CHECK_PAGE: 'NOTIFICATION_CHECK_PAGE',
-	QUESTIONS_PAGE: 'QUESTIONS_PAGE',
-	QUESTIONS_BEFORE_PAGE: 'QUESTIONS_BEFORE_PAGE',
-	POLICY: 'POLICY',
-	TERMS: 'TERMS',
-	AUTH_PHONE_NUMBER_PAGE: 'AUTH_PHONE_NUMBER_PAGE',
-	AUTH_VERIFICATION_TOKEN_PAGE: 'AUTH_VERIFICATION_TOKEN_PAGE',
-	AUTH_TELEGRAM_EMAIL_PAGE: 'AUTH_TELEGRAM_EMAIL_PAGE',
-	HOME_PAGE: 'HOME_PAGE',
-	PROFILE_TAB: 'PROFILE_PAGE',
-	CHAT_TAB: 'CHAT_PAGE',
-	HOME_TAB: 'HOME_NESTED_PAGE',
-	EDIT_PROFILE_PAGE: 'EDIT_PROFILE_PAGE',
-	MATCHING_QUESTIONS_PAGE: 'MATCHING_QUESTIONS_PAGE'
-}
+import { PAGES_NAMES } from '../enums'
 
 const BottomBarNavigationIcon = ({ focused, icon }) => (
 	<UserColorAwareComponent>
@@ -146,7 +127,8 @@ const AppStackNavigator = createStackNavigator({
 	QUESTIONS_PAGE: {
 		screen: QuestionsPage,
 		navigationOptions: () => ({
-			header: null
+			header: null,
+			gesturesEnabled: false
 		})
 	},
 	QUESTIONS_BEFORE_PAGE: {

@@ -1,6 +1,7 @@
 import { Container, Content, Text, View } from 'native-base'
 import PropTypes from 'prop-types'
 import React from 'react'
+import { connect } from 'react-redux'
 import { StatusBar } from 'react-native'
 import { SafeAreaView } from 'react-navigation'
 import EStyleSheet from 'react-native-extended-stylesheet'
@@ -14,10 +15,20 @@ import { register } from '../../../services/pushNotificationService'
 import configuredStore from '../../../store'
 import { createFontStyle, styles as commonStyles } from '../../../styles'
 import * as COLORS from '../../../styles/colors'
+import { navigationService } from '../../../services'
 
 class NotificationCheckPage extends React.Component {
+	PAGE_NAME = PAGES_NAMES.NOTIFICATION_CHECK_PAGE
 	handleCheckNotifications = () => {
 		register(configuredStore)
+	}
+
+	goToNextPage = () => {
+		if (this.props.questions.length === 0) {
+			navigationService.navigateAndResetNavigation(PAGES_NAMES.HOME_PAGE)
+		} else {
+			this.props.navigation.navigate(PAGES_NAMES.QUESTIONS_BEFORE_PAGE)
+		}
 	}
 
 	render() {
@@ -31,29 +42,28 @@ class NotificationCheckPage extends React.Component {
 					<Container style={commonStyles.content}>
 						<Content contentContainerStyle={commonStyles.scrollableContent}>
 							<OnboardingHeader
-								pageNumber={3}
+								pageNumber={this.props.onboardingStepsConfig[this.PAGE_NAME]}
 								leftText={i18n.t('onboarding.sign_up')}
-								totalPage={4}
+								totalPage={this.props.onboardingMaxSteps}
 							/>
 							<View style={styles.indent}>
-								<Text style={styles.text}>
-									{i18n.t('onboarding.notifications_right')}
+								<Text style={styles.header}>
+									{i18n.t('onboarding.notifications_page_header')}
+								</Text>
+								<Text style={styles.description}>
+									{i18n.t('onboarding.notifications_page_description')}
 								</Text>
 								<Button
 									buttonStyle={styles.spaceAbove}
 									onPress={this.handleCheckNotifications}
-									text={'Allow push notifications'}
+									text={i18n.t('onboarding.notifications_button')}
 								/>
 							</View>
 							<UserColorAwareComponent>
 								{color => (
 									<NavigationBottomBar
 										onLeftClick={() => this.props.navigation.goBack()}
-										onRightClick={() =>
-											this.props.navigation.navigate(
-												PAGES_NAMES.QUESTIONS_BEFORE_PAGE
-											)
-										}
+										onRightClick={this.goToNextPage}
 										rightArrowColor={color}
 									/>
 								)}
@@ -74,17 +84,42 @@ const styles = EStyleSheet.create({
 	spaceAbove: {
 		marginTop: 32
 	},
-	text: {
+	header: {
 		...createFontStyle(),
 		color: 'white',
-		fontSize: 36,
+		fontSize: 32,
 		textAlign: 'center',
-		marginTop: 48
+		marginTop: 48,
+		marginBottom: 30
+	},
+	description: {
+		...createFontStyle(),
+		marginLeft: 10,
+		marginRight: 10,
+		color: 'white',
+		fontSize: 14,
+		lineHeight: 24,
+		letterSpacing: 0.1,
+		textAlign: 'center'
 	}
 })
 
 NotificationCheckPage.propTypes = {
-	navigation: PropTypes.object
+	navigation: PropTypes.object,
+	questions: PropTypes.array.isRequired,
+	onboardingMaxSteps: PropTypes.number.isRequired,
+	onboardingStepsConfig: PropTypes.object.isRequired
 }
 
-export default NotificationCheckPage
+const mapStateToProps = state => {
+	return {
+		questions: state.onboarding.questions,
+		onboardingMaxSteps: state.onboarding.onboardingMaxSteps,
+		onboardingStepsConfig: state.onboarding.onboardingStepsConfig
+	}
+}
+
+export default connect(
+	mapStateToProps,
+	null
+)(NotificationCheckPage)

@@ -210,23 +210,26 @@ const styles = EStyleSheet.create({
 	descriptionContainer: {
 		flex: 1,
 		justifyContent: 'center',
-		marginLeft: 25,
-		marginRight: 25
+		marginLeft: 20,
+		marginRight: 20
 	},
 	headerText: {
 		...createFontStyle(FONTS.LATO),
 		textAlign: 'center',
 		color: 'white',
-		fontSize: 40,
-		letterSpacing: 1
+		fontSize: 32,
+		letterSpacing: 0.25,
+		marginBottom: 30
 	},
 	descriptionText: {
 		...createFontStyle(FONTS.LATO),
 		textAlign: 'center',
 		color: 'white',
-		fontSize: 18,
-		lineHeight: 24,
-		letterSpacing: 1
+		fontSize: 14,
+		lineHeight: 18,
+		letterSpacing: 0.25,
+		marginLeft: 40,
+		marginRight: 40
 	},
 	phoneControlContainer: {
 		flex: 1,
@@ -264,7 +267,7 @@ const styles = EStyleSheet.create({
 		lineHeight: 16,
 		fontSize: 13,
 		letterSpacing: 0.4,
-		color: 'rgba(255,255,255,.6)'
+		color: '$strongGreyColor'
 	}
 })
 

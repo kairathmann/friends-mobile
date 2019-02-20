@@ -264,6 +264,9 @@ class AuthPageTokenVerificationPage extends React.Component {
 								totalPage={2}
 							/>
 							<View style={styles.descriptionContainer}>
+								<Text style={styles.headerText}>
+									{I18n.t('onboarding.auth_verification_code_header')}
+								</Text>
 								<Text style={styles.descriptionText}>
 									{I18n.t('onboarding.auth_verification_code_description')}
 								</Text>
@@ -290,15 +293,27 @@ class AuthPageTokenVerificationPage extends React.Component {
 const styles = EStyleSheet.create({
 	descriptionContainer: {
 		flex: 1,
-		justifyContent: 'center'
+		justifyContent: 'center',
+		marginLeft: 20,
+		marginRight: 20
+	},
+	headerText: {
+		...createFontStyle(FONTS.LATO),
+		textAlign: 'center',
+		color: 'white',
+		fontSize: 32,
+		letterSpacing: 0.25,
+		marginBottom: 30
 	},
 	descriptionText: {
 		...createFontStyle(FONTS.LATO),
 		textAlign: 'center',
 		color: 'white',
-		fontSize: 18,
-		lineHeight: 24,
-		letterSpacing: 1
+		fontSize: 14,
+		lineHeight: 18,
+		letterSpacing: 0.25,
+		marginLeft: 40,
+		marginRight: 40
 	},
 	verificationCodeControlContainer: {
 		flex: 1,
@@ -311,15 +326,21 @@ const styles = EStyleSheet.create({
 		alignItems: 'flex-end'
 	},
 	singleVerificationCodeInputContainer: {
-		marginLeft: 10,
-		marginRight: 10
+		marginLeft: 4,
+		marginRight: 4
 	},
 	singleVerificationCodeInputCustom: {
 		width: 60,
 		height: 60,
 		borderRadius: 10,
-		paddingRight: 0,
-		paddingLeft: 0
+		'@media ios': {
+			paddingRight: 12,
+			paddingLeft: 12
+		},
+		'@media android': {
+			paddingRight: 16,
+			paddingLeft: 16
+		}
 	},
 	verificationCodeControlCaptions: {
 		flex: 1,

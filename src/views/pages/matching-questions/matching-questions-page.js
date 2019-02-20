@@ -1,4 +1,5 @@
-import { Container, Icon, Tab, Tabs, View } from 'native-base'
+import _ from 'lodash'
+import { Container, Tab, Tabs, View } from 'native-base'
 import PropTypes from 'prop-types'
 import React from 'react'
 import { LayoutAnimation, ScrollView, StatusBar, Text } from 'react-native'
@@ -8,12 +9,13 @@ import { connect } from 'react-redux'
 import i18n from '../../../../locales/i18n'
 import I18n from '../../../../locales/i18n'
 import Question from '../../../components/Question/Question'
-import UserColorAwareComponent from '../../../components/UserColorAwareComponent/UserColorAwareComponent'
+import UserColorAwareComponent from '../../../components/UserColorAwareComponent'
+import { NavigationBottomBar } from '../../../components/NavigationBottomBar/NavigationBottomBar'
 import {
 	createErrorMessageSelector,
 	createLoadingSelector
 } from '../../../store/utils/selectors'
-import { styles as commonStyles } from '../../../styles'
+import { styles as commonStyles, createFontStyle, FONTS } from '../../../styles'
 import * as COLORS from '../../../styles/colors'
 import { LUMINOS_ACCENT } from '../../../styles/colors'
 import { fetchQuestions, saveAnswers } from './scenario-actions'
@@ -61,16 +63,34 @@ class MatchingQuestionsPage extends React.Component {
 
 	saveQuestions = () => {
 		LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
-		this.props.saveAnswers(this.state.answers)
-		this.setState({
-			answers: Object.keys(this.state.answers).map(key => {
-				return {
-					selected: this.state.answers[key].selected,
+		const answersThatHaveChanged = _.pickBy(
+			this.state.answers,
+			(value, key) => {
+				// if this is an answer that is not yet answered OR
+				// is answered but selected value has changed return it
+				// this will make sure that we are not sending same answers over and over again
+				const questionId = Number(key)
+				const selectedAnswer = value.selected
+				const isNotAnsweredYet = this.props.unanswered.find(
+					unanswered => unanswered.id === questionId
+				)
+				const answerHasChanged = this.props.answered.find(
+					answered =>
+						answered.id === questionId && answered.lastAnswer !== selectedAnswer
+				)
+				return isNotAnsweredYet || answerHasChanged
+			}
+		)
+		if (_.size(answersThatHaveChanged) > 0) {
+			this.props.saveAnswers(answersThatHaveChanged)
+			this.setState({
+				answers: _.mapValues(this.state.answers, value => ({
+					selected: value.selected,
 					opened: false
-				}
-			}),
-			showSave: false
-		})
+				})),
+				showSave: false
+			})
+		}
 	}
 
 	renderBottomSaveBar = () => {
@@ -78,31 +98,18 @@ class MatchingQuestionsPage extends React.Component {
 		return (
 			<UserColorAwareComponent>
 				{color => (
-					<View style={styles.bar}>
-						<Icon
-							onPress={() => this.props.navigation.goBack()}
-							type={'MaterialIcons'}
-							name={'arrow-back'}
-							style={[styles.leftArrow, { color }]}
-						/>
-						<Text
-							style={[
-								styles.saveText,
-								{ color, opacity: showSave ? 1.0 : 0.25 }
-							]}
-						>
-							{i18n.t('matching_questions.save_questions').toUpperCase()}
-						</Text>
-						<Icon
-							onPress={showSave ? this.saveQuestions : () => {}}
-							type={'MaterialIcons'}
-							name={'check'}
-							style={[
-								styles.rightArrow,
-								{ color, opacity: showSave ? 1.0 : 0.25 }
-							]}
-						/>
-					</View>
+					<NavigationBottomBar
+						onLeftClick={() => this.props.navigation.goBack()}
+						onRightClick={this.saveQuestions}
+						rightDisabled={!showSave}
+						rightArrowColor={color}
+						customRightIcon="check"
+						centerComponent={
+							<Text style={styles.saveText}>
+								{i18n.t('matching_questions.save_questions').toUpperCase()}
+							</Text>
+						}
+					/>
 				)}
 			</UserColorAwareComponent>
 		)
@@ -119,85 +126,97 @@ class MatchingQuestionsPage extends React.Component {
 				/>
 				<SafeAreaView style={commonStyles.safeAreaView}>
 					<Container style={commonStyles.content}>
-						<Tabs
-							style={{ backgroundColor: 'transparent', borderBottomWidth: 0 }}
-							tabBarUnderlineStyle={{ height: 0 }}
-							tabContainerStyle={{
-								borderBottomWidth: 1,
-								borderBottomColor: '#0f0f0f'
-							}}
-							onChangeTab={() => {}}
-							tabBarPosition={'overlayTop'}
-						>
-							<Tab
-								style={{ backgroundColor: 'transparent' }}
-								textStyle={{ color: 'white' }}
-								activeTextStyle={{ color: 'white' }}
-								activeTabStyle={styles.activeTabStyle}
-								tabStyle={styles.tabStyle}
-								heading={I18n.t('tabs.questions').toUpperCase()}
+						<View style={styles.tabsContainer}>
+							<Tabs
+								style={{ backgroundColor: 'transparent', borderBottomWidth: 0 }}
+								tabBarUnderlineStyle={{ height: 0 }}
+								tabContainerStyle={{
+									borderBottomWidth: 1,
+									borderBottomColor: '#0f0f0f'
+								}}
+								onChangeTab={() => {}}
+								tabBarPosition={'overlayTop'}
 							>
-								<ScrollView>
-									{unanswered.length === 0 && (
-										<Text style={styles.emptyListText}>
-											{i18n.t('matching_questions.no_questions')}
-										</Text>
-									)}
-									{unanswered.map(q => (
-										<View key={q.id} style={styles.questionContainer}>
-											<Question
-												answers={q.answers}
-												text={q.text}
-												selectedAnswer={
-													this.state.answers[q.id]
-														? this.state.answers[q.id].selected
-														: null
-												}
-												onChangeAnswer={answer =>
-													this.onChangeAnswer(q, answer)
-												}
-											/>
+								<Tab
+									style={{ backgroundColor: 'transparent' }}
+									textStyle={{ color: 'white' }}
+									activeTextStyle={{ color: 'white' }}
+									activeTabStyle={styles.activeTabStyle}
+									tabStyle={styles.tabStyle}
+									heading={I18n.t('tabs.questions').toUpperCase()}
+								>
+									<ScrollView
+										contentContainerStyle={commonStyles.scrollableContent}
+									>
+										{unanswered.length === 0 && (
+											<Text style={styles.emptyListText}>
+												{i18n.t('matching_questions.no_questions')}
+											</Text>
+										)}
+										<View style={styles.questionsListContainer}>
+											{unanswered.map(q => (
+												<View key={q.id} style={styles.questionContainer}>
+													<Question
+														answers={q.answers}
+														text={q.text}
+														selectedAnswer={
+															this.state.answers[q.id]
+																? this.state.answers[q.id].selected
+																: null
+														}
+														onChangeAnswer={answer =>
+															this.onChangeAnswer(q, answer)
+														}
+													/>
+												</View>
+											))}
 										</View>
-									))}
-								</ScrollView>
-							</Tab>
-							<Tab
-								style={{ backgroundColor: 'transparent' }}
-								textStyle={{ color: 'white' }}
-								activeTextStyle={{ color: 'white' }}
-								activeTabStyle={styles.activeTabStyle}
-								tabStyle={styles.tabStyle}
-								heading={I18n.t('tabs.questions_answered').toUpperCase()}
-							>
-								<ScrollView>
-									{answered.map(q => (
-										<View key={q.id} style={styles.questionContainer}>
-											<Question
-												answers={q.answers}
-												text={q.text}
-												answered={
-													!(
-														this.state.answers[q.id] &&
-														this.state.answers[q.id].opened
-													)
-												}
-												selectedAnswer={
-													this.state.answers[q.id] &&
-													this.state.answers[q.id].opened
-														? this.state.answers[q.id].selected
-														: q.lastAnswer
-												}
-												onChangeAnswer={answer =>
-													this.handleClickAnsweredQuestion(q, answer)
-												}
-											/>
+									</ScrollView>
+								</Tab>
+								<Tab
+									style={{ backgroundColor: 'transparent' }}
+									textStyle={{ color: 'white' }}
+									activeTextStyle={{ color: 'white' }}
+									activeTabStyle={styles.activeTabStyle}
+									tabStyle={styles.tabStyle}
+									heading={I18n.t('tabs.questions_answered').toUpperCase()}
+								>
+									<ScrollView
+										contentContainerStyle={commonStyles.scrollableContent}
+									>
+										<View style={styles.questionsListContainer}>
+											{answered.map(q => (
+												<View key={q.id} style={styles.questionContainer}>
+													<Question
+														answers={q.answers}
+														text={q.text}
+														answered={
+															!(
+																this.state.answers[q.id] &&
+																this.state.answers[q.id].opened
+															)
+														}
+														selectedAnswer={
+															this.state.answers[q.id] &&
+															this.state.answers[q.id].opened
+																? this.state.answers[q.id].selected
+																: q.lastAnswer
+														}
+														onChangeAnswer={answer =>
+															this.handleClickAnsweredQuestion(q, answer)
+														}
+													/>
+												</View>
+											))}
 										</View>
-									))}
-								</ScrollView>
-							</Tab>
-						</Tabs>
+									</ScrollView>
+								</Tab>
+							</Tabs>
+						</View>
+						<View style={commonStyles.content}>
+							{this.renderBottomSaveBar()}
+						</View>
 					</Container>
-					{this.renderBottomSaveBar()}
 				</SafeAreaView>
 			</React.Fragment>
 		)
@@ -240,18 +259,19 @@ const styles = EStyleSheet.create({
 		paddingTop: 32,
 		textAlign: 'center'
 	},
-	bar: {
-		padding: 16,
-		backgroundColor: 'transparent',
-		justifyContent: 'space-between',
-		alignItems: 'center',
-		flexDirection: 'row'
+	saveText: {
+		...createFontStyle(FONTS.LATO),
+		color: 'white'
 	},
-	bottom: {
-		flex: 1,
-		justifyContent: 'flex-end'
+	tabsContainer: {
+		flex: 9
 	},
-	saveText: {}
+	tranparent: {
+		backgroundColor: 'transparent'
+	},
+	questionsListContainer: {
+		marginTop: 16
+	}
 })
 
 MatchingQuestionsPage.propTypes = {

@@ -14,31 +14,39 @@ export default {
 	matching_questions,
 	commons: {
 		name: 'Name',
-		phone_number: 'Phone Number',
+		phone_number: 'Your Phone Number',
 		concluded: 'Concluded',
-		not: 'Missed'
+		not: 'Missed',
+		cancel: 'Cancel',
+		proceed: 'Proceed',
+		confirm: 'Confirm'
 	},
 	errors: {
 		cannot_save_answers: 'Cannot save answers. Try again later.',
 		incorrect_request: 'Incorrect request',
 		server_error: 'Something is wrong at our side. Please try again later.',
 		not_authenticated: 'You are logged out',
-		phone_number_invalid: 'Please enter correct phone number.',
+		phone_number_invalid: 'Phone number invalid. Please try again.',
 		email_invalid: 'Please enter correct email address',
 		color_missing: 'Please select color before continuing.',
 		color_invalid_id: 'Invalid color selection, please try again.',
 		emoji_missing: 'Please select emoji before continuing.',
-		verification_failed:
-			'SMS Verification failed. Please try to resend verification code.',
+		verification_failed: 'Code invalid. Plesae try again.',
 		no_internet_connection: 'Oops, could not connect to our services',
 		user_already_transferred:
 			"This account has already been transferred. Please go back and select 'Get Started' on the welcome page.",
 		user_not_found:
-			'This email address has not been used for the December 2017 experiments on Telegram.',
+			'This email address has not been used for the December 2018 experiments on Telegram.',
 		city_missing: 'City field is missing',
 		first_name_missing: 'Name field is missing',
 		cannot_join: 'Cannot join to this round',
-		cannot_resign: 'Your request failed. Try again later'
+		cannot_resign: 'Your request failed. Try again later',
+		answer_ids_invalid: "Couldn't save your answer. Try again",
+		answer_ids_unknown: 'There is no such answer',
+		cannot_fetch_chats: 'Cannot fetch chats. Try again later.',
+		invalid_round: 'Round does not exist, please refresh list',
+		user_not_subscribed: "You haven't signed up for this round",
+		round_hasnt_started: "Round hasn't started yet"
 	},
 	navigator: {
 		home: 'Luminos',

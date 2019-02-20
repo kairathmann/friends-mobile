@@ -1,5 +1,4 @@
 import { View } from 'react-native'
-import EStyleSheet from 'react-native-extended-stylesheet'
 import { Text } from 'native-base'
 import PropTypes from 'prop-types'
 import React from 'react'
@@ -14,18 +13,22 @@ export default class UserAvatar extends React.Component {
 	}
 
 	render() {
-		const { emoji, color, circleSize, emojiSize } = this.props
+		const { emoji, color, circleSize, emojiSize, borderWidth } = this.props
 		const containerStyle = {
 			width: circleSize,
 			height: circleSize,
 			borderRadius: Math.floor(circleSize / 2),
 			backgroundColor: color
 		}
+		const borderStyle = {
+			borderColor: '#E2E0E0',
+			borderWidth: borderWidth
+		}
 		const emojiStyle = {
 			fontSize: emojiSize
 		}
 		return (
-			<View style={[containerStyle, styles.border]}>
+			<View style={[containerStyle, borderStyle]}>
 				<View style={commonStyles.emojiContainer}>
 					<Text style={emojiStyle}>{emoji}</Text>
 				</View>
@@ -36,19 +39,14 @@ export default class UserAvatar extends React.Component {
 
 UserAvatar.defaultProps = {
 	circleSize: 120,
-	emojiSize: 32
+	emojiSize: 32,
+	borderWidth: 4
 }
 
 UserAvatar.propTypes = {
 	emoji: PropTypes.string.isRequired,
 	color: PropTypes.string.isRequired,
 	circleSize: PropTypes.number.isRequired,
-	emojiSize: PropTypes.number.isRequired
+	emojiSize: PropTypes.number.isRequired,
+	borderWidth: PropTypes.number
 }
-
-const styles = EStyleSheet.create({
-	border: {
-		borderColor: '#E2E0E0',
-		borderWidth: 4
-	}
-})

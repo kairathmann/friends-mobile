@@ -37,7 +37,7 @@
   rootViewController.view = rootView;
   self.window.rootViewController = rootViewController;
   [self.window makeKeyAndVisible];
-  [RNSplashScreen show];
+  [RNSplashScreen showSplash:@"LaunchScreen" inRootView:rootView];
   [Fabric with:@[[Crashlytics class], [Answers class]]];
   return YES;
 }

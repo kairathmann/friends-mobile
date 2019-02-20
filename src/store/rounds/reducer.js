@@ -47,10 +47,10 @@ export default function roundsReducer(state = initialState, { type, payload }) {
 			return {
 				...state,
 				currentRounds: payload.filter(
-					rr => moment(rr.from) < now && moment(rr.to) > now
+					rr => moment(rr.from).isBefore(now) && moment(rr.to).isAfter(now)
 				),
-				futureRounds: payload.filter(rr => moment(rr.from) > now),
-				pastRounds: payload.filter(rr => moment(rr.to) <= now)
+				futureRounds: payload.filter(rr => moment(rr.from).isAfter(now)),
+				pastRounds: payload.filter(rr => moment(rr.to).isBefore(now))
 			}
 		case LOGOUT_USER_AND_CLEAR_DATA:
 			return initialState
