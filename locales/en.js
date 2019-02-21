@@ -23,6 +23,7 @@ export default {
 	},
 	errors: {
 		cannot_save_answers: 'Cannot save answers. Try again later.',
+		cannot_fetch_questions: 'Cannot fetch questions. Try again later.',
 		incorrect_request: 'Incorrect request',
 		server_error: 'Something is wrong at our side. Please try again later.',
 		not_authenticated: 'You are logged out',
