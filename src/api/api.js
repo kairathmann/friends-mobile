@@ -121,5 +121,13 @@ export default {
 		return axios
 			.get('colors/', { headers: { 'X-Authorization': `Bearer ${authToken}` } })
 			.then(result => result.data)
+	},
+	getChatMessages: async chatId => {
+		const authToken = await tokenService.getToken()
+		return axios
+			.get(`chats/${chatId}/`, {
+				headers: { 'X-Authorization': `Bearer ${authToken}` }
+			})
+			.then(result => result.data)
 	}
 }

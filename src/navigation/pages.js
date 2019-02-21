@@ -30,6 +30,7 @@ import IdentificationPage from '../views/pages/onboarding/identification-page'
 import UserColorAwareComponent from '../components/UserColorAwareComponent'
 import EditProfilePage from '../views/pages/edit-profile'
 import MatchingQuestionsPage from '../views/pages/matching-questions/matching-questions-page'
+import ChatMesasgesPage from '../views/pages/chat-messages'
 import { PAGES_NAMES } from '../enums'
 
 const BottomBarNavigationIcon = ({ focused, icon }) => (
@@ -183,6 +184,12 @@ const AppStackNavigator = createStackNavigator({
 	},
 	MATCHING_QUESTIONS_PAGE: {
 		screen: MatchingQuestionsPage,
+		navigationOptions: () => ({
+			header: null
+		})
+	},
+	CHAT_MESSAGES_PAGE: {
+		screen: ChatMesasgesPage,
 		navigationOptions: () => ({
 			header: null
 		})
