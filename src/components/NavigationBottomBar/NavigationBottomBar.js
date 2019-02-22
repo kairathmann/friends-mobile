@@ -8,29 +8,35 @@ export const NavigationBottomBar = ({
 	onRightClick,
 	rightDisabled,
 	leftDisabled,
+	rightHidden,
+	leftHidden,
 	rightArrowColor,
 	customRightIcon,
 	centerComponent
 }) => (
 	<View style={styles.bottom}>
 		<View style={styles.bar}>
-			<Icon
-				onPress={leftDisabled ? () => {} : onLeftClick}
-				type={'MaterialIcons'}
-				name={'arrow-back'}
-				style={[styles.leftArrow, leftDisabled && styles.disabled]}
-			/>
+			{!leftHidden && (
+				<Icon
+					onPress={leftDisabled ? () => {} : onLeftClick}
+					type={'MaterialIcons'}
+					name={'arrow-back'}
+					style={[styles.leftArrow, leftDisabled && styles.disabled]}
+				/>
+			)}
 			{centerComponent}
-			<Icon
-				onPress={rightDisabled ? () => {} : onRightClick}
-				type={'MaterialIcons'}
-				name={customRightIcon ? customRightIcon : 'arrow-forward'}
-				style={[
-					styles.rightArrow,
-					rightArrowColor ? { color: rightArrowColor } : '',
-					rightDisabled && styles.disabled
-				]}
-			/>
+			{!rightHidden && (
+				<Icon
+					onPress={rightDisabled ? () => {} : onRightClick}
+					type={'MaterialIcons'}
+					name={customRightIcon ? customRightIcon : 'arrow-forward'}
+					style={[
+						styles.rightArrow,
+						rightArrowColor ? { color: rightArrowColor } : '',
+						rightDisabled && styles.disabled
+					]}
+				/>
+			)}
 		</View>
 	</View>
 )
@@ -60,7 +66,9 @@ const styles = EStyleSheet.create({
 
 NavigationBottomBar.defaultProps = {
 	rightDisabled: false,
-	leftDisabled: false
+	leftDisabled: false,
+	rightHidden: false,
+	leftHidden: false
 }
 
 NavigationBottomBar.propTypes = {
@@ -68,6 +76,8 @@ NavigationBottomBar.propTypes = {
 	onRightClick: PropTypes.func,
 	rightDisabled: PropTypes.bool,
 	leftDisabled: PropTypes.bool,
+	rightHidden: PropTypes.bool,
+	leftHidden: PropTypes.bool,
 	rightArrowColor: PropTypes.string,
 	customRightIcon: PropTypes.string,
 	centerComponent: PropTypes.node

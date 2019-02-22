@@ -1,118 +1,46 @@
-import _ from 'lodash'
-import { Container, Tab, Tabs, View } from 'native-base'
+import { Container, Spinner, Tab, Tabs, View } from 'native-base'
 import PropTypes from 'prop-types'
 import React from 'react'
-import { LayoutAnimation, ScrollView, StatusBar, Text } from 'react-native'
+import {
+	ScrollView,
+	StatusBar,
+	Text,
+	TouchableOpacity,
+	LayoutAnimation
+} from 'react-native'
 import EStyleSheet from 'react-native-extended-stylesheet'
 import { SafeAreaView } from 'react-navigation'
 import { connect } from 'react-redux'
 import i18n from '../../../../locales/i18n'
 import I18n from '../../../../locales/i18n'
 import Question from '../../../components/Question/Question'
-import UserColorAwareComponent from '../../../components/UserColorAwareComponent'
-import { NavigationBottomBar } from '../../../components/NavigationBottomBar/NavigationBottomBar'
-import {
-	createErrorMessageSelector,
-	createLoadingSelector
-} from '../../../store/utils/selectors'
+import { createLoadingSelector } from '../../../store/utils/selectors'
 import { styles as commonStyles, createFontStyle, FONTS } from '../../../styles'
 import * as COLORS from '../../../styles/colors'
 import { LUMINOS_ACCENT } from '../../../styles/colors'
-import { fetchQuestions, saveAnswers } from './scenario-actions'
+import { fetchQuestions, saveUnanswered } from './scenario-actions'
+import { PAGES_NAMES } from '../../../navigation/pages'
+import { NavigationBottomBar } from '../../../components/NavigationBottomBar/NavigationBottomBar'
 
 class MatchingQuestionsPage extends React.Component {
-	state = {
-		answers: {},
-		showSave: false
-	}
-
 	componentDidMount() {
 		this.props.fetchQuestions()
 	}
 
-	handleClickAnsweredQuestion = (q, answer) => {
-		if (!(this.state.answers[q.id] && this.state.answers[q.id].opened)) {
-			LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
-			this.setState({
-				answers: {
-					...this.state.answers,
-					[q.id]: {
-						opened: true,
-						selected: q.lastAnswer
-					}
-				},
-				showSave: true
-			})
-		} else {
-			this.onChangeAnswer(q, answer)
-		}
+	onQuestionTouch = question => {
+		this.props.navigation.navigate(
+			PAGES_NAMES.QUESTION_PAGE_PROFILE_EDIT_VIEW,
+			{ question }
+		)
 	}
 
-	onChangeAnswer = (q, answer) => {
-		this.setState({
-			answers: {
-				...this.state.answers,
-				[q.id]: {
-					...this.state.answers[q.id],
-					selected: answer.id
-				}
-			},
-			showSave: true
-		})
-	}
-
-	saveQuestions = () => {
+	onChangeUnanswered = (question, answer) => {
 		LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
-		const answersThatHaveChanged = _.pickBy(
-			this.state.answers,
-			(value, key) => {
-				// if this is an answer that is not yet answered OR
-				// is answered but selected value has changed return it
-				// this will make sure that we are not sending same answers over and over again
-				const questionId = Number(key)
-				const selectedAnswer = value.selected
-				const isNotAnsweredYet = this.props.unanswered.find(
-					unanswered => unanswered.id === questionId
-				)
-				const answerHasChanged = this.props.answered.find(
-					answered =>
-						answered.id === questionId && answered.lastAnswer !== selectedAnswer
-				)
-				return isNotAnsweredYet || answerHasChanged
+		this.props.saveUnanswered({
+			[question.id]: {
+				selected: answer.id
 			}
-		)
-		if (_.size(answersThatHaveChanged) > 0) {
-			this.props.saveAnswers(answersThatHaveChanged)
-			this.setState({
-				answers: _.mapValues(this.state.answers, value => ({
-					selected: value.selected,
-					opened: false
-				})),
-				showSave: false
-			})
-		}
-	}
-
-	renderBottomSaveBar = () => {
-		const { showSave } = this.state
-		return (
-			<UserColorAwareComponent>
-				{color => (
-					<NavigationBottomBar
-						onLeftClick={() => this.props.navigation.goBack()}
-						onRightClick={this.saveQuestions}
-						rightDisabled={!showSave}
-						rightArrowColor={color}
-						customRightIcon="check"
-						centerComponent={
-							<Text style={styles.saveText}>
-								{i18n.t('matching_questions.save_questions').toUpperCase()}
-							</Text>
-						}
-					/>
-				)}
-			</UserColorAwareComponent>
-		)
+		})
 	}
 
 	render() {
@@ -148,6 +76,9 @@ class MatchingQuestionsPage extends React.Component {
 									<ScrollView
 										contentContainerStyle={commonStyles.scrollableContent}
 									>
+										{this.props.isSavingUnansweredQuestion && (
+											<Spinner color="white" />
+										)}
 										{unanswered.length === 0 && (
 											<Text style={styles.emptyListText}>
 												{i18n.t('matching_questions.no_questions')}
@@ -159,13 +90,8 @@ class MatchingQuestionsPage extends React.Component {
 													<Question
 														answers={q.answers}
 														text={q.text}
-														selectedAnswer={
-															this.state.answers[q.id]
-																? this.state.answers[q.id].selected
-																: null
-														}
 														onChangeAnswer={answer =>
-															this.onChangeAnswer(q, answer)
+															this.onChangeUnanswered(q, answer)
 														}
 													/>
 												</View>
@@ -186,36 +112,29 @@ class MatchingQuestionsPage extends React.Component {
 									>
 										<View style={styles.questionsListContainer}>
 											{answered.map(q => (
-												<View key={q.id} style={styles.questionContainer}>
+												<TouchableOpacity
+													key={q.id}
+													style={styles.questionContainer}
+													onPress={() => this.onQuestionTouch(q)}
+												>
 													<Question
 														answers={q.answers}
 														text={q.text}
-														answered={
-															!(
-																this.state.answers[q.id] &&
-																this.state.answers[q.id].opened
-															)
-														}
-														selectedAnswer={
-															this.state.answers[q.id] &&
-															this.state.answers[q.id].opened
-																? this.state.answers[q.id].selected
-																: q.lastAnswer
-														}
-														onChangeAnswer={answer =>
-															this.handleClickAnsweredQuestion(q, answer)
-														}
+														answered
+														selectedAnswer={q.lastAnswer}
+														onChangeAnswer={() => this.onQuestionTouch(q)}
 													/>
-												</View>
+												</TouchableOpacity>
 											))}
 										</View>
 									</ScrollView>
 								</Tab>
 							</Tabs>
 						</View>
-						<View style={commonStyles.content}>
-							{this.renderBottomSaveBar()}
-						</View>
+						<NavigationBottomBar
+							rightHidden={true}
+							onLeftClick={() => this.props.navigation.goBack()}
+						/>
 					</Container>
 				</SafeAreaView>
 			</React.Fragment>
@@ -275,17 +194,19 @@ const styles = EStyleSheet.create({
 })
 
 MatchingQuestionsPage.propTypes = {
-	navigation: PropTypes.object,
+	isSavingUnansweredQuestion: PropTypes.bool.isRequired,
+	navigation: PropTypes.object.isRequired,
 	fetchQuestions: PropTypes.func.isRequired,
-	saveAnswers: PropTypes.func.isRequired,
+	saveUnanswered: PropTypes.func.isRequired,
 	answered: PropTypes.array.isRequired,
 	unanswered: PropTypes.array.isRequired
 }
 
 const mapStateToProps = state => {
 	return {
-		error: createErrorMessageSelector(['FETCH_MATCHING_QUESTIONS'])(state),
-		isLoading: createLoadingSelector(['FETCH_MATCHING_QUESTIONS'])(state),
+		isSavingUnansweredQuestion: createLoadingSelector([
+			'SAVE_MATCHING_ANSWERS'
+		])(state),
 		answered: state.profile.questions.answered,
 		unanswered: state.profile.questions.unanswered
 	}
@@ -294,7 +215,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
 	return {
 		fetchQuestions: () => dispatch(fetchQuestions()),
-		saveAnswers: answers => dispatch(saveAnswers(answers))
+		saveUnanswered: answers => dispatch(saveUnanswered(answers))
 	}
 }
 

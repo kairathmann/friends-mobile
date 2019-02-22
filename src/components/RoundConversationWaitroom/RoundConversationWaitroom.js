@@ -2,6 +2,7 @@ import { Text, View } from 'native-base'
 import PropTypes from 'prop-types'
 import React from 'react'
 import { ScrollView, RefreshControl } from 'react-native'
+import { withNavigation } from 'react-navigation'
 import EStyleSheet from 'react-native-extended-stylesheet'
 import { connect } from 'react-redux'
 import I18n from '../../../locales/i18n'
@@ -13,13 +14,27 @@ import { createFontStyle } from '../../styles'
 import { LATO } from '../../styles/fonts'
 import ChatItem from '../ChatItem/ChatItem'
 import { fetchChats } from './scenario-actions'
+import { PAGES_NAMES } from '../../navigation/pages'
 
 class RoundConversationWaitroom extends React.Component {
 	componentDidMount() {
 		this.fetchChats()
 	}
 
-	onChatClick = () => {}
+	onChatClick = chat => {
+		const chatId = chat.id
+		const chatType = chat.type
+		const partnerInfo = {
+			firstName: chat.partnerName,
+			emoji: chat.partnerEmoji,
+			color: `#${chat.partnerColor.hexValue}`
+		}
+		this.props.navigation.navigate(PAGES_NAMES.CHAT_MESSAGES_PAGE, {
+			chatId,
+			chatType,
+			partnerInfo
+		})
+	}
 
 	fetchChats = () => {
 		this.props.fetchChats(this.props.round.id)
@@ -42,7 +57,7 @@ class RoundConversationWaitroom extends React.Component {
 					{chats.map(chat => (
 						<ChatItem
 							key={`chat-index-${chat.id}`}
-							onClick={this.onChatClick}
+							onClick={() => this.onChatClick(chat)}
 							chat={chat}
 						/>
 					))}
@@ -60,7 +75,8 @@ RoundConversationWaitroom.propTypes = {
 	}).isRequired,
 	fetchChats: PropTypes.func.isRequired,
 	chats: PropTypes.array.isRequired,
-	isLoading: PropTypes.bool.isRequired
+	isLoading: PropTypes.bool.isRequired,
+	navigation: PropTypes.object.isRequired
 }
 
 const styles = EStyleSheet.create({
@@ -84,7 +100,7 @@ const mapStateToProps = state => {
 	return {
 		error: createErrorMessageSelector(['FETCH_CHATS'])(state),
 		isLoading: createLoadingSelector(['FETCH_CHATS'])(state),
-		chats: state.messages.chats
+		chats: state.messages.chats.filter(chat => chat.roundId)
 	}
 }
 
@@ -94,7 +110,9 @@ const mapDispatchToProps = dispatch => {
 	}
 }
 
-export default connect(
-	mapStateToProps,
-	mapDispatchToProps
-)(RoundConversationWaitroom)
+export default withNavigation(
+	connect(
+		mapStateToProps,
+		mapDispatchToProps
+	)(RoundConversationWaitroom)
+)

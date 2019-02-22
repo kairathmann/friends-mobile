@@ -8,8 +8,8 @@ export default class TextInput extends React.Component {
 	render() {
 		const {
 			placeholder,
+			prefix,
 			value,
-			onChange,
 			errorMessage,
 			label,
 			keyboardType,
@@ -19,7 +19,8 @@ export default class TextInput extends React.Component {
 			returnKeyType,
 			getRef,
 			onSubmitEditing,
-			maxLength
+			maxLength,
+			onChange
 		} = this.props
 		let mergedContainerStyle = [styles.container]
 		if (containerStyle) {
@@ -34,6 +35,16 @@ export default class TextInput extends React.Component {
 		return (
 			<View>
 				<Item style={mergedContainerStyle} regular>
+					{prefix.length > 0 && (
+						<Text
+							style={[
+								styles.basePrefix,
+								value.length > 0 ? styles.prefix : styles.emptyPrefix
+							]}
+						>
+							{prefix}
+						</Text>
+					)}
 					<Input
 						value={value}
 						onChangeText={event => onChange(event)}
@@ -70,6 +81,17 @@ const styles = EStyleSheet.create({
 		fontSize: 16,
 		...createFontStyle()
 	},
+	basePrefix: {
+		fontSize: 16,
+		marginRight: -5,
+		...createFontStyle()
+	},
+	emptyPrefix: {
+		color: '#575757'
+	},
+	prefix: {
+		color: 'white'
+	},
 	errorContainer: {
 		borderColor: '$errorColor'
 	},
@@ -92,6 +114,7 @@ const styles = EStyleSheet.create({
 })
 
 TextInput.defaultProps = {
+	prefix: '',
 	keyboardType: 'default',
 	status: 'normal',
 	blurOnSubmit: true,
@@ -101,6 +124,7 @@ TextInput.defaultProps = {
 }
 
 TextInput.propTypes = {
+	prefix: PropTypes.string,
 	value: PropTypes.string.isRequired,
 	onChange: PropTypes.func.isRequired,
 	placeholder: PropTypes.string,

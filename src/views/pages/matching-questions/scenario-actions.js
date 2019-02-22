@@ -1,6 +1,8 @@
 import * as _ from 'lodash'
 import api from '../../../api/api'
 import { showErrorToast } from '../../../services/toastService'
+import { navigate } from '../../../services/navigationService'
+import { PAGES_NAMES } from '../../../enums'
 import i18n from '../../../../locales/i18n'
 import {
 	fetchQuestionsFailure,
@@ -10,6 +12,12 @@ import {
 	saveAnswersStarted,
 	saveAnswersSuccess
 } from '../../../store/profile/actions'
+
+const sendAnswerRequest = async answers => {
+	const answersIds = _.values(answers).map(ans => ans.selected)
+	await api.uploadAnswers(answersIds)
+	return Promise.all([api.fetchQuestions(), api.fetchAnsweredQuestions()])
+}
 
 export function fetchQuestions() {
 	return async dispatch => {
@@ -27,26 +35,41 @@ export function fetchQuestions() {
 			)
 		} catch (err) {
 			dispatch(fetchQuestionsFailure(err))
+			showErrorToast(i18n.t('errors.cannot_fetch_questions'))
 		}
 	}
 }
 
-export function saveAnswers(answers) {
+export function saveUnanswered(answers) {
 	return async dispatch => {
 		try {
 			dispatch(saveAnswersStarted(answers))
-			const answersIds = _.values(answers).map(ans => ans.selected)
-			await api.uploadAnswers(answersIds)
-			const result = await Promise.all([
-				api.fetchQuestions(),
-				api.fetchAnsweredQuestions()
-			])
+			const result = await sendAnswerRequest(answers)
 			dispatch(
 				saveAnswersSuccess({
 					answered: _.uniqBy(result[1], 'id'),
 					unanswered: result[0]
 				})
 			)
+		} catch (err) {
+			dispatch(saveAnswersFailure(err))
+			showErrorToast(i18n.t('errors.cannot_save_answers'))
+		}
+	}
+}
+
+export function saveAnswered(answers) {
+	return async dispatch => {
+		try {
+			dispatch(saveAnswersStarted(answers))
+			const result = await sendAnswerRequest(answers)
+			dispatch(
+				saveAnswersSuccess({
+					answered: _.uniqBy(result[1], 'id'),
+					unanswered: result[0]
+				})
+			)
+			navigate(PAGES_NAMES.MATCHING_QUESTIONS_PAGE)
 		} catch (err) {
 			dispatch(saveAnswersFailure(err))
 			showErrorToast(i18n.t('errors.cannot_save_answers'))

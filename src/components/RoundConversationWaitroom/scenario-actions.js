@@ -40,7 +40,9 @@ function remapChats(chats, profileId, defaultColor) {
 	return chatsWithAtLeastTwoUsers.map(chat => {
 		const partner = chat.chatusersSet.filter(u => u.user.id !== profileId)
 		return {
+			type: chat.type,
 			id: chat.id,
+			roundId: chat.round || '',
 			partnerName: partner[0].user.firstName,
 			partnerColor: partner[0].user.color || defaultColor,
 			partnerEmoji: partner[0].user.emoji || DEFAULT_EMOJIS[0],

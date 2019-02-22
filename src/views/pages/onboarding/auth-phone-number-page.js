@@ -112,9 +112,10 @@ class AuthPagePhoneNumberPage extends React.Component {
 			<View style={styles.phoneInputsContainer}>
 				<View style={styles.phoneCountryCodeContainer}>
 					<TextInput
+						prefix={'+'}
 						value={this.state.phoneCountryCode}
 						maxLength={5}
-						placeholder="+1"
+						placeholder="1"
 						onChange={text => this.handleChange(text, 'phoneCountryCode')}
 						keyboardType="phone-pad"
 						containerStyle={styles.phoneCountryCodeInputCustom}

@@ -23,6 +23,7 @@ export default {
 	},
 	errors: {
 		cannot_save_answers: 'Cannot save answers. Try again later.',
+		cannot_fetch_questions: 'Cannot fetch questions. Try again later.',
 		incorrect_request: 'Incorrect request',
 		server_error: 'Something is wrong at our side. Please try again later.',
 		not_authenticated: 'You are logged out',
@@ -46,7 +47,9 @@ export default {
 		cannot_fetch_chats: 'Cannot fetch chats. Try again later.',
 		invalid_round: 'Round does not exist, please refresh list',
 		user_not_subscribed: "You haven't signed up for this round",
-		round_hasnt_started: "Round hasn't started yet"
+		round_hasnt_started: "Round hasn't started yet",
+		cannot_fetch_messages: 'Cannot fetch messages. Try again later.',
+		chat_message_send_fail: "Couldn't send message. Try again later."
 	},
 	navigator: {
 		home: 'Luminos',
