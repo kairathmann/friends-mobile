@@ -1,7 +1,12 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import { FlatList, StatusBar } from 'react-native'
+import {
+	FlatList,
+	KeyboardAvoidingView,
+	Platform,
+	StatusBar
+} from 'react-native'
 import { Container, Icon, Text, View } from 'native-base'
 import { SafeAreaView } from 'react-navigation'
 import EStyleSheet from 'react-native-extended-stylesheet'
@@ -16,24 +21,57 @@ import {
 	createErrorMessageSelector,
 	createLoadingSelector
 } from '../../../store/utils/selectors'
-import { fetchChatDetails } from './scenario-actions'
+import { fetchChatDetails, sendTextMessage } from './scenario-actions'
 
 class ChatMessagesPage extends React.Component {
+	__mounted = false
 	state = {
+		textMessageInputValue: '',
 		chatId: this.props.navigation.getParam('chatId'),
 		chatType:
 			this.props.navigation.getParam('chatType') || CHAT_TYPES.EVERYTHING,
 		partnerInfo: this.props.navigation.getParam('partnerInfo')
 	}
 
-	//TODO: Add componentDidUpdate reacting to redux updates and auto scrolling stuff bla bla
-
 	fetchChatMessages = () => {
 		this.props.fetchChatDetails(this.state.chatId)
 	}
 
+	onSuccessMessageSend = () => {
+		if (!this.__mounted) {
+			return
+		}
+		this.setState({ textMessageInputValue: '' })
+	}
+
+	sendNewMessage = () => {
+		const { chatId, textMessageInputValue } = this.state
+		this.props.sendNewMessage(
+			chatId,
+			textMessageInputValue,
+			this.onSuccessMessageSend
+		)
+	}
+
 	componentDidMount() {
+		this.__mounted = true
 		this.fetchChatMessages()
+	}
+
+	componentWillUnmount() {
+		this.__mounted = false
+	}
+
+	scrollToTheBottom = () => {
+		if (this.flatListInstance && this.__mounted) {
+			this.flatListInstance.scrollToEnd({ animated: true })
+		}
+	}
+
+	onTextMessageChange = newText => {
+		if (newText !== this.state.textMessageInputValue) {
+			this.setState({ textMessageInputValue: newText })
+		}
 	}
 
 	renderPartnerInfoHeader = () => {
@@ -64,6 +102,9 @@ class ChatMessagesPage extends React.Component {
 
 	renderMessagesList = () => (
 		<FlatList
+			ref={ref => (this.flatListInstance = ref)}
+			onContentSizeChange={this.scrollToTheBottom}
+			onLayout={this.scrollToTheBottom}
 			keyExtractor={item => `message-item-index-${item.id}`}
 			onRefresh={this.fetchChatMessages}
 			refreshing={this.props.isLoading}
@@ -84,8 +125,14 @@ class ChatMessagesPage extends React.Component {
 
 	renderNewMessagesInputs = () => (
 		<NewMessageInputs
-			onTextMessageSend={() => {}}
+			onTextMessageSend={this.sendNewMessage}
 			chatType={this.state.chatType}
+			textMessageValue={this.state.textMessageInputValue}
+			onTextMessageChange={this.onTextMessageChange}
+			sendButtonDisabled={
+				this.state.textMessageInputValue.length === 0 ||
+				this.props.isSendingNewTextMessage
+			}
 		/>
 	)
 
@@ -98,15 +145,21 @@ class ChatMessagesPage extends React.Component {
 					backgroundColor={COLORS.LUMINOS_BACKGROUND_COLOR}
 				/>
 				<SafeAreaView style={commonStyles.safeAreaView}>
-					<Container style={commonStyles.content}>
-						{this.renderPartnerInfoHeader()}
-						{!isLoading && (
-							<React.Fragment>
-								{this.renderMessagesList()}
-								{this.renderNewMessagesInputs()}
-							</React.Fragment>
-						)}
-					</Container>
+					<KeyboardAvoidingView
+						style={styles.keyboardAwareContainer}
+						behavior="padding"
+						enabled={Platform.OS === 'ios'}
+					>
+						<Container style={commonStyles.content}>
+							{this.renderPartnerInfoHeader()}
+							{!isLoading && (
+								<React.Fragment>
+									{this.renderMessagesList()}
+									{this.renderNewMessagesInputs()}
+								</React.Fragment>
+							)}
+						</Container>
+					</KeyboardAvoidingView>
 				</SafeAreaView>
 			</React.Fragment>
 		)
@@ -115,6 +168,9 @@ class ChatMessagesPage extends React.Component {
 
 //TODO: SMOOTH HEADER TRANSITION SOMEHOW
 const styles = EStyleSheet.create({
+	keyboardAwareContainer: {
+		flex: 1
+	},
 	partnerInfoHeaderContainer: {
 		zIndex: 900,
 		left: 0,
@@ -170,20 +226,27 @@ ChatMessagesPage.propTypes = {
 		)
 	}),
 	isLoading: PropTypes.bool.isRequired,
-	fetchChatDetails: PropTypes.func.isRequired
+	fetchChatDetails: PropTypes.func.isRequired,
+	sendNewMessage: PropTypes.func.isRequired,
+	isSendingNewTextMessage: PropTypes.bool.isRequired
 }
 
 const mapStateToProps = state => {
 	return {
 		chatDetails: state.messages.currentChatDetails,
 		error: createErrorMessageSelector(['FETCH_CHAT_DETAILS'])(state),
-		isLoading: createLoadingSelector(['FETCH_CHAT_DETAILS'])(state)
+		isLoading: createLoadingSelector(['FETCH_CHAT_DETAILS'])(state),
+		isSendingNewTextMessage: createLoadingSelector(['SEND_TEXT_CHAT_MESSAGE'])(
+			state
+		)
 	}
 }
 
 const mapDispatchToProps = dispatch => {
 	return {
-		fetchChatDetails: chatId => dispatch(fetchChatDetails(chatId))
+		fetchChatDetails: chatId => dispatch(fetchChatDetails(chatId)),
+		sendNewMessage: (chatId, text, successCallback) =>
+			dispatch(sendTextMessage(chatId, text, successCallback))
 	}
 }
 

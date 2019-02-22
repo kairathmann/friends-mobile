@@ -42,6 +42,7 @@ function remapChats(chats, profileId, defaultColor) {
 		return {
 			type: chat.type,
 			id: chat.id,
+			roundId: chat.round || '',
 			partnerName: partner[0].user.firstName,
 			partnerColor: partner[0].user.color || defaultColor,
 			partnerEmoji: partner[0].user.emoji || DEFAULT_EMOJIS[0],

@@ -100,7 +100,7 @@ const mapStateToProps = state => {
 	return {
 		error: createErrorMessageSelector(['FETCH_CHATS'])(state),
 		isLoading: createLoadingSelector(['FETCH_CHATS'])(state),
-		chats: state.messages.chats
+		chats: state.messages.chats.filter(chat => chat.roundId)
 	}
 }
 

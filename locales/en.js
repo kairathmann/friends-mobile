@@ -48,7 +48,8 @@ export default {
 		invalid_round: 'Round does not exist, please refresh list',
 		user_not_subscribed: "You haven't signed up for this round",
 		round_hasnt_started: "Round hasn't started yet",
-		cannot_fetch_messages: 'Cannot fetch messages. Try again later.'
+		cannot_fetch_messages: 'Cannot fetch messages. Try again later.',
+		chat_message_send_fail: "Couldn't send message. Try again later."
 	},
 	navigator: {
 		home: 'Luminos',

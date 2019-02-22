@@ -1,7 +1,8 @@
+import _ from 'lodash'
 import {
+	ADD_NEW_MESSAGE_TO_CHAT,
 	FETCH_CHATS_SUCCESS,
-	FETCH_CHAT_DETAILS_SUCCESS,
-	MARK_ROUND_CHAT_AS_READ
+	FETCH_CHAT_DETAILS_SUCCESS
 } from './action-types'
 import { LOGOUT_USER_AND_CLEAR_DATA } from '../global/action-types'
 
@@ -25,19 +26,42 @@ export default function messageReducer(
 		case FETCH_CHATS_SUCCESS:
 			return {
 				...state,
-				chats: payload
+				chats: _.unionBy([...payload, ...state.chats], 'id')
 			}
 		case FETCH_CHAT_DETAILS_SUCCESS:
 			return {
 				...state,
-				currentChatDetails: payload
+				currentChatDetails: payload,
+				chats: state.chats.map(chat => ({
+					...chat,
+					unread: chat.id === payload.id ? 0 : chat.unread,
+					lastMessage:
+						chat.id === payload.id && payload.messages.length > 0
+							? payload.messages[payload.messages.length - 1].text
+							: chat.lastMessage,
+					lastRead:
+						chat.id === payload.id && payload.messages.length > 0
+							? payload.messages[payload.messages.length - 1].timestamp
+							: chat.lastRead
+				}))
 			}
-		case MARK_ROUND_CHAT_AS_READ:
+		case ADD_NEW_MESSAGE_TO_CHAT:
 			return {
 				...state,
-				chats: state.chats.map(singleChat => ({
-					...singleChat,
-					unread: singleChat.id === payload ? 0 : singleChat.unread
+				currentChatDetails: {
+					...state.currentChatDetails,
+					messages: [...state.currentChatDetails.messages, payload.message]
+				},
+				chats: state.chats.map(chat => ({
+					...chat,
+					lastMessage:
+						chat.id === payload.chatId
+							? payload.message.text
+							: chat.lastMessage,
+					lastRead:
+						chat.id === payload.chatId
+							? payload.message.timestamp
+							: chat.lastRead
 				}))
 			}
 		case LOGOUT_USER_AND_CLEAR_DATA:
