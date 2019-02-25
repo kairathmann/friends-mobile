@@ -94,7 +94,6 @@ class QuestionsPage extends React.Component {
 							<Alert
 								visible={showPopupAlert}
 								onDismiss={this.hideAlert}
-								animationDurationMs={500}
 								title={i18n.t('onboarding.finish_later_alert_title')}
 								message={i18n.t('onboarding.finish_later_alert_message')}
 								actionButtonCallback={this.continueToHomePage}

@@ -149,7 +149,7 @@ class Alert extends React.Component {
 Alert.defaultProps = {
 	useAnmiation: true,
 	animationDurationMs: 200,
-	closeOnOverlayClick: false,
+	closeOnOverlayClick: true,
 	opacity: 0.5,
 	overlayBackgroundColor: 'black',
 	actionButtonStyle: {}
