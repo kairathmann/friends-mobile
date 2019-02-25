@@ -8,7 +8,7 @@ import { SafeAreaView } from 'react-navigation'
 import { connect } from 'react-redux'
 import I18n from '../../../../locales/i18n'
 import PastRound from '../../../components/PastRound/PastRound'
-import RoundConversationWaitroom from '../../../components/RoundConversationWaitroom/RoundConversationWaitroom'
+import ConversationWaitroom from '../../../components/ConversationWaitroom/ConversationWaitroom'
 import RoundDetails from '../../../components/RoundDetails/RoundDetails'
 import RoundDowntime from '../../../components/RoundWarnings/RoundDowntime'
 import RoundMissed from '../../../components/RoundWarnings/RoundMissed'
@@ -118,7 +118,7 @@ class HomePage extends React.Component {
 		}
 
 		if (current.length !== 0) {
-			return <RoundConversationWaitroom round={current[0]} />
+			return <ConversationWaitroom round={current[0]} />
 		}
 		if (future.length !== 0) {
 			return (

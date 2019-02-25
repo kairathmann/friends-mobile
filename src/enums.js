@@ -68,3 +68,5 @@ export const CHAT_TYPES = {
 	LONG_TEXT: 3,
 	VIDEO: 4
 }
+
+export const CHAT_MESSAGES_PAGE_LIMIT = 40

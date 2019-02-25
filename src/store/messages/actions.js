@@ -5,7 +5,8 @@ import {
 	FETCH_CHATS_SUCCESS,
 	FETCH_CHAT_DETAILS_FAILURE,
 	FETCH_CHAT_DETAILS_REQUEST,
-	FETCH_CHAT_DETAILS_SUCCESS,
+	FETCH_CHAT_DETAILS_SUCCESS_LATEST_MESSAGES_CLEAN_HISTORY,
+	FETCH_CHAT_DETAILS_SUCCESS_PREVIOUS_MESSAGES,
 	SEND_TEXT_CHAT_MESSAGE_FAILURE,
 	SEND_TEXT_CHAT_MESSAGE_REQUEST,
 	SEND_TEXT_CHAT_MESSAGE_SUCCESS
@@ -35,8 +36,13 @@ export const fetchChatDetailsStarted = () => ({
 	type: FETCH_CHAT_DETAILS_REQUEST
 })
 
-export const fetchChatDetailsSuccess = chatDetails => ({
-	type: FETCH_CHAT_DETAILS_SUCCESS,
+export const fetchChatDetailsLatestMessagesWithCleanHistorySuccess = chatDetails => ({
+	type: FETCH_CHAT_DETAILS_SUCCESS_LATEST_MESSAGES_CLEAN_HISTORY,
+	payload: chatDetails
+})
+
+export const fetchChatDetailsPreviousMessagesSuccess = chatDetails => ({
+	type: FETCH_CHAT_DETAILS_SUCCESS_PREVIOUS_MESSAGES,
 	payload: chatDetails
 })
 

@@ -16,7 +16,7 @@ import ChatItem from '../ChatItem/ChatItem'
 import { fetchChats } from './scenario-actions'
 import { PAGES_NAMES } from '../../navigation/pages'
 
-class RoundConversationWaitroom extends React.Component {
+class ConversationWaitroom extends React.Component {
 	componentDidMount() {
 		this.fetchChats()
 	}
@@ -37,42 +37,73 @@ class RoundConversationWaitroom extends React.Component {
 	}
 
 	fetchChats = () => {
-		this.props.fetchChats(this.props.round.id)
+		const { round, pastChats, fetchChats } = this.props
+		fetchChats(pastChats ? undefined : round.id)
+	}
+
+	renderChatItems() {
+		const { pastChats, chats } = this.props
+		return chats
+			.slice(pastChats ? 1 : 0)
+			.map(chat => (
+				<ChatItem
+					key={`chat-index-${chat.id}`}
+					onClick={() => this.onChatClick(chat)}
+					chat={chat}
+				/>
+			))
+	}
+
+	renderBotItem() {
+		const brianBot = this.props.chats[0]
+		return (
+			<ChatItem
+				key={`chat-index-${brianBot.id}`}
+				onClick={() => this.onChatClick(brianBot)}
+				chat={brianBot}
+				showUnreadCounter={false}
+			/>
+		)
 	}
 
 	render() {
-		const { chats } = this.props
-
+		const { chats, pastChats } = this.props
 		return (
-			<ScrollView
-				refreshControl={
-					<RefreshControl
-						refreshing={this.props.isLoading}
-						onRefresh={this.fetchChats}
-					/>
-				}
-			>
-				<View style={styles.contentContainer}>
-					<Text style={styles.title}>{I18n.t('home.meet_matches')}</Text>
-					{chats.map(chat => (
-						<ChatItem
-							key={`chat-index-${chat.id}`}
-							onClick={() => this.onChatClick(chat)}
-							chat={chat}
+			<React.Fragment>
+				{pastChats && chats.length > 0 && (
+					<View style={styles.botContainer}>{this.renderBotItem()}</View>
+				)}
+				<ScrollView
+					refreshControl={
+						<RefreshControl
+							refreshing={this.props.isLoading}
+							onRefresh={this.fetchChats}
 						/>
-					))}
-				</View>
-			</ScrollView>
+					}
+				>
+					<View style={styles.contentContainer}>
+						{!pastChats && (
+							<Text style={styles.title}>{I18n.t('home.meet_matches')}</Text>
+						)}
+						{chats.length > 0 && this.renderChatItems()}
+					</View>
+				</ScrollView>
+			</React.Fragment>
 		)
 	}
 }
 
-RoundConversationWaitroom.propTypes = {
+ConversationWaitroom.defaultProps = {
+	pastChats: false
+}
+
+ConversationWaitroom.propTypes = {
+	pastChats: PropTypes.bool.isRequired,
 	round: PropTypes.shape({
 		id: PropTypes.number.isRequired,
 		from: PropTypes.string.isRequired,
 		to: PropTypes.string.isRequired
-	}).isRequired,
+	}),
 	fetchChats: PropTypes.func.isRequired,
 	chats: PropTypes.array.isRequired,
 	isLoading: PropTypes.bool.isRequired,
@@ -89,6 +120,12 @@ const styles = EStyleSheet.create({
 		color: 'white',
 		padding: 16
 	},
+	botContainer: {
+		marginTop: 16,
+		marginBottom: 24,
+		paddingLeft: 8,
+		paddingRight: 8
+	},
 	contentContainer: {
 		flex: 1,
 		alignItems: 'center',
@@ -96,11 +133,14 @@ const styles = EStyleSheet.create({
 	}
 })
 
-const mapStateToProps = state => {
+// filter depending on prop whether to fetch past / current chats
+const mapStateToProps = (state, ownProps) => {
 	return {
 		error: createErrorMessageSelector(['FETCH_CHATS'])(state),
 		isLoading: createLoadingSelector(['FETCH_CHATS'])(state),
-		chats: state.messages.chats.filter(chat => chat.roundId)
+		chats: state.messages.chats.filter(
+			ownProps.pastChats ? chat => !chat.roundId : chat => chat.roundId
+		)
 	}
 }
 
@@ -114,5 +154,5 @@ export default withNavigation(
 	connect(
 		mapStateToProps,
 		mapDispatchToProps
-	)(RoundConversationWaitroom)
+	)(ConversationWaitroom)
 )

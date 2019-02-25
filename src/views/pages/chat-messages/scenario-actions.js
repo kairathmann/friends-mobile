@@ -6,15 +6,19 @@ import { toastService } from '../../../services'
 import {
 	addNewMessageToChat,
 	fetchChatDetailsFailure,
+	fetchChatDetailsLatestMessagesWithCleanHistorySuccess,
+	fetchChatDetailsPreviousMessagesSuccess,
 	fetchChatDetailsStarted,
-	fetchChatDetailsSuccess,
 	sendChatTextMessageFailure,
 	sendChatTextMessageStarted,
 	sendChatTextMessageSuccess
 } from '../../../store/messages/actions'
 import { getErrorDataFromNetworkException } from '../../../common/utils'
 
-export const fetchChatDetails = chatId => async (dispatch, getState) => {
+export const fetchChatDetailsLatestCleanHistory = chatId => async (
+	dispatch,
+	getState
+) => {
 	try {
 		const currentLoggedUserId = getState().profile.id
 		dispatch(fetchChatDetailsStarted())
@@ -23,7 +27,38 @@ export const fetchChatDetails = chatId => async (dispatch, getState) => {
 			chatDetails,
 			currentLoggedUserId
 		)
-		dispatch(fetchChatDetailsSuccess(remappedChatDetails))
+		dispatch(
+			fetchChatDetailsLatestMessagesWithCleanHistorySuccess(remappedChatDetails)
+		)
+	} catch (err) {
+		let errorMessage =
+			err.response && err.response.status === 404
+				? I18n.t(`errors.cannot_fetch_messages`)
+				: getErrorDataFromNetworkException(err)
+		toastService.showErrorToast(errorMessage)
+		dispatch(fetchChatDetailsFailure(errorMessage))
+	}
+}
+
+export const fetchChatDetailsPreviousMessages = chatId => async (
+	dispatch,
+	getState
+) => {
+	try {
+		const currentLoggedUserId = getState().profile.id
+		const currentMessagesInChat = getState().messages.currentChatDetails
+			.messages
+		const lastMessageId =
+			currentMessagesInChat.length > 0
+				? currentMessagesInChat[currentMessagesInChat.length - 1].id
+				: null
+		dispatch(fetchChatDetailsStarted())
+		const chatDetails = await api.getChatMessages(chatId, lastMessageId)
+		const remappedChatDetails = remapChatDetails(
+			chatDetails,
+			currentLoggedUserId
+		)
+		dispatch(fetchChatDetailsPreviousMessagesSuccess(remappedChatDetails))
 	} catch (err) {
 		let errorMessage =
 			err.response && err.response.status === 404
@@ -66,7 +101,7 @@ const remapNewMessageToChat = (
 	const newMessageTemp = newMessage
 	const previousMessageInChat =
 		currentMessagesInChat.length > 0
-			? _.cloneDeep(currentMessagesInChat[currentMessagesInChat.length - 1])
+			? _.cloneDeep(currentMessagesInChat[0])
 			: null
 	if (previousMessageInChat) {
 		previousMessageInChat.tempMoment = moment(previousMessageInChat.timestamp)
@@ -114,26 +149,21 @@ const remapChatDetails = (chatDetails, currentLoggedUserId) => {
 		),
 		messages: []
 	}
-	const messagesSortedAscedingByDateTime = _.orderBy(
-		chatDetails.messages,
-		'timestamp',
-		'asc'
-	)
-	const messagesSortedAscedingByDateTimeMomentObject = messagesSortedAscedingByDateTime.map(
-		message => ({
-			...message,
-			tempMoment: moment(message.timestamp)
-		})
-	)
-	const remappedChatMessages = messagesSortedAscedingByDateTimeMomentObject.map(
+	const messagesTempMomentObject = chatDetails.messages.map(message => ({
+		...message,
+		tempMoment: moment(message.timestamp)
+	}))
+	const remappedChatMessages = messagesTempMomentObject.map(
 		(message, index) => {
-			const prevMess =
-				index - 1 >= 0
-					? messagesSortedAscedingByDateTimeMomentObject[index - 1]
-					: null
+			// those are inverted because the order of returned messages is inverted!
+			// !please keep it in mind!
+			// this is why nextMessage is actually -1 and not +1
+			// and prevMessage is actually +1 and not -1
 			const nextMess =
-				index + 1 < messagesSortedAscedingByDateTimeMomentObject.length
-					? messagesSortedAscedingByDateTimeMomentObject[index + 1]
+				index - 1 >= 0 ? messagesTempMomentObject[index - 1] : null
+			const prevMess =
+				index + 1 < messagesTempMomentObject.length
+					? messagesTempMomentObject[index + 1]
 					: null
 			return remapSingleMessage(
 				message,

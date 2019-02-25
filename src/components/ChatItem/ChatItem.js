@@ -11,105 +11,124 @@ import { BOLD, NORMAL, SEMI_BOLD } from '../../styles/fontStyles'
 import UserColorAwareComponent from '../UserColorAwareComponent'
 import UserAvatar from '../UserAvatar'
 
-export default function ChatItem({ chat, onClick }) {
-	const isUnread = chat.unread !== 0
-	const currentDate = moment()
-	const lastMessageTimeStamp = moment(chat.lastRead)
-	return (
-		<TouchableOpacity onPress={() => onClick(chat)}>
-			<View
-				style={[
-					styles.feedbackContainer,
-					chat.feedback.show && !chat.feedback.given
-						? styles.feedbackContainerLargeSpacing
-						: styles.feedbackContainerSmallSpacing
-				]}
-			>
-				<View style={styles.chatItemContainer}>
-					<UserAvatar
-						emoji={chat.partnerEmoji}
-						color={`#${chat.partnerColor.hexValue}`}
-						circleSize={48}
-						emojiSize={24}
-						borderWidth={2}
-					/>
-					<View style={styles.textsContainer}>
-						<Text
-							style={[
-								styles.chatPartner,
-								isUnread ? styles.boldChatPartner : styles.normalChatPartner
-							]}
-						>
-							{chat.partnerName}
-						</Text>
-						<Text
-							numberOfLines={2}
-							ellipsizeMode={'tail'}
-							style={[
-								styles.normalLastMessage,
-								isUnread ? styles.boldLastMessage : styles.normalLastMessage
-							]}
-						>
-							{chat.lastMessage}
-						</Text>
+class ChatItem extends React.Component {
+	shouldComponentUpdate(nextProps) {
+		return (
+			nextProps.chat.unread !== this.props.chat.unread ||
+			nextProps.chat.lastMessage !== this.props.chat.lastMessage ||
+			nextProps.chat.partnerName !== this.props.chat.partnerName ||
+			moment(nextProps.chat.lastRead).diff(this.props.chat.lastRead) !== 0
+		)
+	}
+	render() {
+		const { chat, onClick, showUnreadCounter } = this.props
+		const isUnread = chat.unread !== 0
+		const currentDate = moment()
+		const lastMessageTimeStamp = moment(chat.lastRead)
+		return (
+			<TouchableOpacity onPress={() => onClick(chat)}>
+				<View
+					style={[
+						styles.feedbackContainer,
+						chat.feedback.show && !chat.feedback.given
+							? styles.feedbackContainerLargeSpacing
+							: styles.feedbackContainerSmallSpacing
+					]}
+				>
+					<View style={styles.chatItemContainer}>
+						<UserAvatar
+							emoji={chat.partnerEmoji}
+							color={`#${chat.partnerColor.hexValue}`}
+							circleSize={48}
+							emojiSize={24}
+							borderWidth={2}
+						/>
+						<View style={styles.textsContainer}>
+							<Text
+								style={[
+									styles.chatPartner,
+									isUnread ? styles.boldChatPartner : styles.normalChatPartner
+								]}
+							>
+								{chat.partnerName}
+							</Text>
+							<Text
+								numberOfLines={2}
+								ellipsizeMode={'tail'}
+								style={[
+									styles.normalLastMessage,
+									isUnread ? styles.boldLastMessage : styles.normalLastMessage
+								]}
+							>
+								{chat.lastMessage}
+							</Text>
+						</View>
+						<View style={styles.infoContainer}>
+							<Text style={styles.readDate}>
+								{currentDate.isSame(lastMessageTimeStamp, 'day')
+									? lastMessageTimeStamp.format('h:mm a')
+									: lastMessageTimeStamp.fromNow()}
+							</Text>
+							{showUnreadCounter && (
+								<UserColorAwareComponent>
+									{color => (
+										<View
+											style={[
+												styles.unreadCounterContainer,
+												{ borderColor: color },
+												isUnread
+													? { backgroundColor: color }
+													: { backgroundColor: 'transparent' }
+											]}
+										>
+											<Text style={styles.unreadCounter}>
+												{chat.unread > 0 && chat.unread < 10 && (
+													<React.Fragment>{chat.unread}</React.Fragment>
+												)}
+												{chat.unread >= 10 && (
+													<React.Fragment>9+</React.Fragment>
+												)}
+											</Text>
+										</View>
+									)}
+								</UserColorAwareComponent>
+							)}
+						</View>
 					</View>
-					<View style={styles.infoContainer}>
-						<Text style={styles.readDate}>
-							{currentDate.isSame(lastMessageTimeStamp, 'day')
-								? lastMessageTimeStamp.format('h:mm a')
-								: lastMessageTimeStamp.fromNow()}
-						</Text>
+					{chat.feedback.show && chat.feedback.given && (
+						<View style={styles.feedbackControlsParent}>
+							<Text style={styles.givenFeedbackText}>
+								{I18n.t('home.feedback_already_given')}
+							</Text>
+						</View>
+					)}
+					{chat.feedback.show && !chat.feedback.given && (
 						<UserColorAwareComponent>
 							{color => (
-								<View
-									style={[
-										styles.unreadCounterContainer,
-										{ borderColor: color },
-										isUnread
-											? { backgroundColor: color }
-											: { backgroundColor: 'transparent' }
-									]}
-								>
-									<Text style={styles.unreadCounter}>
-										{chat.unread > 0 && chat.unread < 10 && (
-											<React.Fragment>{chat.unread}</React.Fragment>
-										)}
-										{chat.unread >= 10 && <React.Fragment>9+</React.Fragment>}
-									</Text>
-								</View>
+								<TouchableOpacity>
+									<View
+										style={[
+											styles.feedbackControlsParent,
+											styles.feedbackGivenParent,
+											{ backgroundColor: color }
+										]}
+									>
+										<Text style={styles.feedbackText}>
+											{I18n.t('home.give_feedback').toUpperCase()}
+										</Text>
+									</View>
+								</TouchableOpacity>
 							)}
 						</UserColorAwareComponent>
-					</View>
+					)}
 				</View>
-				{chat.feedback.show && chat.feedback.given && (
-					<View style={styles.feedbackControlsParent}>
-						<Text style={styles.givenFeedbackText}>
-							{I18n.t('home.feedback_already_given')}
-						</Text>
-					</View>
-				)}
-				{chat.feedback.show && !chat.feedback.given && (
-					<UserColorAwareComponent>
-						{color => (
-							<TouchableOpacity>
-								<View
-									style={[
-										styles.feedbackControlsParent,
-										styles.feedbackGivenParent,
-										{ backgroundColor: color }
-									]}
-								>
-									<Text style={styles.feedbackText}>
-										{I18n.t('home.give_feedback').toUpperCase()}
-									</Text>
-								</View>
-							</TouchableOpacity>
-						)}
-					</UserColorAwareComponent>
-				)}
-			</View>
-		</TouchableOpacity>
-	)
+			</TouchableOpacity>
+		)
+	}
+}
+
+ChatItem.defaultProps = {
+	showUnreadCounter: true
 }
 
 ChatItem.propTypes = {
@@ -120,7 +139,7 @@ ChatItem.propTypes = {
 			hexValue: PropTypes.string.isRequired
 		}).isRequired,
 		partnerName: PropTypes.string.isRequired,
-		lastMessage: PropTypes.string.isRequired,
+		lastMessage: PropTypes.string,
 		lastRead: PropTypes.string.isRequired,
 		unread: PropTypes.number.isRequired,
 		feedback: PropTypes.shape({
@@ -128,7 +147,8 @@ ChatItem.propTypes = {
 			given: PropTypes.bool
 		})
 	}).isRequired,
-	onClick: PropTypes.func.isRequired
+	onClick: PropTypes.func.isRequired,
+	showUnreadCounter: PropTypes.bool
 }
 
 const styles = EStyleSheet.create({
@@ -244,3 +264,5 @@ const styles = EStyleSheet.create({
 		color: '$greyColor'
 	}
 })
+
+export default ChatItem

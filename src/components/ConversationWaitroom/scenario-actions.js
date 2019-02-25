@@ -16,7 +16,10 @@ export function fetchChats(round) {
 			const defaultColor = colors[0]
 			const profile = getState().profile
 			dispatch(fetchChatsStarted(round))
-			const result = await api.fetchRoundChats(round)
+			const result =
+				typeof round !== 'undefined'
+					? await api.fetchRoundChats(round)
+					: await api.fetchPastChats()
 			dispatch(fetchChatsSuccess(remapChats(result, profile.id, defaultColor)))
 		} catch (err) {
 			let errorMessage =

@@ -21,7 +21,11 @@ import {
 	createErrorMessageSelector,
 	createLoadingSelector
 } from '../../../store/utils/selectors'
-import { fetchChatDetails, sendTextMessage } from './scenario-actions'
+import {
+	fetchChatDetailsLatestCleanHistory,
+	fetchChatDetailsPreviousMessages,
+	sendTextMessage
+} from './scenario-actions'
 
 class ChatMessagesPage extends React.Component {
 	__mounted = false
@@ -33,8 +37,12 @@ class ChatMessagesPage extends React.Component {
 		partnerInfo: this.props.navigation.getParam('partnerInfo')
 	}
 
-	fetchChatMessages = () => {
-		this.props.fetchChatDetails(this.state.chatId)
+	fetchChatMessagesLatestWithCleanHistory = () => {
+		this.props.fetchChatDetailsLatestCleanHistory(this.state.chatId)
+	}
+
+	fetchPreviousChatMessages = () => {
+		this.props.fetchChatDetailsPreviousMessages(this.state.chatId)
 	}
 
 	onSuccessMessageSend = () => {
@@ -45,6 +53,7 @@ class ChatMessagesPage extends React.Component {
 	}
 
 	sendNewMessage = () => {
+		this.scrollToTheBottom()
 		const { chatId, textMessageInputValue } = this.state
 		this.props.sendNewMessage(
 			chatId,
@@ -55,16 +64,29 @@ class ChatMessagesPage extends React.Component {
 
 	componentDidMount() {
 		this.__mounted = true
-		this.fetchChatMessages()
+		this.fetchChatMessagesLatestWithCleanHistory()
 	}
 
 	componentWillUnmount() {
 		this.__mounted = false
 	}
 
+	onEndReached = () => {
+		// fetch more only if there is anything more to fetch
+		// if at any point request returns empty messages array that means
+		// that we have reached all previous messages
+		// This is also done because React Native's FlatList returns mulitple time that
+		// user has reached the end when there is no more extra data after fetch
+		// so we are guarding against mulitple requests to server that wouldn't
+		// return anything new
+		if (!this.props.chatDetails.fetchedAllPossiblePastMessages) {
+			this.fetchPreviousChatMessages()
+		}
+	}
+
 	scrollToTheBottom = () => {
 		if (this.flatListInstance && this.__mounted) {
-			this.flatListInstance.scrollToEnd({ animated: true })
+			this.flatListInstance.scrollToOffset({ x: 0, y: 0, animated: true })
 		}
 	}
 
@@ -103,11 +125,10 @@ class ChatMessagesPage extends React.Component {
 	renderMessagesList = () => (
 		<FlatList
 			ref={ref => (this.flatListInstance = ref)}
-			onContentSizeChange={this.scrollToTheBottom}
-			onLayout={this.scrollToTheBottom}
+			inverted
 			keyExtractor={item => `message-item-index-${item.id}`}
-			onRefresh={this.fetchChatMessages}
-			refreshing={this.props.isLoading}
+			onEndReachedThreshold={0.6}
+			onEndReached={this.onEndReached}
 			contentContainerStyle={styles.scrollViewContainer}
 			data={this.props.chatDetails.messages}
 			initialNumToRender={40}
@@ -131,13 +152,13 @@ class ChatMessagesPage extends React.Component {
 			onTextMessageChange={this.onTextMessageChange}
 			sendButtonDisabled={
 				this.state.textMessageInputValue.length === 0 ||
-				this.props.isSendingNewTextMessage
+				this.props.isSendingNewTextMessage ||
+				this.props.isLoading
 			}
 		/>
 	)
 
 	render() {
-		const { isLoading } = this.props
 		return (
 			<React.Fragment>
 				<StatusBar
@@ -152,12 +173,17 @@ class ChatMessagesPage extends React.Component {
 					>
 						<Container style={commonStyles.content}>
 							{this.renderPartnerInfoHeader()}
-							{!isLoading && (
-								<React.Fragment>
-									{this.renderMessagesList()}
-									{this.renderNewMessagesInputs()}
-								</React.Fragment>
+							{/* 
+							This is done because when you switch from one chat to another,
+							until new data is fetched user would still see messages from previous chat.
+							We can get rid of this when we get chat history cache in place
+							*/}
+							{this.state.chatId === this.props.chatDetails.id &&
+								this.renderMessagesList()}
+							{this.state.chatId !== this.props.chatDetails.id && (
+								<View style={commonStyles.scrollableContent} />
 							)}
+							{this.renderNewMessagesInputs()}
 						</Container>
 					</KeyboardAvoidingView>
 				</SafeAreaView>
@@ -210,8 +236,9 @@ const styles = EStyleSheet.create({
 ChatMessagesPage.propTypes = {
 	navigation: PropTypes.object.isRequired,
 	chatDetails: PropTypes.shape({
+		fetchedAllPossiblePastMessages: PropTypes.bool.isRequired,
 		id: PropTypes.number.isRequired,
-		roundId: PropTypes.number.isRequired,
+		roundId: PropTypes.number,
 		lastReadMessageId: PropTypes.number,
 		messages: PropTypes.arrayOf(
 			PropTypes.shape({
@@ -226,7 +253,8 @@ ChatMessagesPage.propTypes = {
 		)
 	}),
 	isLoading: PropTypes.bool.isRequired,
-	fetchChatDetails: PropTypes.func.isRequired,
+	fetchChatDetailsLatestCleanHistory: PropTypes.func.isRequired,
+	fetchChatDetailsPreviousMessages: PropTypes.func.isRequired,
 	sendNewMessage: PropTypes.func.isRequired,
 	isSendingNewTextMessage: PropTypes.bool.isRequired
 }
@@ -244,7 +272,10 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
 	return {
-		fetchChatDetails: chatId => dispatch(fetchChatDetails(chatId)),
+		fetchChatDetailsLatestCleanHistory: chatId =>
+			dispatch(fetchChatDetailsLatestCleanHistory(chatId)),
+		fetchChatDetailsPreviousMessages: chatId =>
+			dispatch(fetchChatDetailsPreviousMessages(chatId)),
 		sendNewMessage: (chatId, text, successCallback) =>
 			dispatch(sendTextMessage(chatId, text, successCallback))
 	}
