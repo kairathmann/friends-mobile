@@ -198,15 +198,10 @@ const styles = EStyleSheet.create({
 		flex: 1
 	},
 	partnerInfoHeaderContainer: {
-		zIndex: 900,
-		left: 0,
-		top: 0,
-		position: 'absolute',
 		paddingLeft: 25,
 		paddingRight: 12,
 		paddingTop: 8,
 		paddingBottom: 8,
-		marginBottom: 20,
 		backgroundColor: 'rgba(17,21,28,0.9)',
 		justifyContent: 'space-between',
 		alignItems: 'center',
