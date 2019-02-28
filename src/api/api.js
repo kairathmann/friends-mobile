@@ -19,15 +19,7 @@ export default {
 			)
 			.then(result => result.data)
 	},
-	fetchRoundChats: async roundId => {
-		const authToken = await tokenService.getToken()
-		return axios
-			.get(`rounds/${roundId}/chats/`, {
-				headers: { 'X-Authorization': `Bearer ${authToken}` }
-			})
-			.then(result => result.data)
-	},
-	fetchPastChats: async () => {
+	fetchChats: async () => {
 		const authToken = await tokenService.getToken()
 		return axios
 			.get(`chats/`, {
@@ -131,13 +123,19 @@ export default {
 			.get('colors/', { headers: { 'X-Authorization': `Bearer ${authToken}` } })
 			.then(result => result.data)
 	},
-	getChatMessages: async (chatId, lastMessageId) => {
+	getChatMessages: async (
+		chatId,
+		{ lastMessageId, untilMessageId, limit } = {}
+	) => {
 		const authToken = await tokenService.getToken()
 		const params = {
-			limit: CHAT_MESSAGES_PAGE_LIMIT
+			limit: limit || CHAT_MESSAGES_PAGE_LIMIT
 		}
 		if (lastMessageId) {
 			params.from_message = lastMessageId
+		}
+		if (untilMessageId) {
+			params.until_message = untilMessageId
 		}
 		return axios
 			.get(`chats/${chatId}/`, {

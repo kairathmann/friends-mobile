@@ -1,19 +1,28 @@
 import _ from 'lodash'
 import moment from 'moment'
+import { Answers } from 'react-native-fabric'
 import I18n from '../../../../locales/i18n'
 import api from '../../../api/api'
-import { toastService } from '../../../services'
+import { navigationService, toastService } from '../../../services'
 import {
 	addNewMessageToChat,
+	addNewMessageToChatFromPushNotificationClearUnread,
+	addNewMessageToChatFromPushNotificationIncrementUnread,
 	fetchChatDetailsFailure,
 	fetchChatDetailsLatestMessagesWithCleanHistorySuccess,
+	fetchChatDetailsMissingMessagesSuccess,
 	fetchChatDetailsPreviousMessagesSuccess,
 	fetchChatDetailsStarted,
 	sendChatTextMessageFailure,
 	sendChatTextMessageStarted,
-	sendChatTextMessageSuccess
+	sendChatTextMessageSuccess,
+	switchChat
 } from '../../../store/messages/actions'
 import { getErrorDataFromNetworkException } from '../../../common/utils'
+import { PAGES_NAMES } from '../../../navigation/pages'
+
+export const switchChatInstance = chatId => dispatch =>
+	dispatch(switchChat(chatId))
 
 export const fetchChatDetailsLatestCleanHistory = chatId => async (
 	dispatch,
@@ -46,14 +55,14 @@ export const fetchChatDetailsPreviousMessages = chatId => async (
 ) => {
 	try {
 		const currentLoggedUserId = getState().profile.id
-		const currentMessagesInChat = getState().messages.currentChatDetails
+		const currentMessagesInChat = getState().messages.chatsHistory[chatId]
 			.messages
 		const lastMessageId =
 			currentMessagesInChat.length > 0
 				? currentMessagesInChat[currentMessagesInChat.length - 1].id
 				: null
 		dispatch(fetchChatDetailsStarted())
-		const chatDetails = await api.getChatMessages(chatId, lastMessageId)
+		const chatDetails = await api.getChatMessages(chatId, { lastMessageId })
 		const remappedChatDetails = remapChatDetails(
 			chatDetails,
 			currentLoggedUserId
@@ -69,6 +78,84 @@ export const fetchChatDetailsPreviousMessages = chatId => async (
 	}
 }
 
+export const fetchChatDetailsMissingMessages = chatId => async (
+	dispatch,
+	getState
+) => {
+	try {
+		const currentLoggedUserId = getState().profile.id
+		const currentMessagesInChat = getState().messages.chatsHistory[chatId]
+			.messages
+		const mostRecentMessageId =
+			currentMessagesInChat.length > 0 ? currentMessagesInChat[0].id : null
+		dispatch(fetchChatDetailsStarted())
+		const chatDetails = await api.getChatMessages(chatId, {
+			untilMessageId: mostRecentMessageId
+		})
+		const remappedChatDetails = remapChatDetails(
+			chatDetails,
+			currentLoggedUserId
+		)
+		dispatch(fetchChatDetailsMissingMessagesSuccess(remappedChatDetails))
+	} catch (err) {
+		let errorMessage =
+			err.response && err.response.status === 404
+				? I18n.t(`errors.cannot_fetch_messages`)
+				: getErrorDataFromNetworkException(err)
+		toastService.showErrorToast(errorMessage)
+		dispatch(fetchChatDetailsFailure(errorMessage))
+	}
+}
+
+export const addNewMessageToChatFromSender = (chatId, messageDetails) => async (
+	dispatch,
+	getState
+) => {
+	try {
+		const currentPage = navigationService.getCurrentPage()
+		const currentChatId = getState().messages.currentChatId
+		const isChatWithSenderOpened =
+			currentPage === PAGES_NAMES.CHAT_MESSAGES_PAGE && currentChatId === chatId
+		let currentChatMessages = []
+		const chatHistoryExists = getState().messages.chatsHistory[chatId]
+		if (chatHistoryExists) {
+			currentChatMessages = getState().messages.chatsHistory[chatId].messages
+		}
+		const currentLoggedUserId = getState().profile.id
+		const remappedNewMessage = remapNewMessageToChat(
+			messageDetails.message,
+			currentChatMessages,
+			currentLoggedUserId
+		)
+		const chatDetailsFromNewMessage = messageDetails.chat
+		if (isChatWithSenderOpened) {
+			dispatch(
+				addNewMessageToChatFromPushNotificationClearUnread(
+					remappedNewMessage,
+					chatDetailsFromNewMessage,
+					chatId
+				)
+			)
+			await api.getChatMessages(chatId, { limit: 1 })
+		} else {
+			dispatch(
+				addNewMessageToChatFromPushNotificationIncrementUnread(
+					remappedNewMessage,
+					chatDetailsFromNewMessage,
+					chatId
+				)
+			)
+		}
+	} catch (err) {
+		Answers.logCustom(
+			'PUSH-NOTIFICATION-ADDING-TO-CHAT-MARK-CHAT-AS-READ-ERROR',
+			{
+				error: err.toString()
+			}
+		)
+	}
+}
+
 export const sendTextMessage = (chatId, text, successCallback) => async (
 	dispatch,
 	getState
@@ -77,7 +164,8 @@ export const sendTextMessage = (chatId, text, successCallback) => async (
 		dispatch(sendChatTextMessageStarted())
 		const sentMessage = await api.sendChatTextMessage(chatId, text)
 		const currentLoggedUserId = getState().profile.id
-		const currentChatMessages = getState().messages.currentChatDetails.messages
+		const currentChatMessages = getState().messages.chatsHistory[chatId]
+			.messages
 		const remappedNewMessage = remapNewMessageToChat(
 			sentMessage,
 			currentChatMessages,

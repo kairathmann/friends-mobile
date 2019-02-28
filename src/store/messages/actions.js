@@ -1,15 +1,19 @@
 import {
 	ADD_NEW_MESSAGE_TO_CHAT,
+	ADD_NEW_MESSAGE_TO_CHAT_FROM_PUSH_NOTIFICATION_CLEAR_UNREAD_COUNTER,
+	ADD_NEW_MESSAGE_TO_CHAT_FROM_PUSH_NOTIFICATION_INCREMENT_UNREAD_COUNTER,
 	FETCH_CHATS_FAILURE,
 	FETCH_CHATS_REQUEST,
 	FETCH_CHATS_SUCCESS,
 	FETCH_CHAT_DETAILS_FAILURE,
 	FETCH_CHAT_DETAILS_REQUEST,
+	FETCH_CHAT_DETAILS_SUCCESS_MISSING_MESSAGES,
 	FETCH_CHAT_DETAILS_SUCCESS_LATEST_MESSAGES_CLEAN_HISTORY,
 	FETCH_CHAT_DETAILS_SUCCESS_PREVIOUS_MESSAGES,
 	SEND_TEXT_CHAT_MESSAGE_FAILURE,
 	SEND_TEXT_CHAT_MESSAGE_REQUEST,
-	SEND_TEXT_CHAT_MESSAGE_SUCCESS
+	SEND_TEXT_CHAT_MESSAGE_SUCCESS,
+	SWITCH_CHAT
 } from './action-types'
 
 export function fetchChatsStarted() {
@@ -46,6 +50,11 @@ export const fetchChatDetailsPreviousMessagesSuccess = chatDetails => ({
 	payload: chatDetails
 })
 
+export const fetchChatDetailsMissingMessagesSuccess = chatDetails => ({
+	type: FETCH_CHAT_DETAILS_SUCCESS_MISSING_MESSAGES,
+	payload: chatDetails
+})
+
 export const fetchChatDetailsFailure = errorMessage => ({
 	type: FETCH_CHAT_DETAILS_FAILURE,
 	payload: errorMessage
@@ -69,4 +78,35 @@ export const addNewMessageToChat = (newMessage, chatId) => ({
 		message: newMessage,
 		chatId
 	}
+})
+
+export const addNewMessageToChatFromPushNotificationClearUnread = (
+	newMessage,
+	chatDetails,
+	chatId
+) => ({
+	type: ADD_NEW_MESSAGE_TO_CHAT_FROM_PUSH_NOTIFICATION_CLEAR_UNREAD_COUNTER,
+	payload: {
+		message: newMessage,
+		chat: chatDetails,
+		chatId
+	}
+})
+
+export const addNewMessageToChatFromPushNotificationIncrementUnread = (
+	newMessage,
+	chatDetails,
+	chatId
+) => ({
+	type: ADD_NEW_MESSAGE_TO_CHAT_FROM_PUSH_NOTIFICATION_INCREMENT_UNREAD_COUNTER,
+	payload: {
+		message: newMessage,
+		chat: chatDetails,
+		chatId
+	}
+})
+
+export const switchChat = chatId => ({
+	type: SWITCH_CHAT,
+	payload: chatId
 })

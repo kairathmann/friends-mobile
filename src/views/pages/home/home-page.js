@@ -23,6 +23,7 @@ import * as FONTS from '../../../styles/fonts'
 import * as FONTS_STYLES from '../../../styles/fontStyles'
 import { LUMINOS_ACCENT } from '../../../styles/colors'
 import { fetchMyRounds, joinRound, resignRound } from './scenario-actions'
+import { fetchChats } from '../../../components/ConversationWaitroom/scenario-actions'
 
 const JoinRoundButton = ({ onPress }) => (
 	<UserColorAwareComponent>
@@ -78,8 +79,10 @@ ScrollViewWithPullToRefresh.propTypes = {
 class HomePage extends React.Component {
 	componentDidMount() {
 		this.fetchRounds()
+		this.fetchChats()
 	}
 
+	fetchChats = this.props.fetchChats
 	fetchRounds = this.props.fetchRounds
 
 	getComponentForCurrentRounds = () => {
@@ -118,7 +121,7 @@ class HomePage extends React.Component {
 		}
 
 		if (current.length !== 0) {
-			return <ConversationWaitroom round={current[0]} />
+			return <ConversationWaitroom />
 		}
 		if (future.length !== 0) {
 			return (
@@ -263,6 +266,7 @@ const styles = EStyleSheet.create({
 HomePage.propTypes = {
 	navigation: PropTypes.object,
 	pastRounds: PropTypes.array.isRequired,
+	fetchChats: PropTypes.func.isRequired,
 	fetchRounds: PropTypes.func.isRequired,
 	futureRounds: PropTypes.array.isRequired,
 	currentRounds: PropTypes.array.isRequired,
@@ -283,7 +287,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
 	return {
-		fetchRounds: data => dispatch(fetchMyRounds(data)),
+		fetchRounds: () => dispatch(fetchMyRounds()),
+		fetchChats: () => dispatch(fetchChats()),
 		joinRound: round => dispatch(joinRound(round)),
 		resignRound: round => dispatch(resignRound(round))
 	}

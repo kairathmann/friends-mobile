@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import { Text, View } from 'native-base'
 import PropTypes from 'prop-types'
 import React from 'react'
@@ -17,10 +18,6 @@ import { fetchChats } from './scenario-actions'
 import { PAGES_NAMES } from '../../navigation/pages'
 
 class ConversationWaitroom extends React.Component {
-	componentDidMount() {
-		this.fetchChats()
-	}
-
 	onChatClick = chat => {
 		const chatId = chat.id
 		const chatType = chat.type
@@ -37,21 +34,25 @@ class ConversationWaitroom extends React.Component {
 	}
 
 	fetchChats = () => {
-		const { round, pastChats, fetchChats } = this.props
-		fetchChats(pastChats ? undefined : round.id)
+		const { fetchChats } = this.props
+		fetchChats()
 	}
 
 	renderChatItems() {
 		const { pastChats, chats } = this.props
-		return chats
-			.slice(pastChats ? 1 : 0)
-			.map(chat => (
-				<ChatItem
-					key={`chat-index-${chat.id}`}
-					onClick={() => this.onChatClick(chat)}
-					chat={chat}
-				/>
-			))
+		const chatsToDisplay = chats.slice(pastChats ? 1 : 0)
+		const sortedChats = _.orderBy(
+			chatsToDisplay,
+			['unread', 'id'],
+			['desc', 'asc']
+		)
+		return sortedChats.map(chat => (
+			<ChatItem
+				key={`chat-index-${chat.id}`}
+				onClick={() => this.onChatClick(chat)}
+				chat={chat}
+			/>
+		))
 	}
 
 	renderBotItem() {
@@ -99,11 +100,6 @@ ConversationWaitroom.defaultProps = {
 
 ConversationWaitroom.propTypes = {
 	pastChats: PropTypes.bool.isRequired,
-	round: PropTypes.shape({
-		id: PropTypes.number.isRequired,
-		from: PropTypes.string.isRequired,
-		to: PropTypes.string.isRequired
-	}),
 	fetchChats: PropTypes.func.isRequired,
 	chats: PropTypes.array.isRequired,
 	isLoading: PropTypes.bool.isRequired,
@@ -146,7 +142,7 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = dispatch => {
 	return {
-		fetchChats: round => dispatch(fetchChats(round))
+		fetchChats: () => dispatch(fetchChats())
 	}
 }
 

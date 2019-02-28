@@ -1,7 +1,7 @@
 import SplashScreen from 'react-native-splash-screen'
 import * as _ from 'lodash'
 import api from '../../../api/api'
-import { navigationService, tokenService } from '../../../services'
+import { navigationService, pushService, tokenService } from '../../../services'
 import { PAGES_NAMES } from '../../../navigation/pages'
 import { setProfileInfo } from '../../../store/profile/actions'
 import { setAvailableColors } from '../../../store/colors/actions'
@@ -9,6 +9,7 @@ import {
 	fetchQuestionsSuccess,
 	updateOnboardingConfig
 } from '../../../store/onboarding/actions'
+import configuredStore from '../../../store'
 
 export const startup = () => async dispatch => {
 	try {
@@ -35,6 +36,12 @@ export const startup = () => async dispatch => {
 				onboardingSteps = onboardingStepsConfig.configurationPerPage
 				dispatch(fetchQuestionsSuccess(availableQuestions))
 				dispatch(updateOnboardingConfig(onboardingMaxSteps, onboardingSteps))
+			}
+			if (destinationPageForUser === PAGES_NAMES.HOME_PAGE) {
+				pushService.initialize(
+					configuredStore,
+					userInfoWithoutToken.id.toString()
+				)
 			}
 			navigationService.navigateAndResetNavigation(destinationPageForUser, {
 				goBackArrowDisabled: true

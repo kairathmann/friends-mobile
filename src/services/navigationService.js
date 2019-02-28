@@ -40,6 +40,13 @@ export const getUserLandingPageBasedOnUserInfo = userInfo => {
 	return PAGES_NAMES.HOME_PAGE
 }
 
+export const getCurrentPage = () => {
+	const currentRoutes = _navigator.state.nav.routes
+	return currentRoutes.length > 0
+		? currentRoutes[currentRoutes.length - 1].routeName
+		: ''
+}
+
 export const calculateOnboardingSteps = (
 	desiredLandingPage,
 	availableQuestions

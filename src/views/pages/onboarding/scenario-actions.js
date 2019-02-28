@@ -4,16 +4,14 @@ import { Answers } from 'react-native-fabric'
 import api from '../../../api/api'
 import { getErrorDataFromNetworkException } from '../../../common/utils'
 import { PAGES_NAMES } from '../../../navigation/pages'
-import { tokenService } from '../../../services'
+import { pushService, tokenService } from '../../../services'
 import {
 	calculateOnboardingSteps,
 	getUserLandingPageBasedOnUserInfo,
 	navigate,
 	navigateAndResetNavigation
 } from '../../../services/navigationService'
-import { register } from '../../../services/pushNotificationService'
 import { showErrorToast } from '../../../services/toastService'
-import configuredStore from '../../../store'
 import I18n from '../../../../locales/i18n'
 import {
 	clearPhoneNumberError,
@@ -46,6 +44,7 @@ import {
 } from '../../../store/onboarding/actions'
 import { setProfileInfo } from '../../../store/profile/actions'
 import { setAvailableColors } from '../../../store/colors/actions'
+import configuredStore from '../../../store'
 
 export function uploadInfo({ name, city, color, emoji }) {
 	return async (dispatch, getState) => {
@@ -67,7 +66,6 @@ export function uploadInfo({ name, city, color, emoji }) {
 			)
 			dispatch(uploadInfoSuccess(result))
 			if (Platform.OS === 'android') {
-				register(configuredStore)
 				const questionsToBeAnswered = getState().onboarding.questions
 				if (questionsToBeAnswered.length === 0) {
 					navigateAndResetNavigation(PAGES_NAMES.HOME_PAGE)
@@ -149,6 +147,12 @@ export const sendVerificationCode = (
 		dispatch(setAvailableColors(availableColors))
 		dispatch(setProfileInfo(userInfoWithoutToken))
 		dispatch(updateOnboardingConfig(onboardingMaxSteps, onboardingSteps))
+		if (destinationPageForUser === PAGES_NAMES.HOME_PAGE) {
+			pushService.initialize(
+				configuredStore,
+				userInfoWithoutToken.id.toString()
+			)
+		}
 		navigateAndResetNavigation(destinationPageForUser, {
 			goBackArrowDisabled: true
 		})
