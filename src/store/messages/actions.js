@@ -1,14 +1,19 @@
 import {
 	ADD_NEW_MESSAGE_TO_CHAT,
+	ADD_NEW_MESSAGE_TO_CHAT_FROM_PUSH_NOTIFICATION_CLEAR_UNREAD_COUNTER,
+	ADD_NEW_MESSAGE_TO_CHAT_FROM_PUSH_NOTIFICATION_INCREMENT_UNREAD_COUNTER,
 	FETCH_CHATS_FAILURE,
 	FETCH_CHATS_REQUEST,
 	FETCH_CHATS_SUCCESS,
 	FETCH_CHAT_DETAILS_FAILURE,
 	FETCH_CHAT_DETAILS_REQUEST,
-	FETCH_CHAT_DETAILS_SUCCESS,
+	FETCH_CHAT_DETAILS_SUCCESS_MISSING_MESSAGES,
+	FETCH_CHAT_DETAILS_SUCCESS_LATEST_MESSAGES_CLEAN_HISTORY,
+	FETCH_CHAT_DETAILS_SUCCESS_PREVIOUS_MESSAGES,
 	SEND_TEXT_CHAT_MESSAGE_FAILURE,
 	SEND_TEXT_CHAT_MESSAGE_REQUEST,
-	SEND_TEXT_CHAT_MESSAGE_SUCCESS
+	SEND_TEXT_CHAT_MESSAGE_SUCCESS,
+	SWITCH_CHAT
 } from './action-types'
 
 export function fetchChatsStarted() {
@@ -35,8 +40,18 @@ export const fetchChatDetailsStarted = () => ({
 	type: FETCH_CHAT_DETAILS_REQUEST
 })
 
-export const fetchChatDetailsSuccess = chatDetails => ({
-	type: FETCH_CHAT_DETAILS_SUCCESS,
+export const fetchChatDetailsLatestMessagesWithCleanHistorySuccess = chatDetails => ({
+	type: FETCH_CHAT_DETAILS_SUCCESS_LATEST_MESSAGES_CLEAN_HISTORY,
+	payload: chatDetails
+})
+
+export const fetchChatDetailsPreviousMessagesSuccess = chatDetails => ({
+	type: FETCH_CHAT_DETAILS_SUCCESS_PREVIOUS_MESSAGES,
+	payload: chatDetails
+})
+
+export const fetchChatDetailsMissingMessagesSuccess = chatDetails => ({
+	type: FETCH_CHAT_DETAILS_SUCCESS_MISSING_MESSAGES,
 	payload: chatDetails
 })
 
@@ -63,4 +78,35 @@ export const addNewMessageToChat = (newMessage, chatId) => ({
 		message: newMessage,
 		chatId
 	}
+})
+
+export const addNewMessageToChatFromPushNotificationClearUnread = (
+	newMessages,
+	chatDetails,
+	chatId
+) => ({
+	type: ADD_NEW_MESSAGE_TO_CHAT_FROM_PUSH_NOTIFICATION_CLEAR_UNREAD_COUNTER,
+	payload: {
+		messages: newMessages,
+		chat: chatDetails,
+		chatId
+	}
+})
+
+export const addNewMessageToChatFromPushNotificationIncrementUnread = (
+	newMessages,
+	chatDetails,
+	chatId
+) => ({
+	type: ADD_NEW_MESSAGE_TO_CHAT_FROM_PUSH_NOTIFICATION_INCREMENT_UNREAD_COUNTER,
+	payload: {
+		messages: newMessages,
+		chat: chatDetails,
+		chatId
+	}
+})
+
+export const switchChat = chatId => ({
+	type: SWITCH_CHAT,
+	payload: chatId
 })

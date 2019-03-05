@@ -11,9 +11,7 @@ import {
 	navigate,
 	navigateAndResetNavigation
 } from '../../../services/navigationService'
-import { register } from '../../../services/pushNotificationService'
 import { showErrorToast } from '../../../services/toastService'
-import configuredStore from '../../../store'
 import I18n from '../../../../locales/i18n'
 import {
 	clearPhoneNumberError,
@@ -67,7 +65,6 @@ export function uploadInfo({ name, city, color, emoji }) {
 			)
 			dispatch(uploadInfoSuccess(result))
 			if (Platform.OS === 'android') {
-				register(configuredStore)
 				const questionsToBeAnswered = getState().onboarding.questions
 				if (questionsToBeAnswered.length === 0) {
 					navigateAndResetNavigation(PAGES_NAMES.HOME_PAGE)

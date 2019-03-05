@@ -7,6 +7,7 @@ import { Provider } from 'react-redux'
 import configureApi from './src/config/config'
 import { AppStackNavigatorWithGlobalSupport } from './src/navigation/pages'
 import configuredStore from './src/store'
+import { pushService } from './src/services'
 
 import { COLORS } from './src/styles'
 
@@ -28,6 +29,10 @@ EStyleSheet.build({
 })
 
 export default class App extends React.Component {
+	componentWillUnmount() {
+		pushService.cleanUp()
+	}
+
 	render() {
 		return (
 			<Provider store={store}>

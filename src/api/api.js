@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { tokenService } from '../services'
+import { CHAT_MESSAGES_PAGE_LIMIT } from '../enums'
 
 export default {
 	fetchRounds: async () => {
@@ -18,10 +19,10 @@ export default {
 			)
 			.then(result => result.data)
 	},
-	fetchRoundChats: async roundId => {
+	fetchChats: async () => {
 		const authToken = await tokenService.getToken()
 		return axios
-			.get(`rounds/${roundId}/chats`, {
+			.get(`chats/`, {
 				headers: { 'X-Authorization': `Bearer ${authToken}` }
 			})
 			.then(result => result.data)
@@ -122,10 +123,23 @@ export default {
 			.get('colors/', { headers: { 'X-Authorization': `Bearer ${authToken}` } })
 			.then(result => result.data)
 	},
-	getChatMessages: async chatId => {
+	getChatMessages: async (
+		chatId,
+		{ lastMessageId, untilMessageId, limit } = {}
+	) => {
 		const authToken = await tokenService.getToken()
+		const params = {
+			limit: limit || CHAT_MESSAGES_PAGE_LIMIT
+		}
+		if (lastMessageId) {
+			params.from_message = lastMessageId
+		}
+		if (untilMessageId) {
+			params.until_message = untilMessageId
+		}
 		return axios
 			.get(`chats/${chatId}/`, {
+				params,
 				headers: { 'X-Authorization': `Bearer ${authToken}` }
 			})
 			.then(result => result.data)

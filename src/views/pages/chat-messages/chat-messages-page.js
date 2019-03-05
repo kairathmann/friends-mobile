@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import React from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
@@ -21,7 +22,23 @@ import {
 	createErrorMessageSelector,
 	createLoadingSelector
 } from '../../../store/utils/selectors'
-import { fetchChatDetails, sendTextMessage } from './scenario-actions'
+import {
+	fetchChatDetailsLatestCleanHistory,
+	fetchChatDetailsMissingMessages,
+	fetchChatDetailsPreviousMessages,
+	sendTextMessage,
+	switchChatInstance
+} from './scenario-actions'
+
+const DEFAULT_CHAT_OBJECT = {
+	fetchedAllPossiblePastMessages: false,
+	id: 0,
+	roundId: 0,
+	type: '',
+	lastReadMessageId: 0,
+	users: [],
+	messages: []
+}
 
 class ChatMessagesPage extends React.Component {
 	__mounted = false
@@ -33,8 +50,16 @@ class ChatMessagesPage extends React.Component {
 		partnerInfo: this.props.navigation.getParam('partnerInfo')
 	}
 
-	fetchChatMessages = () => {
-		this.props.fetchChatDetails(this.state.chatId)
+	fetchChatDetailsMissingMessages = () => {
+		this.props.fetchChatDetailsMissingMessages(this.state.chatId)
+	}
+
+	fetchChatMessagesLatestWithCleanHistory = () => {
+		this.props.fetchChatDetailsLatestCleanHistory(this.state.chatId)
+	}
+
+	fetchPreviousChatMessages = () => {
+		this.props.fetchChatDetailsPreviousMessages(this.state.chatId)
 	}
 
 	onSuccessMessageSend = () => {
@@ -45,6 +70,7 @@ class ChatMessagesPage extends React.Component {
 	}
 
 	sendNewMessage = () => {
+		this.scrollToTheBottom()
 		const { chatId, textMessageInputValue } = this.state
 		this.props.sendNewMessage(
 			chatId,
@@ -55,16 +81,37 @@ class ChatMessagesPage extends React.Component {
 
 	componentDidMount() {
 		this.__mounted = true
-		this.fetchChatMessages()
+		this.props.switchChatInstance(this.state.chatId)
+		if (this.props.chatDetails.messages.length === 0) {
+			this.fetchChatMessagesLatestWithCleanHistory()
+		} else {
+			this.fetchChatDetailsMissingMessages()
+		}
 	}
 
 	componentWillUnmount() {
 		this.__mounted = false
 	}
 
+	onEndReached = () => {
+		// fetch more only if there is anything more to fetch
+		// if at any point request returns empty messages array that means
+		// that we have reached all previous messages
+		// This is also done because React Native's FlatList returns mulitple time that
+		// user has reached the end when there is no more extra data after fetch
+		// so we are guarding against mulitple requests to server that wouldn't
+		// return anything new
+		if (
+			!this.props.chatDetails.fetchedAllPossiblePastMessages &&
+			!this.props.isLoading
+		) {
+			this.fetchPreviousChatMessages()
+		}
+	}
+
 	scrollToTheBottom = () => {
 		if (this.flatListInstance && this.__mounted) {
-			this.flatListInstance.scrollToEnd({ animated: true })
+			this.flatListInstance.scrollToOffset({ x: 0, y: 0, animated: true })
 		}
 	}
 
@@ -103,13 +150,12 @@ class ChatMessagesPage extends React.Component {
 	renderMessagesList = () => (
 		<FlatList
 			ref={ref => (this.flatListInstance = ref)}
-			onContentSizeChange={this.scrollToTheBottom}
-			onLayout={this.scrollToTheBottom}
+			inverted
 			keyExtractor={item => `message-item-index-${item.id}`}
-			onRefresh={this.fetchChatMessages}
-			refreshing={this.props.isLoading}
+			onEndReachedThreshold={0.6}
+			onEndReached={this.onEndReached}
 			contentContainerStyle={styles.scrollViewContainer}
-			data={this.props.chatDetails.messages}
+			data={_.orderBy(this.props.chatDetails.messages, 'id', 'desc')}
 			initialNumToRender={40}
 			renderItem={({ item }) => (
 				<TextMessage
@@ -131,13 +177,13 @@ class ChatMessagesPage extends React.Component {
 			onTextMessageChange={this.onTextMessageChange}
 			sendButtonDisabled={
 				this.state.textMessageInputValue.length === 0 ||
-				this.props.isSendingNewTextMessage
+				this.props.isSendingNewTextMessage ||
+				this.props.isLoading
 			}
 		/>
 	)
 
 	render() {
-		const { isLoading } = this.props
 		return (
 			<React.Fragment>
 				<StatusBar
@@ -152,12 +198,8 @@ class ChatMessagesPage extends React.Component {
 					>
 						<Container style={commonStyles.content}>
 							{this.renderPartnerInfoHeader()}
-							{!isLoading && (
-								<React.Fragment>
-									{this.renderMessagesList()}
-									{this.renderNewMessagesInputs()}
-								</React.Fragment>
-							)}
+							{this.renderMessagesList()}
+							{this.renderNewMessagesInputs()}
 						</Container>
 					</KeyboardAvoidingView>
 				</SafeAreaView>
@@ -166,21 +208,15 @@ class ChatMessagesPage extends React.Component {
 	}
 }
 
-//TODO: SMOOTH HEADER TRANSITION SOMEHOW
 const styles = EStyleSheet.create({
 	keyboardAwareContainer: {
 		flex: 1
 	},
 	partnerInfoHeaderContainer: {
-		zIndex: 900,
-		left: 0,
-		top: 0,
-		position: 'absolute',
 		paddingLeft: 25,
 		paddingRight: 12,
 		paddingTop: 8,
 		paddingBottom: 8,
-		marginBottom: 20,
 		backgroundColor: 'rgba(17,21,28,0.9)',
 		justifyContent: 'space-between',
 		alignItems: 'center',
@@ -210,8 +246,9 @@ const styles = EStyleSheet.create({
 ChatMessagesPage.propTypes = {
 	navigation: PropTypes.object.isRequired,
 	chatDetails: PropTypes.shape({
+		fetchedAllPossiblePastMessages: PropTypes.bool.isRequired,
 		id: PropTypes.number.isRequired,
-		roundId: PropTypes.number.isRequired,
+		roundId: PropTypes.number,
 		lastReadMessageId: PropTypes.number,
 		messages: PropTypes.arrayOf(
 			PropTypes.shape({
@@ -226,14 +263,54 @@ ChatMessagesPage.propTypes = {
 		)
 	}),
 	isLoading: PropTypes.bool.isRequired,
-	fetchChatDetails: PropTypes.func.isRequired,
+	fetchChatDetailsLatestCleanHistory: PropTypes.func.isRequired,
+	fetchChatDetailsMissingMessages: PropTypes.func.isRequired,
+	fetchChatDetailsPreviousMessages: PropTypes.func.isRequired,
 	sendNewMessage: PropTypes.func.isRequired,
+	switchChatInstance: PropTypes.func.isRequired,
 	isSendingNewTextMessage: PropTypes.bool.isRequired
 }
 
-const mapStateToProps = state => {
+const areTwoDaysTheSameDay = (d1, d2) =>
+	d1.getFullYear() === d2.getFullYear() &&
+	d1.getMonth() === d2.getMonth() &&
+	d1.getDate() === d2.getDate()
+
+const mapStateToProps = (state, ownProps) => {
+	const chatDetailsRegular =
+		state.messages.chatsHistory[ownProps.navigation.getParam('chatId')] ||
+		DEFAULT_CHAT_OBJECT
+	const chatDetailsMessagesTempDate = chatDetailsRegular.messages.map(
+		message => ({
+			...message,
+			tempDate: new Date(message.timestamp)
+		})
+	)
+	const chatDetailsMessagesRemapped = chatDetailsMessagesTempDate.map(
+		(message, index) => {
+			const prevMessage =
+				index - 1 > 0 ? chatDetailsMessagesTempDate[index - 1] : null
+			const nextMessage =
+				index + 1 < chatDetailsMessagesTempDate.length
+					? chatDetailsMessagesTempDate[index + 1]
+					: null
+			return {
+				...message,
+				nextMessageBelongsToTheSameUser: nextMessage
+					? nextMessage.senderId === message.senderId
+					: true,
+				isTheSameDayAsPrevious: prevMessage
+					? areTwoDaysTheSameDay(prevMessage.tempDate, message.tempDate)
+					: true
+			}
+		}
+	)
+	const chatDetailsRemapped = {
+		...chatDetailsRegular,
+		messages: chatDetailsMessagesRemapped
+	}
 	return {
-		chatDetails: state.messages.currentChatDetails,
+		chatDetails: chatDetailsRemapped,
 		error: createErrorMessageSelector(['FETCH_CHAT_DETAILS'])(state),
 		isLoading: createLoadingSelector(['FETCH_CHAT_DETAILS'])(state),
 		isSendingNewTextMessage: createLoadingSelector(['SEND_TEXT_CHAT_MESSAGE'])(
@@ -244,9 +321,15 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
 	return {
-		fetchChatDetails: chatId => dispatch(fetchChatDetails(chatId)),
+		fetchChatDetailsLatestCleanHistory: chatId =>
+			dispatch(fetchChatDetailsLatestCleanHistory(chatId)),
+		fetchChatDetailsMissingMessages: chatId =>
+			dispatch(fetchChatDetailsMissingMessages(chatId)),
+		fetchChatDetailsPreviousMessages: chatId =>
+			dispatch(fetchChatDetailsPreviousMessages(chatId)),
 		sendNewMessage: (chatId, text, successCallback) =>
-			dispatch(sendTextMessage(chatId, text, successCallback))
+			dispatch(sendTextMessage(chatId, text, successCallback)),
+		switchChatInstance: chatId => dispatch(switchChatInstance(chatId))
 	}
 }
 

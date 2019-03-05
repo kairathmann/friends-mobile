@@ -1,5 +1,5 @@
 import SplashScreen from 'react-native-splash-screen'
-import * as _ from 'lodash'
+import _ from 'lodash'
 import api from '../../../api/api'
 import { navigationService, tokenService } from '../../../services'
 import { PAGES_NAMES } from '../../../navigation/pages'

@@ -30,6 +30,10 @@ export const navigate = (routeName, params) => {
 	)
 }
 
+export const replace = (routeName, params) => {
+	_navigator.dispatch(StackActions.replace({ routeName, params }))
+}
+
 export const getUserLandingPageBasedOnUserInfo = userInfo => {
 	if (!userInfo.color || userInfo.emoji === '') {
 		return PAGES_NAMES.IDENTIFICATION_PAGE
@@ -38,6 +42,13 @@ export const getUserLandingPageBasedOnUserInfo = userInfo => {
 		return PAGES_NAMES.BASEINFO_PAGE
 	}
 	return PAGES_NAMES.HOME_PAGE
+}
+
+export const getCurrentPage = () => {
+	const currentRoutes = _navigator.state.nav.routes
+	return currentRoutes.length > 0
+		? currentRoutes[currentRoutes.length - 1].routeName
+		: ''
 }
 
 export const calculateOnboardingSteps = (

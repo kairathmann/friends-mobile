@@ -1,6 +1,13 @@
 import * as navigationService from './navigationService'
 import * as toastService from './toastService'
-import * as pushServices from './pushNotificationService'
+import * as pushService from './pushNotificationService'
 import * as tokenService from './tokenService'
+import * as chatsService from './chatsService'
 
-export { navigationService, toastService, pushServices, tokenService }
+export {
+	chatsService,
+	navigationService,
+	toastService,
+	pushService,
+	tokenService
+}
