@@ -15,6 +15,7 @@ const initialState = {
 	firstName: '',
 	username: '',
 	color: '',
+	notificationId: '',
 	emoji: DEFAULT_EMOJIS[0],
 	questions: {
 		answered: [],

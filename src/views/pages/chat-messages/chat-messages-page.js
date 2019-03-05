@@ -155,7 +155,7 @@ class ChatMessagesPage extends React.Component {
 			onEndReachedThreshold={0.6}
 			onEndReached={this.onEndReached}
 			contentContainerStyle={styles.scrollViewContainer}
-			data={_.orderBy(this.props.chatDetails.messages, 'timestamp', 'desc')}
+			data={_.orderBy(this.props.chatDetails.messages, 'id', 'desc')}
 			initialNumToRender={40}
 			renderItem={({ item }) => (
 				<TextMessage
@@ -271,11 +271,46 @@ ChatMessagesPage.propTypes = {
 	isSendingNewTextMessage: PropTypes.bool.isRequired
 }
 
+const areTwoDaysTheSameDay = (d1, d2) =>
+	d1.getFullYear() === d2.getFullYear() &&
+	d1.getMonth() === d2.getMonth() &&
+	d1.getDate() === d2.getDate()
+
 const mapStateToProps = (state, ownProps) => {
+	const chatDetailsRegular =
+		state.messages.chatsHistory[ownProps.navigation.getParam('chatId')] ||
+		DEFAULT_CHAT_OBJECT
+	const chatDetailsMessagesTempDate = chatDetailsRegular.messages.map(
+		message => ({
+			...message,
+			tempDate: new Date(message.timestamp)
+		})
+	)
+	const chatDetailsMessagesRemapped = chatDetailsMessagesTempDate.map(
+		(message, index) => {
+			const prevMessage =
+				index - 1 > 0 ? chatDetailsMessagesTempDate[index - 1] : null
+			const nextMessage =
+				index + 1 < chatDetailsMessagesTempDate.length
+					? chatDetailsMessagesTempDate[index + 1]
+					: null
+			return {
+				...message,
+				nextMessageBelongsToTheSameUser: nextMessage
+					? nextMessage.senderId === message.senderId
+					: true,
+				isTheSameDayAsPrevious: prevMessage
+					? areTwoDaysTheSameDay(prevMessage.tempDate, message.tempDate)
+					: true
+			}
+		}
+	)
+	const chatDetailsRemapped = {
+		...chatDetailsRegular,
+		messages: chatDetailsMessagesRemapped
+	}
 	return {
-		chatDetails:
-			state.messages.chatsHistory[ownProps.navigation.getParam('chatId')] ||
-			DEFAULT_CHAT_OBJECT,
+		chatDetails: chatDetailsRemapped,
 		error: createErrorMessageSelector(['FETCH_CHAT_DETAILS'])(state),
 		isLoading: createLoadingSelector(['FETCH_CHAT_DETAILS'])(state),
 		isSendingNewTextMessage: createLoadingSelector(['SEND_TEXT_CHAT_MESSAGE'])(

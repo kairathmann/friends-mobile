@@ -30,6 +30,10 @@ export const navigate = (routeName, params) => {
 	)
 }
 
+export const replace = (routeName, params) => {
+	_navigator.dispatch(StackActions.replace({ routeName, params }))
+}
+
 export const getUserLandingPageBasedOnUserInfo = userInfo => {
 	if (!userInfo.color || userInfo.emoji === '') {
 		return PAGES_NAMES.IDENTIFICATION_PAGE

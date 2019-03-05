@@ -1,6 +1,10 @@
 import OneSignal from 'react-native-onesignal'
 import Config from 'react-native-config'
-import { addNewMessageToChatFromSender } from '../views/pages/chat-messages/scenario-actions'
+import {
+	addNewMessagesToChatFromSender,
+	openChatPageFromNotification
+} from '../views/pages/chat-messages/scenario-actions'
+import { chatsService } from '../services'
 let reduxStore
 
 export const initialize = (store, userId) => {
@@ -26,35 +30,28 @@ const onNotificationReceived = notification => {
 	const notificationPayload = notification.payload
 	const messageData = notificationPayload.additionalData
 	const chatId = messageData.chat_id
-	const newMessagePayload = {
-		chat: {
-			id: messageData.chat_id,
-			type: messageData.chat_type,
-			roundId: messageData.round_id || '',
-			partnerName: messageData.message_sender.first_name,
-			partnerColor: {
-				id: messageData.message_sender.color.id,
-				hexValue: messageData.message_sender.color.hex_value
-			},
-			partnerEmoji: messageData.message_sender.emoji,
-			feedback: {
-				show: false,
-				given: false
-			}
-		},
-		message: {
-			id: messageData.message_id,
-			timestamp: messageData.message_timestamp,
-			text: messageData.message_text,
-			sender: messageData.message_sender.id
-		}
-	}
-	reduxStore.dispatch(addNewMessageToChatFromSender(chatId, newMessagePayload))
+	const remappedNotificationData = chatsService.remapChatMessageNotificationToChatMessageFormat(
+		[messageData]
+	)
+	reduxStore.dispatch(
+		addNewMessagesToChatFromSender(chatId, remappedNotificationData)
+	)
 }
 
 const onNotificationOpened = openResult => {
-	console.log('Message: ', openResult.notification.payload.body)
-	console.log('Data: ', openResult.notification.payload.additionalData)
-	console.log('isActive: ', openResult.notification.isAppInFocus)
-	console.log('openResult: ', openResult)
+	const { notification } = openResult
+	const openedNotificationGroup =
+		notification.groupedNotifications &&
+		notification.groupedNotifications.length > 0
+	const notificationMessages = openedNotificationGroup
+		? notification.groupedNotifications.map(data => data.additionalData)
+		: [notification.payload.additionalData]
+	const remappedNotificationData = chatsService.remapChatMessageNotificationToChatMessageFormat(
+		notificationMessages
+	)
+	const chatId = remappedNotificationData.chat.id
+	const chatType = remappedNotificationData.chat.type
+	reduxStore.dispatch(
+		openChatPageFromNotification(chatId, chatType, remappedNotificationData)
+	)
 }

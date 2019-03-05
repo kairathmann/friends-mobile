@@ -59,11 +59,11 @@ export default function messageReducer(
 					unread: chat.id === payload.id ? 0 : chat.unread,
 					lastMessage:
 						chat.id === payload.id && payload.messages.length > 0
-							? payload.messages[0].text
+							? payload.messages[payload.messages.length - 1].text
 							: chat.lastMessage,
 					lastRead:
 						chat.id === payload.id && payload.messages.length > 0
-							? payload.messages[0].timestamp
+							? payload.messages[payload.messages.length - 1].timestamp
 							: chat.lastRead
 				}))
 			}
@@ -76,7 +76,7 @@ export default function messageReducer(
 						return {
 							...value,
 							...payload,
-							messages: [...value.messages, ...payload.messages],
+							messages: [...payload.messages, ...value.messages],
 							fetchedAllPossiblePastMessages: payload.messages.length === 0
 						}
 					}
@@ -91,7 +91,7 @@ export default function messageReducer(
 						return {
 							...value,
 							...payload,
-							messages: [...payload.messages, ...value.messages]
+							messages: [...value.messages, ...payload.messages]
 						}
 					}
 					return value
@@ -101,11 +101,11 @@ export default function messageReducer(
 					unread: chat.id === payload.id ? 0 : chat.unread,
 					lastMessage:
 						chat.id === payload.id && payload.messages.length > 0
-							? payload.messages[0].text
+							? payload.messages[payload.messages.length - 1].text
 							: chat.lastMessage,
 					lastRead:
 						chat.id === payload.id && payload.messages.length > 0
-							? payload.messages[0].timestamp
+							? payload.messages[payload.messages.length - 1].timestamp
 							: chat.lastRead
 				}))
 			}
@@ -116,20 +116,32 @@ export default function messageReducer(
 					if (value.id === payload.chatId) {
 						return {
 							...value,
-							messages: _.unionBy([payload.message, ...value.messages], 'id')
+							messages: _.orderBy(
+								_.unionBy([...value.messages, ...payload.messages], 'id'),
+								'id',
+								'asc'
+							)
 						}
 					}
 					return value
 				}),
-				chats: clearUnreadCount(state.chats, payload.chatId, payload.message)
+				chats: clearUnreadCount(
+					state.chats,
+					payload.chatId,
+					payload.messages[payload.messages.length - 1]
+				)
 			}
 		case ADD_NEW_MESSAGE_TO_CHAT_FROM_PUSH_NOTIFICATION_INCREMENT_UNREAD_COUNTER: {
 			const chatAlreadyExists =
 				state.chats.findIndex(chat => chat.id === payload.chatId) !== -1
-			const { chatId, message, chat } = payload
+			const { chatId, messages, chat } = payload
 			let updatedChats = []
 			if (chatAlreadyExists) {
-				updatedChats = incrementUnreadCount(state.chats, chatId, message)
+				updatedChats = incrementUnreadCount(
+					state.chats,
+					chatId,
+					messages[messages.length - 1]
+				)
 			} else {
 				updatedChats = [
 					...state.chats,
@@ -140,8 +152,8 @@ export default function messageReducer(
 						chat.partnerName,
 						chat.partnerColor,
 						chat.partnerEmoji,
-						message.text,
-						message.timestamp,
+						messages[messages.length - 1].text,
+						messages[messages.length - 1].timestamp,
 						1
 					)
 				]
@@ -152,7 +164,11 @@ export default function messageReducer(
 					if (value.id === payload.chatId) {
 						return {
 							...value,
-							messages: _.unionBy([payload.message, ...value.messages], 'id')
+							messages: _.orderBy(
+								_.unionBy([...value.messages, ...payload.messages], 'id'),
+								'id',
+								'asc'
+							)
 						}
 					}
 					return value
@@ -167,7 +183,11 @@ export default function messageReducer(
 					if (value.id === payload.chatId) {
 						return {
 							...value,
-							messages: [payload.message, ...value.messages]
+							messages: _.orderBy(
+								[...value.messages, payload.message],
+								'id',
+								'asc'
+							)
 						}
 					}
 					return value

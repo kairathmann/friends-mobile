@@ -24,6 +24,8 @@ import * as FONTS_STYLES from '../../../styles/fontStyles'
 import { LUMINOS_ACCENT } from '../../../styles/colors'
 import { fetchMyRounds, joinRound, resignRound } from './scenario-actions'
 import { fetchChats } from '../../../components/ConversationWaitroom/scenario-actions'
+import configuredStore from '../../../store'
+import { pushService } from '../../../services'
 
 const JoinRoundButton = ({ onPress }) => (
 	<UserColorAwareComponent>
@@ -80,6 +82,7 @@ class HomePage extends React.Component {
 	componentDidMount() {
 		this.fetchRounds()
 		this.fetchChats()
+		pushService.initialize(configuredStore, this.props.notificationId)
 	}
 
 	fetchChats = this.props.fetchChats
@@ -272,7 +275,8 @@ HomePage.propTypes = {
 	currentRounds: PropTypes.array.isRequired,
 	joinRound: PropTypes.func.isRequired,
 	isLoading: PropTypes.bool.isRequired,
-	resignRound: PropTypes.func.isRequired
+	resignRound: PropTypes.func.isRequired,
+	notificationId: PropTypes.string.isRequired
 }
 
 const mapStateToProps = state => {
@@ -281,7 +285,8 @@ const mapStateToProps = state => {
 		isLoading: createLoadingSelector(['FETCH_MY_ROUNDS'])(state),
 		pastRounds: state.rounds.pastRounds,
 		currentRounds: state.rounds.currentRounds,
-		futureRounds: state.rounds.futureRounds
+		futureRounds: state.rounds.futureRounds,
+		notificationId: state.profile.notificationId
 	}
 }
 

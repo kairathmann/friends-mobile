@@ -1,4 +1,5 @@
 import { DEFAULT_EMOJIS } from '../enums'
+import _ from 'lodash'
 import moment from 'moment'
 
 const remapChats = (chats, profileId, defaultColor) => {
@@ -53,4 +54,44 @@ const remapSingleChat = (
 	}
 }
 
-export { remapChats, remapSingleChat }
+const remapChatMessageNotificationToChatMessageFormat = notificationsPayload => {
+	if (notificationsPayload.length === 0) {
+		return ''
+	}
+	const firstMessage = notificationsPayload[0]
+	const chat = {
+		id: firstMessage.chat_id,
+		type: firstMessage.chat_type,
+		roundId: firstMessage.round_id || '',
+		partnerName: firstMessage.message_sender.first_name,
+		partnerColor: {
+			id: firstMessage.message_sender.color.id,
+			hexValue: firstMessage.message_sender.color.hex_value
+		},
+		partnerEmoji: firstMessage.message_sender.emoji,
+		feedback: {
+			show: false,
+			given: false
+		}
+	}
+	const messages = _.orderBy(
+		notificationsPayload.map(notification => ({
+			id: notification.message_id,
+			timestamp: notification.message_timestamp,
+			text: notification.message_text,
+			sender: notification.message_sender.id
+		})),
+		'id',
+		'asc'
+	)
+	return {
+		chat,
+		messages
+	}
+}
+
+export {
+	remapChatMessageNotificationToChatMessageFormat,
+	remapChats,
+	remapSingleChat
+}

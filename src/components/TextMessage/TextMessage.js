@@ -5,11 +5,7 @@ import EStyleSheet from 'react-native-extended-stylesheet'
 import moment from 'moment'
 import { createFontStyle, FONTS } from '../../styles'
 
-export default class TextMessage extends React.Component {
-	shouldComponentUpdate = nextProps => {
-		return nextProps.text !== this.props.text
-	}
-
+export default class TextMessage extends React.PureComponent {
 	renderTimeDivider = () => (
 		<View style={styles.dividerContainer}>
 			<Text style={styles.divider}>

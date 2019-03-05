@@ -4,7 +4,7 @@ import { Answers } from 'react-native-fabric'
 import api from '../../../api/api'
 import { getErrorDataFromNetworkException } from '../../../common/utils'
 import { PAGES_NAMES } from '../../../navigation/pages'
-import { pushService, tokenService } from '../../../services'
+import { tokenService } from '../../../services'
 import {
 	calculateOnboardingSteps,
 	getUserLandingPageBasedOnUserInfo,
@@ -44,7 +44,6 @@ import {
 } from '../../../store/onboarding/actions'
 import { setProfileInfo } from '../../../store/profile/actions'
 import { setAvailableColors } from '../../../store/colors/actions'
-import configuredStore from '../../../store'
 
 export function uploadInfo({ name, city, color, emoji }) {
 	return async (dispatch, getState) => {
@@ -147,12 +146,6 @@ export const sendVerificationCode = (
 		dispatch(setAvailableColors(availableColors))
 		dispatch(setProfileInfo(userInfoWithoutToken))
 		dispatch(updateOnboardingConfig(onboardingMaxSteps, onboardingSteps))
-		if (destinationPageForUser === PAGES_NAMES.HOME_PAGE) {
-			pushService.initialize(
-				configuredStore,
-				userInfoWithoutToken.id.toString()
-			)
-		}
 		navigateAndResetNavigation(destinationPageForUser, {
 			goBackArrowDisabled: true
 		})

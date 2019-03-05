@@ -81,26 +81,26 @@ export const addNewMessageToChat = (newMessage, chatId) => ({
 })
 
 export const addNewMessageToChatFromPushNotificationClearUnread = (
-	newMessage,
+	newMessages,
 	chatDetails,
 	chatId
 ) => ({
 	type: ADD_NEW_MESSAGE_TO_CHAT_FROM_PUSH_NOTIFICATION_CLEAR_UNREAD_COUNTER,
 	payload: {
-		message: newMessage,
+		messages: newMessages,
 		chat: chatDetails,
 		chatId
 	}
 })
 
 export const addNewMessageToChatFromPushNotificationIncrementUnread = (
-	newMessage,
+	newMessages,
 	chatDetails,
 	chatId
 ) => ({
 	type: ADD_NEW_MESSAGE_TO_CHAT_FROM_PUSH_NOTIFICATION_INCREMENT_UNREAD_COUNTER,
 	payload: {
-		message: newMessage,
+		messages: newMessages,
 		chat: chatDetails,
 		chatId
 	}
