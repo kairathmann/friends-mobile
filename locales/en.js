@@ -50,9 +50,9 @@ export default {
 		chat_message_send_fail: "Couldn't send message. Try again later."
 	},
 	navigator: {
-		home: 'Luminos',
-		profile: 'Profile',
-		chat: 'Chat'
+		home: 'luminos',
+		account: 'account',
+		chat: 'chat'
 	},
 	tabs: {
 		questions: 'Unanswered',
