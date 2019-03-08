@@ -2,15 +2,13 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import { Text, View } from 'react-native'
 import EStyleSheet from 'react-native-extended-stylesheet'
-import moment from 'moment'
 import { createFontStyle, FONTS } from '../../styles'
+import { TimeFormatter } from '../TimeFormatters'
 
 export default class TextMessage extends React.PureComponent {
 	renderTimeDivider = () => (
 		<View style={styles.dividerContainer}>
-			<Text style={styles.divider}>
-				{moment(this.props.timestamp).format('ddd, HH:mm')}
-			</Text>
+			<TimeFormatter style={styles.divider} dateTime={this.props.timestamp} />
 		</View>
 	)
 

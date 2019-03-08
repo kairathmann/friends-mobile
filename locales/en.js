@@ -40,14 +40,10 @@ export default {
 			'This email address has not been used for the December 2018 experiments on Telegram.',
 		city_missing: 'City field is missing',
 		first_name_missing: 'Name field is missing',
-		cannot_join: 'Cannot join to this round',
-		cannot_resign: 'Your request failed. Try again later',
 		answer_ids_invalid: "Couldn't save your answer. Try again",
 		answer_ids_unknown: 'There is no such answer',
 		cannot_fetch_chats: 'Cannot fetch chats. Try again later.',
-		invalid_round: 'Round does not exist, please refresh list',
 		user_not_subscribed: "You haven't signed up for this round",
-		round_hasnt_started: "Round hasn't started yet",
 		invalid_message_limit: 'Cannot fetch messages. Try again later.',
 		invalid_from_message: 'Cannot fetch messages. Try again later.',
 		cannot_fetch_messages: 'Cannot fetch messages. Try again later.',
@@ -59,8 +55,6 @@ export default {
 		chat: 'Chat'
 	},
 	tabs: {
-		current: 'Current',
-		my: 'My rounds',
 		questions: 'Unanswered',
 		questions_answered: 'Answered'
 	}

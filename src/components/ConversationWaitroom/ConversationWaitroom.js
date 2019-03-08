@@ -16,6 +16,7 @@ import { LATO } from '../../styles/fonts'
 import ChatItem from '../ChatItem/ChatItem'
 import { fetchChats } from './scenario-actions'
 import { PAGES_NAMES } from '../../navigation/pages'
+import TimeFormatterRoundBounds from '../TimeFormatters'
 
 class ConversationWaitroom extends React.Component {
 	onChatClick = chat => {
@@ -84,7 +85,10 @@ class ConversationWaitroom extends React.Component {
 				>
 					<View style={styles.contentContainer}>
 						{!pastChats && (
-							<Text style={styles.title}>{I18n.t('home.meet_matches')}</Text>
+							<React.Fragment>
+								<TimeFormatterRoundBounds />
+								<Text style={styles.title}>{I18n.t('home.meet_matches')}</Text>
+							</React.Fragment>
 						)}
 						{chats.length > 0 && this.renderChatItems()}
 					</View>
@@ -114,7 +118,7 @@ const styles = EStyleSheet.create({
 		textAlign: 'center',
 		letterSpacing: 0.5,
 		color: 'white',
-		padding: 16
+		paddingBottom: 16
 	},
 	botContainer: {
 		marginTop: 16,

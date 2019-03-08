@@ -9,32 +9,12 @@ export default {
 			.get('rounds/', { headers: { 'X-Authorization': `Bearer ${authToken}` } })
 			.then(result => result.data)
 	},
-	joinRound: async round => {
-		const authToken = await tokenService.getToken()
-		return axios
-			.post(
-				'rounds/subscribe/',
-				{ round_id: round.id, is_subscribed: true },
-				{ headers: { 'X-Authorization': `Bearer ${authToken}` } }
-			)
-			.then(result => result.data)
-	},
 	fetchChats: async () => {
 		const authToken = await tokenService.getToken()
 		return axios
 			.get(`chats/`, {
 				headers: { 'X-Authorization': `Bearer ${authToken}` }
 			})
-			.then(result => result.data)
-	},
-	resignRound: async round => {
-		const authToken = await tokenService.getToken()
-		return axios
-			.post(
-				'rounds/subscribe/',
-				{ round_id: round.id, is_subscribed: false },
-				{ headers: { 'X-Authorization': `Bearer ${authToken}` } }
-			)
 			.then(result => result.data)
 	},
 	fetchSelf: async () => {
