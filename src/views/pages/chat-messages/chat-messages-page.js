@@ -13,6 +13,7 @@ import { SafeAreaView } from 'react-navigation'
 import EStyleSheet from 'react-native-extended-stylesheet'
 
 import UserAvatar from '../../../components/UserAvatar'
+import SystemCard from '../../../components/SystemCard'
 import NewMessageInputs from '../../../components/NewMessageInputs'
 import TextMessage from '../../../components/TextMessage'
 import { createFontStyle, styles as commonStyles, FONTS } from '../../../styles'
@@ -157,15 +158,21 @@ class ChatMessagesPage extends React.Component {
 			contentContainerStyle={styles.scrollViewContainer}
 			data={_.orderBy(this.props.chatDetails.messages, 'id', 'desc')}
 			initialNumToRender={40}
-			renderItem={({ item }) => (
-				<TextMessage
-					text={item.text}
-					isTheSameDayAsPrevious={item.isTheSameDayAsPrevious}
-					isLoggedUserMessage={item.ownedByLoggedUser}
-					timestamp={item.timestamp}
-					nextMessageBelongsToTheSameUser={item.nextMessageBelongsToTheSameUser}
-				/>
-			)}
+			renderItem={({ item }) => {
+				return item.senderId ? (
+					<TextMessage
+						text={item.text}
+						isTheSameDayAsPrevious={item.isTheSameDayAsPrevious}
+						isLoggedUserMessage={item.ownedByLoggedUser}
+						timestamp={item.timestamp}
+						nextMessageBelongsToTheSameUser={
+							item.nextMessageBelongsToTheSameUser
+						}
+					/>
+				) : (
+					<SystemCard text={item.text} />
+				)
+			}}
 		/>
 	)
 
@@ -253,7 +260,7 @@ ChatMessagesPage.propTypes = {
 		messages: PropTypes.arrayOf(
 			PropTypes.shape({
 				id: PropTypes.number.isRequired,
-				senderId: PropTypes.number.isRequired,
+				senderId: PropTypes.number,
 				ownedByLoggedUser: PropTypes.bool.isRequired,
 				text: PropTypes.string,
 				timestamp: PropTypes.string.isRequired,
