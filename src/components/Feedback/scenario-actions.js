@@ -12,6 +12,7 @@ import {
 	saveFeedbackAsnwersStarted,
 	saveFeedbackAsnwersSuccess
 } from '../../store/feedback/actions'
+import { hideSpinner, showSpinner } from '../../store/global/actions'
 
 export const fetchFeedbackQuestions = chatId => async (dispatch, getState) => {
 	try {
@@ -32,6 +33,7 @@ export const fetchFeedbackQuestions = chatId => async (dispatch, getState) => {
 
 export const saveFeedbackAnswers = (chatId, answers) => async dispatch => {
 	try {
+		dispatch(showSpinner())
 		dispatch(saveFeedbackAsnwersStarted())
 		const answersOnlyContainingText = answers.filter(
 			answer => answer.answer !== 0 && answer.answer !== ''
@@ -52,5 +54,7 @@ export const saveFeedbackAnswers = (chatId, answers) => async dispatch => {
 				: getErrorDataFromNetworkException(err)
 		toastService.showErrorToast(errorMessage, 'top')
 		dispatch(saveFeedbackAsnwersFailure(errorMessage))
+	} finally {
+		dispatch(hideSpinner())
 	}
 }

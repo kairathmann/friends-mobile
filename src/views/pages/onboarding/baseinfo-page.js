@@ -1,4 +1,4 @@
-import { Container, Content, Spinner, Text, View } from 'native-base'
+import { Container, Content, Text, View } from 'native-base'
 import PropTypes from 'prop-types'
 import React from 'react'
 import { StatusBar } from 'react-native'
@@ -92,7 +92,6 @@ class BaseinfoPage extends React.Component {
 				<SafeAreaView style={commonStyles.safeAreaView}>
 					<Container style={commonStyles.content}>
 						<Content contentContainerStyle={commonStyles.scrollableContent}>
-							{this.props.isLoading && <Spinner color={'white'} />}
 							<OnboardingHeader
 								pageNumber={this.props.onboardingStepsConfig[this.PAGE_NAME]}
 								leftText={I18n.t('onboarding.sign_up')}

@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import PropTypes from 'prop-types'
-import { Container, Content, Icon, Spinner, Text } from 'native-base'
+import { Container, Content, Icon, Text } from 'native-base'
 import React from 'react'
 import { connect } from 'react-redux'
 import { StatusBar, View } from 'react-native'
@@ -127,7 +127,7 @@ class FeedbackPage extends React.Component {
 	}
 
 	render() {
-		const { isSavingFeedback, questions } = this.props
+		const { questions } = this.props
 		return (
 			<React.Fragment>
 				<StatusBar
@@ -137,7 +137,6 @@ class FeedbackPage extends React.Component {
 				/>
 				<SafeAreaView style={commonStyles.safeAreaView}>
 					<Container style={commonStyles.content}>
-						{isSavingFeedback && <Spinner color="white" />}
 						<Content contentContainerStyle={commonStyles.scrollableContent}>
 							<FeedbackHeader opened onCancelClick={this.closeFeedbackPage} />
 							<View style={styles.feedbackContainer}>
