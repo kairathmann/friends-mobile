@@ -1,4 +1,4 @@
-import { Container, Spinner, Tab, Tabs, View } from 'native-base'
+import { Container, Tab, Tabs, View } from 'native-base'
 import PropTypes from 'prop-types'
 import React from 'react'
 import {
@@ -76,9 +76,6 @@ class MatchingQuestionsPage extends React.Component {
 									<ScrollView
 										contentContainerStyle={commonStyles.scrollableContent}
 									>
-										{this.props.isSavingUnansweredQuestion && (
-											<Spinner color="white" />
-										)}
 										{unanswered.length === 0 && (
 											<Text style={styles.emptyListText}>
 												{i18n.t('matching_questions.no_questions')}

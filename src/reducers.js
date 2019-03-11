@@ -7,6 +7,7 @@ import authReducer from './store/auth/reducer'
 import profileReducer from './store/profile/reducer'
 import roundsReducer from './store/rounds/reducer'
 import colorsReducer from './store/colors/reducer'
+import globalReducer from './store/global/reducer'
 
 export default combineReducers({
 	auth: authReducer,
@@ -16,5 +17,6 @@ export default combineReducers({
 	rounds: roundsReducer,
 	colors: colorsReducer,
 	loading: loadingReducer,
+	global: globalReducer,
 	errors: errorReducer
 })

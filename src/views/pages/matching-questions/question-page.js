@@ -1,4 +1,4 @@
-import { Container, Content, View, Spinner } from 'native-base'
+import { Container, Content, View } from 'native-base'
 import PropTypes from 'prop-types'
 import React from 'react'
 import { StatusBar } from 'react-native'
@@ -41,7 +41,6 @@ class QuestionsPageProfileEditView extends React.Component {
 				/>
 				<SafeAreaView style={commonStyles.safeAreaView}>
 					<Container style={commonStyles.content}>
-						{this.props.isLoading && <Spinner color="white" />}
 						<Content contentContainerStyle={commonStyles.scrollableContent}>
 							<View style={styles.questionContainer}>
 								<Question

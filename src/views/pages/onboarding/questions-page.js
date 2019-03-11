@@ -1,4 +1,4 @@
-import { Container, Content, View, Spinner, Text } from 'native-base'
+import { Container, Content, View, Text } from 'native-base'
 import PropTypes from 'prop-types'
 import React from 'react'
 import { BackHandler, StatusBar } from 'react-native'
@@ -103,7 +103,6 @@ class QuestionsPage extends React.Component {
 						)}
 					</UserColorAwareComponent>
 					<Container style={commonStyles.content}>
-						{this.props.isLoading && <Spinner color="white" />}
 						<Content contentContainerStyle={commonStyles.scrollableContent}>
 							<OnboardingHeader
 								pageNumber={

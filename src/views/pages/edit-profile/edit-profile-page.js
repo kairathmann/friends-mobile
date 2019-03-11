@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import { Container, Content, Spinner, Text, View } from 'native-base'
+import { Container, Content, Text, View } from 'native-base'
 import React from 'react'
 import { StatusBar } from 'react-native'
 import { SafeAreaView } from 'react-navigation'
@@ -195,7 +195,6 @@ class EditProfilePage extends React.Component {
 				<SafeAreaView style={commonStyles.safeAreaView}>
 					<Container style={commonStyles.content}>
 						<Content contentContainerStyle={commonStyles.scrollableContent}>
-							{this.props.isLoading && <Spinner color={'white'} />}
 							<View style={BaseInfoStyles.avatarContainer}>
 								<UserAvatar
 									emoji={this.state.emoji}

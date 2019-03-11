@@ -1,5 +1,5 @@
 import React from 'react'
-import { Image, Text } from 'react-native'
+import { Image, Text, View } from 'react-native'
 /* eslint react/display-name: 0 */
 /* eslint react/prop-types: 0 */
 import {
@@ -35,6 +35,7 @@ import ChatMessagesPage from '../views/pages/chat-messages'
 import QuestionsPageProfileEditView from '../views/pages/matching-questions/question-page'
 import { PAGES_NAMES } from '../enums'
 import { createFontStyle, FONTS } from '../styles'
+import { ConnectedGlobalSpinner } from '../components/Spinner'
 
 const BottomBarNavigationIcon = ({ focused, icon, label }) => (
 	<UserColorAwareComponent>
@@ -243,11 +244,20 @@ const AppStackNavigator = createStackNavigator({
 const AppNavigator = createAppContainer(AppStackNavigator)
 
 const AppStackNavigatorWithGlobalSupport = () => (
-	<AppNavigator
-		ref={navigatorRef => {
-			navigationService.setTopLevelNavigator(navigatorRef)
-		}}
-	/>
+	<View style={AppStyles.appContainer}>
+		<AppNavigator
+			ref={navigatorRef => {
+				navigationService.setTopLevelNavigator(navigatorRef)
+			}}
+		/>
+		<ConnectedGlobalSpinner />
+	</View>
 )
+
+const AppStyles = EStyleSheet.create({
+	appContainer: {
+		flex: 1
+	}
+})
 
 export { AppStackNavigatorWithGlobalSupport, PAGES_NAMES }

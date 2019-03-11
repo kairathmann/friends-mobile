@@ -9,6 +9,7 @@ import {
 	uploadInfoSuccess
 } from '../../../store/onboarding/actions'
 import { setProfileInfo } from '../../../store/profile/actions'
+import { hideSpinner, showSpinner } from '../../../store/global/actions'
 
 export const updateUserProfile = ({
 	name,
@@ -17,6 +18,7 @@ export const updateUserProfile = ({
 	emoji
 }) => async dispatch => {
 	try {
+		dispatch(showSpinner())
 		dispatch(uploadInfoStart())
 		await api.uploadBaseInfo({
 			name,
@@ -38,5 +40,7 @@ export const updateUserProfile = ({
 		const error = getErrorDataFromNetworkException(err)
 		dispatch(uploadInfoFailure(error))
 		showErrorToast(error)
+	} finally {
+		dispatch(hideSpinner())
 	}
 }
