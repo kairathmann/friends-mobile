@@ -178,6 +178,7 @@ class AuthPageTokenVerificationPage extends React.Component {
 				keyboardType="number-pad"
 				maxLength={1}
 				containerStyle={styles.singleVerificationCodeInputCustom}
+				centerInput={true}
 				blurOnSubmit={true}
 				returnKeyType={isLastInRow ? 'done' : 'next'}
 				getRef={input => {
@@ -332,15 +333,7 @@ const styles = EStyleSheet.create({
 	singleVerificationCodeInputCustom: {
 		width: 60,
 		height: 60,
-		borderRadius: 10,
-		'@media ios': {
-			paddingRight: 12,
-			paddingLeft: 12
-		},
-		'@media android': {
-			paddingRight: 16,
-			paddingLeft: 16
-		}
+		borderRadius: 10
 	},
 	verificationCodeControlCaptions: {
 		flex: 1,

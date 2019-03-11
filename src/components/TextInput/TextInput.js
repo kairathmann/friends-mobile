@@ -14,6 +14,7 @@ export default class TextInput extends React.Component {
 			label,
 			keyboardType,
 			containerStyle,
+			centerInput,
 			status,
 			blurOnSubmit,
 			returnKeyType,
@@ -48,7 +49,7 @@ export default class TextInput extends React.Component {
 					<Input
 						value={value}
 						onChangeText={event => onChange(event)}
-						style={styles.input}
+						style={[styles.input, centerInput ? styles.centerInput : '']}
 						placeholder={placeholder}
 						keyboardType={keyboardType}
 						blurOnSubmit={blurOnSubmit}
@@ -80,6 +81,11 @@ const styles = EStyleSheet.create({
 		color: 'white',
 		fontSize: 16,
 		...createFontStyle()
+	},
+	centerInput: {
+		textAlign: 'center',
+		paddingRight: 0,
+		paddingLeft: 0
 	},
 	basePrefix: {
 		fontSize: 16,
@@ -119,6 +125,7 @@ TextInput.defaultProps = {
 	status: 'normal',
 	blurOnSubmit: true,
 	returnKeyType: 'done',
+	centerInput: false,
 	getRef: () => {},
 	onSubmitEditing: () => {}
 }
@@ -132,6 +139,7 @@ TextInput.propTypes = {
 	label: PropTypes.string,
 	keyboardPad: PropTypes.string,
 	containerStyle: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+	centerInput: PropTypes.bool,
 	keyboardType: PropTypes.string,
 	status: PropTypes.oneOf(['normal', 'ok', 'error']).isRequired,
 	blurOnSubmit: PropTypes.bool.isRequired,
