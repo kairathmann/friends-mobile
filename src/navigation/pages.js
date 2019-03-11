@@ -33,6 +33,7 @@ import EditProfilePage from '../views/pages/edit-profile'
 import MatchingQuestionsPage from '../views/pages/matching-questions/matching-questions-page'
 import ChatMessagesPage from '../views/pages/chat-messages'
 import QuestionsPageProfileEditView from '../views/pages/matching-questions/question-page'
+import FeedbackPage from '../views/pages/feedback'
 import { PAGES_NAMES } from '../enums'
 import { createFontStyle, FONTS } from '../styles'
 import { ConnectedGlobalSpinner } from '../components/Spinner'
@@ -235,6 +236,12 @@ const AppStackNavigator = createStackNavigator({
 	},
 	QUESTION_PAGE_PROFILE_EDIT_VIEW: {
 		screen: QuestionsPageProfileEditView,
+		navigationOptions: () => ({
+			header: null
+		})
+	},
+	FEEDBACK_PAGE: {
+		screen: FeedbackPage,
 		navigationOptions: () => ({
 			header: null
 		})

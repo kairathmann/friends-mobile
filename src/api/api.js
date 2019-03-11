@@ -144,5 +144,27 @@ export default {
 				{ headers: { 'X-Authorization': `Bearer ${authToken}` } }
 			)
 			.then(result => result.data)
+	},
+	fetchFeedbackQuestions: async () => {
+		const authToken = await tokenService.getToken()
+		return axios
+			.get(`feedback_questions/`, {
+				headers: { 'X-Authorization': `Bearer ${authToken}` }
+			})
+			.then(result => result.data)
+	},
+	saveFeedbackAnswers: async (chatId, answers) => {
+		const authToken = await tokenService.getToken()
+		return axios
+			.post(
+				`chats/${chatId}/feedback_responses/`,
+				{
+					feedback_responses: answers
+				},
+				{
+					headers: { 'X-Authorization': `Bearer ${authToken}` }
+				}
+			)
+			.then(result => result.data)
 	}
 }

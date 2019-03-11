@@ -8,12 +8,16 @@ export default class TextInput extends React.Component {
 	render() {
 		const {
 			placeholder,
+			placeholderColor,
 			prefix,
 			value,
 			errorMessage,
 			label,
 			keyboardType,
+			multiline,
+			numberOfLines,
 			containerStyle,
+			inputStyle,
 			centerInput,
 			status,
 			blurOnSubmit,
@@ -27,6 +31,7 @@ export default class TextInput extends React.Component {
 			onBlur
 		} = this.props
 		let mergedContainerStyle = [styles.container]
+		let mergedInputStyle = [styles.input]
 		if (containerStyle) {
 			const customStylesWrapped = Array.isArray(containerStyle)
 				? containerStyle
@@ -35,6 +40,16 @@ export default class TextInput extends React.Component {
 		}
 		if (status === 'error') {
 			mergedContainerStyle.push(styles.errorContainer)
+		}
+		if (inputStyle) {
+			const customStylesWrapped = Array.isArray(inputStyle)
+				? inputStyle
+				: [inputStyle]
+			mergedInputStyle = [
+				...mergedInputStyle,
+				...customStylesWrapped,
+				centerInput ? styles.centerInput : ''
+			]
 		}
 		return (
 			<View>
@@ -52,7 +67,7 @@ export default class TextInput extends React.Component {
 					<Input
 						value={value}
 						onChangeText={event => onChange(event)}
-						style={[styles.input, centerInput ? styles.centerInput : '']}
+						style={mergedInputStyle}
 						placeholder={placeholder}
 						keyboardType={keyboardType}
 						blurOnSubmit={blurOnSubmit}
@@ -63,6 +78,9 @@ export default class TextInput extends React.Component {
 						}}
 						onSubmitEditing={onSubmitEditing}
 						maxLength={maxLength}
+						multiline={multiline}
+						numberOfLines={numberOfLines}
+						placeholderTextColor={placeholderColor}
 						onBlur={e => {
 							onBlur(e)
 							this.textInput.wrappedInstance.blur(e)
@@ -140,6 +158,9 @@ TextInput.defaultProps = {
 	centerInput: false,
 	getRef: () => {},
 	onSubmitEditing: () => {},
+	multiline: false,
+	numberOfLines: 1,
+	placeholderColor: '#575757',
 	onBlur: () => {}
 }
 
@@ -152,6 +173,7 @@ TextInput.propTypes = {
 	label: PropTypes.string,
 	keyboardPad: PropTypes.string,
 	containerStyle: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+	inputStyle: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
 	centerInput: PropTypes.bool,
 	keyboardType: PropTypes.string,
 	status: PropTypes.oneOf(['normal', 'ok', 'error']).isRequired,
@@ -160,6 +182,9 @@ TextInput.propTypes = {
 	getRef: PropTypes.func,
 	onSubmitEditing: PropTypes.func,
 	maxLength: PropTypes.number,
+	multiline: PropTypes.bool,
+	numberOfLines: PropTypes.number,
+	placeholderColor: PropTypes.string,
 	showLoader: PropTypes.bool,
 	renderLoader: PropTypes.func,
 	onBlur: PropTypes.func

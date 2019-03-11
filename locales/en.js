@@ -4,6 +4,8 @@ import { en as home } from '../src/views/pages/home/locales'
 import { en as profile_page } from '../src/views/pages/profile/locales'
 import { en as edit_profile_page } from '../src/views/pages/edit-profile/locales'
 import { en as matching_questions } from '../src/views/pages/matching-questions/locales'
+import { en as feedback_components } from '../src/components/Feedback/locales'
+import { en as feedback_page } from '../src/views/pages/feedback/locales'
 
 export default {
 	welcome_page,
@@ -12,6 +14,8 @@ export default {
 	profile_page,
 	edit_profile_page,
 	matching_questions,
+	feedback_components,
+	feedback_page,
 	commons: {
 		name: 'Name',
 		phone_number: 'Your Phone Number',
@@ -47,7 +51,8 @@ export default {
 		invalid_message_limit: 'Cannot fetch messages. Try again later.',
 		invalid_from_message: 'Cannot fetch messages. Try again later.',
 		cannot_fetch_messages: 'Cannot fetch messages. Try again later.',
-		chat_message_send_fail: "Couldn't send message. Try again later."
+		chat_message_send_fail: "Couldn't send message. Try again later.",
+		cannot_save_feedback_answers: "Couldn't save feedback. Try again later."
 	},
 	navigator: {
 		home: 'luminos',

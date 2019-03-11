@@ -9,8 +9,10 @@ import {
 	FETCH_CHAT_DETAILS_SUCCESS_LATEST_MESSAGES_CLEAN_HISTORY,
 	FETCH_CHAT_DETAILS_SUCCESS_MISSING_MESSAGES,
 	FETCH_CHAT_DETAILS_SUCCESS_PREVIOUS_MESSAGES,
-	SWITCH_CHAT
+	SWITCH_CHAT,
+	MARK_CHATS_AS_REQURIING_FEEDBACK
 } from './action-types'
+import { SAVE_FEEDBACK_ANSWERS_SUCCESS } from '../feedback/action-types'
 import { LOGOUT_USER_AND_CLEAR_DATA } from '../global/action-types'
 import { chatsService } from '../../services'
 
@@ -25,7 +27,7 @@ const initialState = {
 	//		type: '',
 	//		lastReadMessageId: 0,
 	//		users: [],
-	//		messages: []
+	//		messages: [],
 	//	}
 	chatsHistory: {}
 }
@@ -35,6 +37,22 @@ export default function messageReducer(
 	{ type, payload }
 ) {
 	switch (type) {
+		case MARK_CHATS_AS_REQURIING_FEEDBACK:
+			return {
+				...state,
+				chats: state.chats.map(chat => ({
+					...chat,
+					feedback: payload.indexOf(chat.id) !== -1 ? true : chat.feedback
+				}))
+			}
+		case SAVE_FEEDBACK_ANSWERS_SUCCESS:
+			return {
+				...state,
+				chats: state.chats.map(chat => ({
+					...chat,
+					feedback: chat.id === payload ? false : chat.feedback
+				}))
+			}
 		case SWITCH_CHAT:
 			return {
 				...state,
@@ -56,6 +74,7 @@ export default function messageReducer(
 				chatsHistory: clonedChats,
 				chats: state.chats.map(chat => ({
 					...chat,
+					feedback: chat.id === payload.id ? payload.feedback : chat.feedback,
 					unread: chat.id === payload.id ? 0 : chat.unread,
 					lastMessage:
 						chat.id === payload.id && payload.messages.length > 0
@@ -71,6 +90,10 @@ export default function messageReducer(
 		case FETCH_CHAT_DETAILS_SUCCESS_PREVIOUS_MESSAGES:
 			return {
 				...state,
+				chats: state.chats.map(chat => ({
+					...chat,
+					feedback: chat.id === payload.id ? payload.feedback : chat.feedback
+				})),
 				chatsHistory: _.mapValues(state.chatsHistory, value => {
 					if (value.id === payload.id) {
 						return {
@@ -98,6 +121,7 @@ export default function messageReducer(
 				}),
 				chats: state.chats.map(chat => ({
 					...chat,
+					feedback: chat.id === payload.id ? payload.feedback : chat.feedback,
 					unread: chat.id === payload.id ? 0 : chat.unread,
 					lastMessage:
 						chat.id === payload.id && payload.messages.length > 0
@@ -125,10 +149,14 @@ export default function messageReducer(
 					}
 					return value
 				}),
-				chats: clearUnreadCount(
-					state.chats,
+				chats: changeFeedbackRequest(
+					clearUnreadCount(
+						state.chats,
+						payload.chatId,
+						payload.messages[payload.messages.length - 1]
+					),
 					payload.chatId,
-					payload.messages[payload.messages.length - 1]
+					payload.chat.feedback
 				)
 			}
 		case ADD_NEW_MESSAGE_TO_CHAT_FROM_PUSH_NOTIFICATION_INCREMENT_UNREAD_COUNTER: {
@@ -137,10 +165,14 @@ export default function messageReducer(
 			const { chatId, messages, chat } = payload
 			let updatedChats = []
 			if (chatAlreadyExists) {
-				updatedChats = incrementUnreadCount(
-					state.chats,
+				updatedChats = changeFeedbackRequest(
+					incrementUnreadCount(
+						state.chats,
+						chatId,
+						messages[messages.length - 1]
+					),
 					chatId,
-					messages[messages.length - 1]
+					chat.feedback
 				)
 			} else {
 				updatedChats = [
@@ -154,7 +186,8 @@ export default function messageReducer(
 						chat.partnerEmoji,
 						messages[messages.length - 1].text,
 						messages[messages.length - 1].timestamp,
-						1
+						1,
+						chat.feedback
 					)
 				]
 			}
@@ -200,6 +233,12 @@ export default function messageReducer(
 			return state
 	}
 }
+
+const changeFeedbackRequest = (chats, chatId, feedbackRequested) =>
+	chats.map(chat => ({
+		...chat,
+		feedback: chat.id === chatId ? feedbackRequested : chat.feedback
+	}))
 
 const incrementUnreadCount = (chats, chatId, message) =>
 	chats.map(chat => {
