@@ -13,7 +13,7 @@ import { hideSpinner, showSpinner } from '../../../store/global/actions'
 
 export const updateUserProfile = ({
 	name,
-	city,
+	location,
 	color,
 	emoji
 }) => async dispatch => {
@@ -22,13 +22,13 @@ export const updateUserProfile = ({
 		dispatch(uploadInfoStart())
 		await api.uploadBaseInfo({
 			name,
-			city,
+			location,
 			color: color.id,
 			emoji
 		})
 		dispatch(
 			setProfileInfo({
-				city,
+				latestLocation: location,
 				firstName: name,
 				color,
 				emoji

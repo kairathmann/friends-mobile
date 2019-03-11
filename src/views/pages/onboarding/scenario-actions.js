@@ -46,20 +46,20 @@ import { setProfileInfo } from '../../../store/profile/actions'
 import { setAvailableColors } from '../../../store/colors/actions'
 import { hideSpinner, showSpinner } from '../../../store/global/actions'
 
-export function uploadInfo({ name, city, color, emoji }) {
+export function uploadInfo({ name, location, color, emoji }) {
 	return async (dispatch, getState) => {
 		try {
 			dispatch(showSpinner())
 			dispatch(uploadInfoStart())
 			const result = await api.uploadBaseInfo({
 				name,
-				city,
+				location,
 				color: color.id,
 				emoji
 			})
 			dispatch(
 				setProfileInfo({
-					city,
+					latestLocation: location,
 					firstName: name,
 					color,
 					emoji

@@ -21,7 +21,7 @@ export const PAGES_NAMES = {
 }
 
 export const SINGLE_TEXT_MESSAGE_CHAR_LIMIT = 9999
-export const CITY_MAX_LENGTH = 35
+export const CITY_MAX_LENGTH = 100
 export const NAME_MAX_LENGTH = 30
 export const MIN_AMOUNT_OF_ANSWERED_QUESTIONS = 0
 

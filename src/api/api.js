@@ -61,12 +61,23 @@ export default {
 		axios.post('legacy/', {
 			email
 		}),
-	uploadBaseInfo: async ({ name, city, color, emoji }) => {
+	uploadBaseInfo: async ({ name, location, color, emoji }) => {
 		const authToken = await tokenService.getToken()
 		return axios
 			.put(
 				'self/',
-				{ first_name: name, city, color, emoji },
+				{
+					first_name: name,
+					color,
+					emoji,
+					location: {
+						mapbox_id: location.mapboxId,
+						full_name: location.fullName,
+						name: location.name,
+						latitude: location.latitude,
+						longitude: location.longitude
+					}
+				},
 				{ headers: { 'X-Authorization': `Bearer ${authToken}` } }
 			)
 			.then(result => result.data)

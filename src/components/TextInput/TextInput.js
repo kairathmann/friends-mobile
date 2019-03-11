@@ -21,7 +21,10 @@ export default class TextInput extends React.Component {
 			getRef,
 			onSubmitEditing,
 			maxLength,
-			onChange
+			onChange,
+			showLoader,
+			renderLoader,
+			onBlur
 		} = this.props
 		let mergedContainerStyle = [styles.container]
 		if (containerStyle) {
@@ -54,10 +57,18 @@ export default class TextInput extends React.Component {
 						keyboardType={keyboardType}
 						blurOnSubmit={blurOnSubmit}
 						returnKeyType={returnKeyType}
-						ref={getRef}
+						ref={element => {
+							this.textInput = element
+							return getRef(element)
+						}}
 						onSubmitEditing={onSubmitEditing}
 						maxLength={maxLength}
+						onBlur={e => {
+							onBlur(e)
+							this.textInput.wrappedInstance.blur(e)
+						}}
 					/>
+					{showLoader && renderLoader()}
 				</Item>
 				{errorMessage ? (
 					<Text style={styles.errorText}>{errorMessage}</Text>
@@ -125,9 +136,11 @@ TextInput.defaultProps = {
 	status: 'normal',
 	blurOnSubmit: true,
 	returnKeyType: 'done',
+	showLoader: false,
 	centerInput: false,
 	getRef: () => {},
-	onSubmitEditing: () => {}
+	onSubmitEditing: () => {},
+	onBlur: () => {}
 }
 
 TextInput.propTypes = {
@@ -146,5 +159,8 @@ TextInput.propTypes = {
 	returnKeyType: PropTypes.string.isRequired,
 	getRef: PropTypes.func,
 	onSubmitEditing: PropTypes.func,
-	maxLength: PropTypes.number
+	maxLength: PropTypes.number,
+	showLoader: PropTypes.bool,
+	renderLoader: PropTypes.func,
+	onBlur: PropTypes.func
 }
