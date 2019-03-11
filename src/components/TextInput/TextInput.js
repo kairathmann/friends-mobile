@@ -45,11 +45,10 @@ export default class TextInput extends React.Component {
 			const customStylesWrapped = Array.isArray(inputStyle)
 				? inputStyle
 				: [inputStyle]
-			mergedInputStyle = [
-				...mergedInputStyle,
-				...customStylesWrapped,
-				centerInput ? styles.centerInput : ''
-			]
+			mergedInputStyle = [...mergedInputStyle, ...customStylesWrapped]
+		}
+		if (centerInput) {
+			mergedInputStyle.push(styles.centerInput)
 		}
 		return (
 			<View>
