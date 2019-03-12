@@ -11,7 +11,11 @@ import { NavigationBottomBar } from '../../../components/NavigationBottomBar/Nav
 import { OnboardingHeader } from '../../../components/OnboardingHeader/OnboardingHeader'
 import UserColorAwareComponent from '../../../components/UserColorAwareComponent'
 import { PAGES_NAMES } from '../../../navigation/pages'
-import { createFontStyle, styles as commonStyles } from '../../../styles'
+import {
+	defaultFontTypes,
+	CommonOnboardingStyles,
+	styles as commonStyles
+} from '../../../styles'
 import * as COLORS from '../../../styles/colors'
 import { navigationService, pushService } from '../../../services'
 
@@ -44,11 +48,23 @@ class NotificationCheckPage extends React.Component {
 								leftText={i18n.t('onboarding.sign_up')}
 								totalPage={this.props.onboardingMaxSteps}
 							/>
-							<View style={styles.indent}>
-								<Text style={styles.header}>
+							<View
+								style={CommonOnboardingStyles.descriptionContainerMarginBottom}
+							>
+								<Text
+									style={[
+										defaultFontTypes.H4,
+										CommonOnboardingStyles.pageHeading
+									]}
+								>
 									{i18n.t('onboarding.notifications_page_header')}
 								</Text>
-								<Text style={styles.description}>
+								<Text
+									style={[
+										defaultFontTypes.Body2,
+										CommonOnboardingStyles.pageBody
+									]}
+								>
 									{i18n.t('onboarding.notifications_page_description')}
 								</Text>
 								<Button
@@ -75,30 +91,8 @@ class NotificationCheckPage extends React.Component {
 }
 
 const styles = EStyleSheet.create({
-	indent: {
-		marginLeft: 36,
-		marginRight: 36
-	},
 	spaceAbove: {
 		marginTop: 32
-	},
-	header: {
-		...createFontStyle(),
-		color: 'white',
-		fontSize: 32,
-		textAlign: 'center',
-		marginTop: 48,
-		marginBottom: 30
-	},
-	description: {
-		...createFontStyle(),
-		marginLeft: 10,
-		marginRight: 10,
-		color: 'white',
-		fontSize: 14,
-		lineHeight: 24,
-		letterSpacing: 0.1,
-		textAlign: 'center'
 	}
 })
 

@@ -1,6 +1,6 @@
 export default {
 	complete_profile: 'Next, complete your profile...',
-	sign_up: 'Sign up',
+	sign_up: 'Sign Up',
 	public_profile: 'Public profile',
 	secret_profile: 'Secret profile',
 	secret_profile_info:

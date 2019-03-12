@@ -12,7 +12,8 @@ import { OnboardingHeader } from '../../../components/OnboardingHeader/Onboardin
 import {
 	styles as commonStyles,
 	CommonOnboardingStyles,
-	IdentificationPageStyles
+	IdentificationPageStyles,
+	defaultFontTypes
 } from '../../../styles'
 import UserColorAwareComponent from '../../../components/UserColorAwareComponent'
 import LoggedInUserAvatar from '../../../components/LoggedInUserAvatar'
@@ -164,11 +165,23 @@ class IdentificationPage extends React.Component {
 								leftText={I18n.t('onboarding.sign_up')}
 								totalPage={this.props.onboardingMaxSteps}
 							/>
-							<View style={IdentificationPageStyles.descriptionContainer}>
-								<Text style={IdentificationPageStyles.headerText}>
+							<View
+								style={CommonOnboardingStyles.descriptionContainerMarginBottom}
+							>
+								<Text
+									style={[
+										defaultFontTypes.H4,
+										CommonOnboardingStyles.pageHeading
+									]}
+								>
 									{I18n.t('onboarding.identification_page_title')}
 								</Text>
-								<Text style={[IdentificationPageStyles.descriptionText]}>
+								<Text
+									style={[
+										defaultFontTypes.Body2,
+										CommonOnboardingStyles.pageBody
+									]}
+								>
 									{I18n.t('onboarding.identification_page_description')}
 								</Text>
 							</View>

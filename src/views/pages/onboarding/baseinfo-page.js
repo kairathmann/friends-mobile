@@ -19,6 +19,7 @@ import {
 import {
 	styles as commonStyles,
 	BaseInfoStyles,
+	defaultFontTypes,
 	CommonOnboardingStyles
 } from '../../../styles'
 import * as COLORS from '../../../styles/colors'
@@ -101,9 +102,8 @@ class BaseinfoPage extends React.Component {
 								<LoggedInUserAvatar />
 								<Text
 									style={[
-										CommonOnboardingStyles.text,
-										BaseInfoStyles.lato,
-										CommonOnboardingStyles.completeText,
+										defaultFontTypes.Body2,
+										CommonOnboardingStyles.pageBody,
 										CommonOnboardingStyles.verticalSpace
 									]}
 								>

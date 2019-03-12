@@ -2,15 +2,16 @@ import { Text, View } from 'native-base'
 import PropTypes from 'prop-types'
 import React from 'react'
 import EStyleSheet from 'react-native-extended-stylesheet'
-import { createFontStyle } from '../../styles'
-import * as FONTS from '../../styles/fonts'
-import * as FONTS_STYLES from '../../styles/fontStyles'
+import { defaultFontTypes } from '../../styles'
 
 export function OnboardingHeader({ leftText, pageNumber, totalPage }) {
 	return (
 		<View style={styles.onboardingHeader}>
-			<Text style={styles.leftText}>{leftText.toUpperCase()}</Text>
-			<Text style={styles.rightText}>{`${pageNumber}/${totalPage} `}</Text>
+			<View style={styles.leftSpace} />
+			<Text style={defaultFontTypes.H6}>{leftText}</Text>
+			<Text
+				style={[defaultFontTypes.Subtitle1, styles.rightText]}
+			>{`${pageNumber}/${totalPage} `}</Text>
 		</View>
 	)
 }
@@ -18,22 +19,17 @@ export function OnboardingHeader({ leftText, pageNumber, totalPage }) {
 const styles = EStyleSheet.create({
 	onboardingHeader: {
 		padding: 16,
+		height: 60,
 		backgroundColor: 'transparent',
 		justifyContent: 'space-between',
-		alignItems: 'center',
 		flexDirection: 'row'
 	},
-	leftText: {
-		...createFontStyle(FONTS.TITILLIUM, FONTS_STYLES.SEMI_BOLD),
-		color: 'white',
-		fontSize: 18,
-		letterSpacing: 1.25
+	leftSpace: {
+		width: 44
 	},
 	rightText: {
-		...createFontStyle(FONTS.TITILLIUM, FONTS_STYLES.SEMI_BOLD),
-		color: '$greyColor',
-		fontSize: 18,
-		letterSpacing: 1.25
+		width: 44,
+		textAlign: 'right'
 	}
 })
 
