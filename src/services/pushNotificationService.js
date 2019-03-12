@@ -9,6 +9,11 @@ import { requestFeedbackOnChats } from '../store/messages/actions'
 import { chatsService } from '../services'
 let reduxStore
 
+export const register = () => {
+	OneSignal.init(Config.APP_ONESIGNAL_TOKEN)
+	OneSignal.inFocusDisplaying(0)
+}
+
 export const initialize = (store, userId) => {
 	reduxStore = store
 	OneSignal.init(Config.APP_ONESIGNAL_TOKEN)
