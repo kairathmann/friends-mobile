@@ -9,6 +9,7 @@ import roundsReducer from './store/rounds/reducer'
 import colorsReducer from './store/colors/reducer'
 import feedbackReducer from './store/feedback/reducer'
 import globalReducer from './store/global/reducer'
+import wizardReducer from './store/unanswered_wizard/reducer'
 
 export default combineReducers({
 	auth: authReducer,
@@ -20,5 +21,6 @@ export default combineReducers({
 	feedback: feedbackReducer,
 	loading: loadingReducer,
 	global: globalReducer,
-	errors: errorReducer
+	errors: errorReducer,
+	questionsWizard: wizardReducer
 })

@@ -1,13 +1,7 @@
 import { Container, Tab, Tabs, View } from 'native-base'
 import PropTypes from 'prop-types'
 import React from 'react'
-import {
-	ScrollView,
-	StatusBar,
-	Text,
-	TouchableOpacity,
-	LayoutAnimation
-} from 'react-native'
+import { ScrollView, StatusBar, Text, TouchableOpacity } from 'react-native'
 import EStyleSheet from 'react-native-extended-stylesheet'
 import { SafeAreaView } from 'react-navigation'
 import { connect } from 'react-redux'
@@ -18,29 +12,15 @@ import { createLoadingSelector } from '../../../store/utils/selectors'
 import { styles as commonStyles, createFontStyle, FONTS } from '../../../styles'
 import * as COLORS from '../../../styles/colors'
 import { LUMINOS_ACCENT } from '../../../styles/colors'
-import { fetchQuestions, saveUnanswered } from './scenario-actions'
 import { PAGES_NAMES } from '../../../navigation/pages'
-import { NavigationBottomBar } from '../../../components/NavigationBottomBar/NavigationBottomBar'
+import UnansweredQuestionWizard from '../../../components/UnansweredQuestionWizard'
 
 class MatchingQuestionsPage extends React.Component {
-	componentDidMount() {
-		this.props.fetchQuestions()
-	}
-
 	onQuestionTouch = question => {
 		this.props.navigation.navigate(
 			PAGES_NAMES.QUESTION_PAGE_PROFILE_EDIT_VIEW,
 			{ question }
 		)
-	}
-
-	onChangeUnanswered = (question, answer) => {
-		LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
-		this.props.saveUnanswered({
-			[question.id]: {
-				selected: answer.id
-			}
-		})
 	}
 
 	render() {
@@ -81,19 +61,7 @@ class MatchingQuestionsPage extends React.Component {
 												{i18n.t('matching_questions.no_questions')}
 											</Text>
 										)}
-										<View style={styles.questionsListContainer}>
-											{unanswered.map(q => (
-												<View key={q.id} style={styles.questionContainer}>
-													<Question
-														answers={q.answers}
-														text={q.text}
-														onChangeAnswer={answer =>
-															this.onChangeUnanswered(q, answer)
-														}
-													/>
-												</View>
-											))}
-										</View>
+										<UnansweredQuestionWizard loadingAction="WIZARD_SAVE_UNANSWERED" />
 									</ScrollView>
 								</Tab>
 								<Tab
@@ -128,10 +96,6 @@ class MatchingQuestionsPage extends React.Component {
 								</Tab>
 							</Tabs>
 						</View>
-						<NavigationBottomBar
-							rightHidden={true}
-							onLeftClick={() => this.props.navigation.goBack()}
-						/>
 					</Container>
 				</SafeAreaView>
 			</React.Fragment>
@@ -168,8 +132,11 @@ const styles = EStyleSheet.create({
 		borderRadius: 4
 	},
 	emptyListText: {
+		...createFontStyle(FONTS.LATO),
 		color: 'white',
-		fontSize: 20,
+		opacity: 0.8,
+		letterSpacing: 0.25,
+		fontSize: 14,
 		paddingLeft: 32,
 		paddingRight: 32,
 		paddingTop: 32,
@@ -193,8 +160,6 @@ const styles = EStyleSheet.create({
 MatchingQuestionsPage.propTypes = {
 	isSavingUnansweredQuestion: PropTypes.bool.isRequired,
 	navigation: PropTypes.object.isRequired,
-	fetchQuestions: PropTypes.func.isRequired,
-	saveUnanswered: PropTypes.func.isRequired,
 	answered: PropTypes.array.isRequired,
 	unanswered: PropTypes.array.isRequired
 }
@@ -202,21 +167,11 @@ MatchingQuestionsPage.propTypes = {
 const mapStateToProps = state => {
 	return {
 		isSavingUnansweredQuestion: createLoadingSelector([
-			'SAVE_MATCHING_ANSWERS'
+			'WIZARD_SAVE_UNANSWERED'
 		])(state),
 		answered: state.profile.questions.answered,
 		unanswered: state.profile.questions.unanswered
 	}
 }
 
-const mapDispatchToProps = dispatch => {
-	return {
-		fetchQuestions: () => dispatch(fetchQuestions()),
-		saveUnanswered: answers => dispatch(saveUnanswered(answers))
-	}
-}
-
-export default connect(
-	mapStateToProps,
-	mapDispatchToProps
-)(MatchingQuestionsPage)
+export default connect(mapStateToProps)(MatchingQuestionsPage)
