@@ -44,20 +44,22 @@ import {
 } from '../../../store/onboarding/actions'
 import { setProfileInfo } from '../../../store/profile/actions'
 import { setAvailableColors } from '../../../store/colors/actions'
+import { hideSpinner, showSpinner } from '../../../store/global/actions'
 
-export function uploadInfo({ name, city, color, emoji }) {
+export function uploadInfo({ name, location, color, emoji }) {
 	return async (dispatch, getState) => {
 		try {
+			dispatch(showSpinner())
 			dispatch(uploadInfoStart())
 			const result = await api.uploadBaseInfo({
 				name,
-				city,
+				location,
 				color: color.id,
 				emoji
 			})
 			dispatch(
 				setProfileInfo({
-					city,
+					latestLocation: location,
 					firstName: name,
 					color,
 					emoji
@@ -78,6 +80,8 @@ export function uploadInfo({ name, city, color, emoji }) {
 			const error = getErrorDataFromNetworkException(err)
 			dispatch(uploadInfoFailure(error))
 			showErrorToast(error)
+		} finally {
+			dispatch(hideSpinner())
 		}
 	}
 }
@@ -87,6 +91,7 @@ export const requestSmsCode = (
 	phoneNumber
 ) => async dispatch => {
 	try {
+		dispatch(showSpinner())
 		dispatch(setAuthInfo(phoneNumberCountryCode, phoneNumber))
 		dispatch(requestSmsCodeStart())
 		await api.requestSmsCodeMessage(phoneNumberCountryCode, phoneNumber)
@@ -95,6 +100,8 @@ export const requestSmsCode = (
 	} catch (err) {
 		const error = getErrorDataFromNetworkException(err)
 		dispatch(requestSmsCodeError(error))
+	} finally {
+		dispatch(hideSpinner())
 	}
 }
 
@@ -105,6 +112,7 @@ export const sendVerificationCode = (
 	verificationCode
 ) => async dispatch => {
 	try {
+		dispatch(showSpinner())
 		dispatch(smsTokenVerificationStart())
 		const requestResult = await api.sendVerificationCode(
 			phoneNumberCountryCode,
@@ -152,11 +160,14 @@ export const sendVerificationCode = (
 	} catch (err) {
 		const error = getErrorDataFromNetworkException(err)
 		dispatch(smsTokenVerificationError(error))
+	} finally {
+		dispatch(hideSpinner())
 	}
 }
 
 export const registerTelegramUser = email => async dispatch => {
 	try {
+		dispatch(showSpinner())
 		dispatch(telegramEmailStart())
 		const requestResult = await api.transferTelegramEmail(email)
 		const userInfo = requestResult.data
@@ -188,6 +199,8 @@ export const registerTelegramUser = email => async dispatch => {
 			errorMessage = getErrorDataFromNetworkException(err)
 		}
 		dispatch(telegramEmailError(errorMessage))
+	} finally {
+		dispatch(hideSpinner())
 	}
 }
 
@@ -203,6 +216,7 @@ export const clearTelegramEmailErrorState = () => dispatch =>
 export function saveAnswer(answer, shouldGoToHomePage) {
 	return async dispatch => {
 		try {
+			dispatch(showSpinner())
 			dispatch(saveAnswersStart())
 			const answersIds = _.values(answer).map(ans => ans.selected)
 			await api.uploadAnswers(answersIds)
@@ -214,6 +228,8 @@ export function saveAnswer(answer, shouldGoToHomePage) {
 			const error = getErrorDataFromNetworkException(err)
 			showErrorToast(error)
 			dispatch(saveAnswersFailure(error))
+		} finally {
+			dispatch(hideSpinner())
 		}
 	}
 }

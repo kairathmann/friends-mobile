@@ -1,4 +1,4 @@
-import { Container, Content, Spinner, Text, View } from 'native-base'
+import { Container, Content, Text, View } from 'native-base'
 import PropTypes from 'prop-types'
 import React from 'react'
 import { StatusBar } from 'react-native'
@@ -8,7 +8,7 @@ import I18n from '../../../../locales/i18n'
 import { NavigationBottomBar } from '../../../components/NavigationBottomBar/NavigationBottomBar'
 import { OnboardingHeader } from '../../../components/OnboardingHeader/OnboardingHeader'
 import TextInput from '../../../components/TextInput/TextInput'
-import CitySearchInput from '../../../components/CitySearchInput'
+import { CityAutocomplete } from '../../../components/Autocomplete'
 import UserColorAwareComponent from '../../../components/UserColorAwareComponent'
 import LoggedInUserAvatar from '../../../components/LoggedInUserAvatar'
 import { NAME_MAX_LENGTH } from '../../../enums'
@@ -29,21 +29,11 @@ class BaseinfoPage extends React.Component {
 	PAGE_NAME = PAGES_NAMES.BASEINFO_PAGE
 	state = {
 		name: this.props.firstName,
-		city: this.props.city,
-		cityError: false,
-		cityLoading: false
+		location: this.props.location
 	}
 
-	onCitySearchStart = () => {
-		this.setState({ cityLoading: true })
-	}
-
-	onCitySearchEndError = () => {
-		this.setState({ cityLoading: false, cityError: true })
-	}
-
-	onCitySearchEndSuccess = city => {
-		this.setState({ cityLoading: false, cityError: false, city })
+	onLocationSelect = location => {
+		this.setState({ location })
 	}
 
 	handleNameChange = text => {
@@ -53,15 +43,15 @@ class BaseinfoPage extends React.Component {
 	}
 
 	validate = () => {
-		const { city, cityError, name, cityLoading } = this.state
+		const { location, name } = this.state
 
-		return !cityLoading && city.length !== 0 && name.length !== 0 && !cityError
+		return location.fullName.length !== 0 && name.length !== 0
 	}
 
 	handleSave = () => {
 		this.props.saveData({
 			name: this.state.name,
-			city: this.state.city,
+			location: this.state.location,
 			color: this.props.color,
 			emoji: this.props.emoji
 		})
@@ -85,12 +75,9 @@ class BaseinfoPage extends React.Component {
 	)
 
 	renderUserCityInput = () => (
-		<CitySearchInput
-			city={this.state.city}
-			onSearchStart={this.onCitySearchStart}
-			onSearchEndError={this.onCitySearchEndError}
-			onSearchEndSuccess={this.onCitySearchEndSuccess}
-			validateOnMount={this.props.isTelegramUser}
+		<CityAutocomplete
+			locationFullName={this.props.location.fullName}
+			onLocationSelect={this.onLocationSelect}
 		/>
 	)
 
@@ -105,7 +92,6 @@ class BaseinfoPage extends React.Component {
 				<SafeAreaView style={commonStyles.safeAreaView}>
 					<Container style={commonStyles.content}>
 						<Content contentContainerStyle={commonStyles.scrollableContent}>
-							{this.props.isLoading && <Spinner color={'white'} />}
 							<OnboardingHeader
 								pageNumber={this.props.onboardingStepsConfig[this.PAGE_NAME]}
 								leftText={I18n.t('onboarding.sign_up')}
@@ -135,7 +121,8 @@ class BaseinfoPage extends React.Component {
 									{I18n.t('onboarding.public_profile').toUpperCase()}
 								</Text>
 								{this.props.isTelegramUser &&
-									(this.props.city !== '' || this.props.firstName !== '') && (
+									(this.props.location.fullName !== '' ||
+										this.props.firstName !== '') && (
 										<Text
 											style={[
 												CommonOnboardingStyles.text,
@@ -176,11 +163,7 @@ class BaseinfoPage extends React.Component {
 											this.props.navigation.getParam('goBackArrowDisabled') ===
 											true
 										}
-										rightDisabled={
-											this.state.cityLoading ||
-											this.props.isLoading ||
-											!this.validate()
-										}
+										rightDisabled={this.props.isLoading || !this.validate()}
 										onLeftClick={() => this.props.navigation.goBack()}
 										onRightClick={this.handleSave}
 										rightArrowColor={color}
@@ -196,7 +179,14 @@ class BaseinfoPage extends React.Component {
 }
 
 BaseinfoPage.defaultProps = {
-	isTelegramUser: false
+	isTelegramUser: false,
+	location: {
+		fullName: '',
+		name: '',
+		mapboxId: '',
+		latitude: 0,
+		longitude: 0
+	}
 }
 
 BaseinfoPage.propTypes = {
@@ -205,7 +195,13 @@ BaseinfoPage.propTypes = {
 	isLoading: PropTypes.bool.isRequired,
 	isTelegramUser: PropTypes.bool.isRequired,
 	firstName: PropTypes.string,
-	city: PropTypes.string,
+	location: PropTypes.shape({
+		fullName: PropTypes.string,
+		name: PropTypes.string,
+		mapboxId: PropTypes.string,
+		latitude: PropTypes.number,
+		longitude: PropTypes.number
+	}).isRequired,
 	color: PropTypes.shape({
 		id: PropTypes.number.isRequired,
 		hexValue: PropTypes.string.isRequired
@@ -221,7 +217,7 @@ const mapStateToProps = state => {
 		isLoading: createLoadingSelector(['UPLOAD_INFO'])(state),
 		isTelegramUser: state.auth.isTelegramUser,
 		firstName: state.profile.firstName,
-		city: state.profile.city,
+		location: state.profile.latestLocation,
 		color: state.profile.color,
 		emoji: state.profile.emoji,
 		onboardingMaxSteps: state.onboarding.onboardingMaxSteps,

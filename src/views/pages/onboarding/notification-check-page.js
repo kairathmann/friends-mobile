@@ -11,16 +11,14 @@ import { NavigationBottomBar } from '../../../components/NavigationBottomBar/Nav
 import { OnboardingHeader } from '../../../components/OnboardingHeader/OnboardingHeader'
 import UserColorAwareComponent from '../../../components/UserColorAwareComponent'
 import { PAGES_NAMES } from '../../../navigation/pages'
-import { register } from '../../../services/pushNotificationService'
-import configuredStore from '../../../store'
 import { createFontStyle, styles as commonStyles } from '../../../styles'
 import * as COLORS from '../../../styles/colors'
-import { navigationService } from '../../../services'
+import { navigationService, pushService } from '../../../services'
 
 class NotificationCheckPage extends React.Component {
 	PAGE_NAME = PAGES_NAMES.NOTIFICATION_CHECK_PAGE
 	handleCheckNotifications = () => {
-		register(configuredStore)
+		pushService.register()
 	}
 
 	goToNextPage = () => {

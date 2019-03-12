@@ -13,8 +13,10 @@ import { SafeAreaView } from 'react-navigation'
 import EStyleSheet from 'react-native-extended-stylesheet'
 
 import UserAvatar from '../../../components/UserAvatar'
+import SystemCard from '../../../components/SystemCard'
 import NewMessageInputs from '../../../components/NewMessageInputs'
 import TextMessage from '../../../components/TextMessage'
+import { FeedbackHeader } from '../../../components/Feedback'
 import { createFontStyle, styles as commonStyles, FONTS } from '../../../styles'
 import * as COLORS from '../../../styles/colors'
 import { CHAT_TYPES } from '../../../enums'
@@ -29,6 +31,7 @@ import {
 	sendTextMessage,
 	switchChatInstance
 } from './scenario-actions'
+import { fetchFeedbackQuestions } from '../../../components/Feedback/scenario-actions'
 
 const DEFAULT_CHAT_OBJECT = {
 	fetchedAllPossiblePastMessages: false,
@@ -147,6 +150,18 @@ class ChatMessagesPage extends React.Component {
 		)
 	}
 
+	fetchFeedback = () => {
+		const { fetchFeedbackQuestions } = this.props
+		fetchFeedbackQuestions(this.state.chatId)
+	}
+
+	renderFeedbackHeader = () => {
+		const { feedbackRequested } = this.props
+		return feedbackRequested ? (
+			<FeedbackHeader opened={false} onSubmitClick={this.fetchFeedback} />
+		) : null
+	}
+
 	renderMessagesList = () => (
 		<FlatList
 			ref={ref => (this.flatListInstance = ref)}
@@ -157,15 +172,21 @@ class ChatMessagesPage extends React.Component {
 			contentContainerStyle={styles.scrollViewContainer}
 			data={_.orderBy(this.props.chatDetails.messages, 'id', 'desc')}
 			initialNumToRender={40}
-			renderItem={({ item }) => (
-				<TextMessage
-					text={item.text}
-					isTheSameDayAsPrevious={item.isTheSameDayAsPrevious}
-					isLoggedUserMessage={item.ownedByLoggedUser}
-					timestamp={item.timestamp}
-					nextMessageBelongsToTheSameUser={item.nextMessageBelongsToTheSameUser}
-				/>
-			)}
+			renderItem={({ item }) => {
+				return item.senderId ? (
+					<TextMessage
+						text={item.text}
+						isTheSameDayAsPrevious={item.isTheSameDayAsPrevious}
+						isLoggedUserMessage={item.ownedByLoggedUser}
+						timestamp={item.timestamp}
+						nextMessageBelongsToTheSameUser={
+							item.nextMessageBelongsToTheSameUser
+						}
+					/>
+				) : (
+					<SystemCard text={item.text} />
+				)
+			}}
 		/>
 	)
 
@@ -198,6 +219,7 @@ class ChatMessagesPage extends React.Component {
 					>
 						<Container style={commonStyles.content}>
 							{this.renderPartnerInfoHeader()}
+							{this.renderFeedbackHeader()}
 							{this.renderMessagesList()}
 							{this.renderNewMessagesInputs()}
 						</Container>
@@ -253,7 +275,7 @@ ChatMessagesPage.propTypes = {
 		messages: PropTypes.arrayOf(
 			PropTypes.shape({
 				id: PropTypes.number.isRequired,
-				senderId: PropTypes.number.isRequired,
+				senderId: PropTypes.number,
 				ownedByLoggedUser: PropTypes.bool.isRequired,
 				text: PropTypes.string,
 				timestamp: PropTypes.string.isRequired,
@@ -262,12 +284,14 @@ ChatMessagesPage.propTypes = {
 			})
 		)
 	}),
+	feedbackRequested: PropTypes.bool.isRequired,
 	isLoading: PropTypes.bool.isRequired,
 	fetchChatDetailsLatestCleanHistory: PropTypes.func.isRequired,
 	fetchChatDetailsMissingMessages: PropTypes.func.isRequired,
 	fetchChatDetailsPreviousMessages: PropTypes.func.isRequired,
 	sendNewMessage: PropTypes.func.isRequired,
 	switchChatInstance: PropTypes.func.isRequired,
+	fetchFeedbackQuestions: PropTypes.func.isRequired,
 	isSendingNewTextMessage: PropTypes.bool.isRequired
 }
 
@@ -309,8 +333,12 @@ const mapStateToProps = (state, ownProps) => {
 		...chatDetailsRegular,
 		messages: chatDetailsMessagesRemapped
 	}
+	const chatInstance = state.messages.chats.find(
+		chat => chat.id === ownProps.navigation.getParam('chatId')
+	)
 	return {
 		chatDetails: chatDetailsRemapped,
+		feedbackRequested: chatInstance ? chatInstance.feedback : false,
 		error: createErrorMessageSelector(['FETCH_CHAT_DETAILS'])(state),
 		isLoading: createLoadingSelector(['FETCH_CHAT_DETAILS'])(state),
 		isSendingNewTextMessage: createLoadingSelector(['SEND_TEXT_CHAT_MESSAGE'])(
@@ -329,7 +357,8 @@ const mapDispatchToProps = dispatch => {
 			dispatch(fetchChatDetailsPreviousMessages(chatId)),
 		sendNewMessage: (chatId, text, successCallback) =>
 			dispatch(sendTextMessage(chatId, text, successCallback)),
-		switchChatInstance: chatId => dispatch(switchChatInstance(chatId))
+		switchChatInstance: chatId => dispatch(switchChatInstance(chatId)),
+		fetchFeedbackQuestions: chatId => dispatch(fetchFeedbackQuestions(chatId))
 	}
 }
 

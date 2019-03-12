@@ -12,6 +12,7 @@ import {
 	saveAnswersStarted,
 	saveAnswersSuccess
 } from '../../../store/profile/actions'
+import { hideSpinner, showSpinner } from '../../../store/global/actions'
 
 const sendAnswerRequest = async answers => {
 	const answersIds = _.values(answers).map(ans => ans.selected)
@@ -43,6 +44,7 @@ export function fetchQuestions() {
 export function saveUnanswered(answers) {
 	return async dispatch => {
 		try {
+			dispatch(showSpinner())
 			dispatch(saveAnswersStarted(answers))
 			const result = await sendAnswerRequest(answers)
 			dispatch(
@@ -54,6 +56,8 @@ export function saveUnanswered(answers) {
 		} catch (err) {
 			dispatch(saveAnswersFailure(err))
 			showErrorToast(i18n.t('errors.cannot_save_answers'))
+		} finally {
+			dispatch(hideSpinner())
 		}
 	}
 }
@@ -61,6 +65,7 @@ export function saveUnanswered(answers) {
 export function saveAnswered(answers) {
 	return async dispatch => {
 		try {
+			dispatch(showSpinner())
 			dispatch(saveAnswersStarted(answers))
 			const result = await sendAnswerRequest(answers)
 			dispatch(
@@ -73,6 +78,8 @@ export function saveAnswered(answers) {
 		} catch (err) {
 			dispatch(saveAnswersFailure(err))
 			showErrorToast(i18n.t('errors.cannot_save_answers'))
+		} finally {
+			dispatch(hideSpinner())
 		}
 	}
 }

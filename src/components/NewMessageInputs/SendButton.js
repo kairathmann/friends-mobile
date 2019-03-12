@@ -23,18 +23,20 @@ export default class SendButton extends React.Component {
 		return (
 			<UserColorAwareComponent>
 				{color => (
-					<View style={styles.sendButtonContainer}>
+					<View
+						style={[
+							styles.sendButtonContainer,
+							disabled
+								? styles.sendTextMessageIconFaded
+								: styles.sendTextMessageIconVisible,
+							{ backgroundColor: color }
+						]}
+					>
 						<Icon
-							type="MaterialIcons"
-							name={'send'}
+							type="MaterialCommunityIcons"
+							name={'arrow-up'}
 							onPress={this.handlePress}
-							style={[
-								styles.sendTextMessageIcon,
-								disabled
-									? styles.sendTextMessageIconFaded
-									: styles.sendTextMessageIconVisible,
-								{ color }
-							]}
+							style={styles.sendTextMessageIcon}
 						/>
 					</View>
 				)}
@@ -45,10 +47,17 @@ export default class SendButton extends React.Component {
 
 const styles = EStyleSheet.create({
 	sendButtonContainer: {
-		marginLeft: 20
+		alignSelf: 'flex-end',
+		alignItems: 'center',
+		justifyContent: 'center',
+		marginLeft: 20,
+		borderRadius: 20,
+		width: 40,
+		height: 40
 	},
 	sendTextMessageIcon: {
-		fontSize: 32
+		fontSize: 28,
+		color: 'rgba(0, 0, 0, 0.54)'
 	},
 	sendTextMessageIconVisible: {
 		opacity: 1.0

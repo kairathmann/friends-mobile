@@ -1,4 +1,4 @@
-import { Container, Content, Spinner, Text, View } from 'native-base'
+import { Container, Content, Text, View } from 'native-base'
 import PropTypes from 'prop-types'
 import React from 'react'
 import moment from 'moment'
@@ -178,6 +178,7 @@ class AuthPageTokenVerificationPage extends React.Component {
 				keyboardType="number-pad"
 				maxLength={1}
 				containerStyle={styles.singleVerificationCodeInputCustom}
+				centerInput={true}
 				blurOnSubmit={true}
 				returnKeyType={isLastInRow ? 'done' : 'next'}
 				getRef={input => {
@@ -256,7 +257,6 @@ class AuthPageTokenVerificationPage extends React.Component {
 				/>
 				<SafeAreaView style={commonStyles.safeAreaView}>
 					<Container style={commonStyles.content}>
-						{this.props.isLoading && <Spinner color="white" />}
 						<Content contentContainerStyle={commonStyles.scrollableContent}>
 							<OnboardingHeader
 								pageNumber={2}
@@ -332,15 +332,7 @@ const styles = EStyleSheet.create({
 	singleVerificationCodeInputCustom: {
 		width: 60,
 		height: 60,
-		borderRadius: 10,
-		'@media ios': {
-			paddingRight: 12,
-			paddingLeft: 12
-		},
-		'@media android': {
-			paddingRight: 16,
-			paddingLeft: 16
-		}
+		borderRadius: 10
 	},
 	verificationCodeControlCaptions: {
 		flex: 1,

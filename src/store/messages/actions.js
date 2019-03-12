@@ -13,7 +13,8 @@ import {
 	SEND_TEXT_CHAT_MESSAGE_FAILURE,
 	SEND_TEXT_CHAT_MESSAGE_REQUEST,
 	SEND_TEXT_CHAT_MESSAGE_SUCCESS,
-	SWITCH_CHAT
+	SWITCH_CHAT,
+	MARK_CHATS_AS_REQURIING_FEEDBACK
 } from './action-types'
 
 export function fetchChatsStarted() {
@@ -109,4 +110,9 @@ export const addNewMessageToChatFromPushNotificationIncrementUnread = (
 export const switchChat = chatId => ({
 	type: SWITCH_CHAT,
 	payload: chatId
+})
+
+export const requestFeedbackOnChats = chatIds => ({
+	type: MARK_CHATS_AS_REQURIING_FEEDBACK,
+	payload: chatIds
 })

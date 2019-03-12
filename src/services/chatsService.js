@@ -21,7 +21,8 @@ const remapChats = (chats, profileId, defaultColor) => {
 			partner[0].user.emoji || DEFAULT_EMOJIS[0],
 			chat.lastMessage.text || '',
 			chat.lastMessage.timestamp || now,
-			chat.unreadMessages[profileId]
+			chat.unreadMessages[profileId],
+			chat.chatusersSet.find(u => u.user.id === profileId).feedbackRequested
 		)
 	})
 }
@@ -35,7 +36,8 @@ const remapSingleChat = (
 	partnerEmoji,
 	lastMesasge,
 	lastReadTimeStamp,
-	unreadCounter
+	unreadCounter,
+	feedbackRequested
 ) => {
 	return {
 		type: type,
@@ -47,10 +49,7 @@ const remapSingleChat = (
 		lastMessage: lastMesasge,
 		lastRead: lastReadTimeStamp,
 		unread: unreadCounter,
-		feedback: {
-			show: false,
-			given: false
-		}
+		feedback: feedbackRequested
 	}
 }
 
@@ -69,10 +68,7 @@ const remapChatMessageNotificationToChatMessageFormat = notificationsPayload => 
 			hexValue: firstMessage.message_sender.color.hex_value
 		},
 		partnerEmoji: firstMessage.message_sender.emoji,
-		feedback: {
-			show: false,
-			given: false
-		}
+		feedback: firstMessage.feedback_requested
 	}
 	const messages = _.orderBy(
 		notificationsPayload.map(notification => ({

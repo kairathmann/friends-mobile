@@ -320,6 +320,9 @@ const remapChatDetails = (chatDetails, currentLoggedUserId) => ({
 	users: chatDetails.chatusersSet.filter(
 		u => u.user.id !== currentLoggedUserId
 	),
+	feedback:
+		chatDetails.chatusersSet.find(u => u.user.id === currentLoggedUserId)
+			.feedbackRequested || false,
 	messages: chatDetails.messages.map(message =>
 		remapSingleMessage(message, currentLoggedUserId)
 	)

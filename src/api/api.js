@@ -9,32 +9,12 @@ export default {
 			.get('rounds/', { headers: { 'X-Authorization': `Bearer ${authToken}` } })
 			.then(result => result.data)
 	},
-	joinRound: async round => {
-		const authToken = await tokenService.getToken()
-		return axios
-			.post(
-				'rounds/subscribe/',
-				{ round_id: round.id, is_subscribed: true },
-				{ headers: { 'X-Authorization': `Bearer ${authToken}` } }
-			)
-			.then(result => result.data)
-	},
 	fetchChats: async () => {
 		const authToken = await tokenService.getToken()
 		return axios
 			.get(`chats/`, {
 				headers: { 'X-Authorization': `Bearer ${authToken}` }
 			})
-			.then(result => result.data)
-	},
-	resignRound: async round => {
-		const authToken = await tokenService.getToken()
-		return axios
-			.post(
-				'rounds/subscribe/',
-				{ round_id: round.id, is_subscribed: false },
-				{ headers: { 'X-Authorization': `Bearer ${authToken}` } }
-			)
 			.then(result => result.data)
 	},
 	fetchSelf: async () => {
@@ -81,12 +61,23 @@ export default {
 		axios.post('legacy/', {
 			email
 		}),
-	uploadBaseInfo: async ({ name, city, color, emoji }) => {
+	uploadBaseInfo: async ({ name, location, color, emoji }) => {
 		const authToken = await tokenService.getToken()
 		return axios
 			.put(
 				'self/',
-				{ first_name: name, city, color, emoji },
+				{
+					first_name: name,
+					color,
+					emoji,
+					location: {
+						mapbox_id: location.mapboxId,
+						full_name: location.fullName,
+						name: location.name,
+						latitude: location.latitude,
+						longitude: location.longitude
+					}
+				},
 				{ headers: { 'X-Authorization': `Bearer ${authToken}` } }
 			)
 			.then(result => result.data)
@@ -151,6 +142,28 @@ export default {
 				`chats/${chatId}/`,
 				{ text: textMessage },
 				{ headers: { 'X-Authorization': `Bearer ${authToken}` } }
+			)
+			.then(result => result.data)
+	},
+	fetchFeedbackQuestions: async () => {
+		const authToken = await tokenService.getToken()
+		return axios
+			.get(`feedback_questions/`, {
+				headers: { 'X-Authorization': `Bearer ${authToken}` }
+			})
+			.then(result => result.data)
+	},
+	saveFeedbackAnswers: async (chatId, answers) => {
+		const authToken = await tokenService.getToken()
+		return axios
+			.post(
+				`chats/${chatId}/feedback_responses/`,
+				{
+					feedback_responses: answers
+				},
+				{
+					headers: { 'X-Authorization': `Bearer ${authToken}` }
+				}
 			)
 			.then(result => result.data)
 	}

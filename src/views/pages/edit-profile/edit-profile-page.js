@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import { Container, Content, Spinner, Text, View } from 'native-base'
+import { Container, Content, Text, View } from 'native-base'
 import React from 'react'
 import { StatusBar } from 'react-native'
 import { SafeAreaView } from 'react-navigation'
@@ -8,7 +8,6 @@ import I18n from '../../../../locales/i18n'
 import { NavigationBottomBar } from '../../../components/NavigationBottomBar/NavigationBottomBar'
 import EmojiSelector from '../../../components/EmojiSelector'
 import ColorSelector from '../../../components/ColorSelector'
-import CitySearchInput from '../../../components/CitySearchInput'
 import TextInput from '../../../components/TextInput/TextInput'
 import UserAvatar from '../../../components/UserAvatar'
 import { DEFAULT_EMOJIS, NAME_MAX_LENGTH } from '../../../enums'
@@ -24,35 +23,26 @@ import {
 } from '../../../styles'
 import * as COLORS from '../../../styles/colors'
 import { updateUserProfile } from './scenario-actions'
+import { CityAutocomplete } from '../../../components/Autocomplete'
 
 class EditProfilePage extends React.Component {
 	state = {
 		name: this.props.firstName,
-		city: this.props.city,
+		location: this.props.location,
 		color: this.props.color,
 		firstName: this.props.firstName,
 		emoji: this.props.emoji,
-		cityError: false,
-		cityLoading: false,
 		validationEnabled: false
-	}
-
-	onCitySearchStart = () => {
-		this.setState({ cityLoading: true })
-	}
-
-	onCitySearchEndError = () => {
-		this.setState({ cityLoading: false, cityError: true })
-	}
-
-	onCitySearchEndSuccess = city => {
-		this.setState({ cityLoading: false, cityError: false, city })
 	}
 
 	handleNameChange = text => {
 		this.setState({
 			name: text
 		})
+	}
+
+	onLocationSelect = location => {
+		this.setState({ location })
 	}
 
 	handleColorChange = newColor => {
@@ -76,6 +66,10 @@ class EditProfilePage extends React.Component {
 		return selectedEmoji !== ''
 	}
 
+	validateLocation = location => {
+		return location.fullName.length > 0
+	}
+
 	validateColor = selectedColor => {
 		return (
 			selectedColor.id &&
@@ -85,13 +79,11 @@ class EditProfilePage extends React.Component {
 	}
 
 	validate = () => {
-		const { city, cityError, name, cityLoading, color, emoji } = this.state
+		const { location, name, color, emoji } = this.state
 
 		return (
-			!cityLoading &&
-			city.length !== 0 &&
 			name.length !== 0 &&
-			!cityError &&
+			this.validateLocation(location) &&
 			this.validateColor(color) &&
 			this.validateEmoji(emoji)
 		)
@@ -103,7 +95,7 @@ class EditProfilePage extends React.Component {
 			if (formValid) {
 				this.props.updateUserProfile({
 					name: this.state.name,
-					city: this.state.city,
+					location: this.state.location,
 					color: this.state.color,
 					emoji: this.state.emoji
 				})
@@ -129,11 +121,9 @@ class EditProfilePage extends React.Component {
 	)
 
 	renderUserCityInput = () => (
-		<CitySearchInput
-			city={this.state.city}
-			onSearchStart={this.onCitySearchStart}
-			onSearchEndError={this.onCitySearchEndError}
-			onSearchEndSuccess={this.onCitySearchEndSuccess}
+		<CityAutocomplete
+			locationFullName={this.props.location.fullName}
+			onLocationSelect={this.onLocationSelect}
 		/>
 	)
 
@@ -195,7 +185,6 @@ class EditProfilePage extends React.Component {
 				<SafeAreaView style={commonStyles.safeAreaView}>
 					<Container style={commonStyles.content}>
 						<Content contentContainerStyle={commonStyles.scrollableContent}>
-							{this.props.isLoading && <Spinner color={'white'} />}
 							<View style={BaseInfoStyles.avatarContainer}>
 								<UserAvatar
 									emoji={this.state.emoji}
@@ -237,7 +226,6 @@ class EditProfilePage extends React.Component {
 							{this.renderPickers()}
 							<NavigationBottomBar
 								rightDisabled={
-									this.state.cityLoading ||
 									this.props.isLoading ||
 									(!this.validate() && this.state.validationEnabled)
 								}
@@ -258,7 +246,13 @@ EditProfilePage.propTypes = {
 	navigation: PropTypes.object,
 	isLoading: PropTypes.bool.isRequired,
 	firstName: PropTypes.string,
-	city: PropTypes.string,
+	location: PropTypes.shape({
+		fullName: PropTypes.string,
+		name: PropTypes.string,
+		mapboxId: PropTypes.string,
+		latitude: PropTypes.number,
+		longitude: PropTypes.number
+	}),
 	color: PropTypes.shape({
 		id: PropTypes.number.isRequired,
 		hexValue: PropTypes.string.isRequired
@@ -278,7 +272,7 @@ const mapStateToProps = state => {
 		baseInfoError: createErrorMessageSelector(['UPLOAD_INFO'])(state),
 		isLoading: createLoadingSelector(['UPLOAD_INFO'])(state),
 		firstName: state.profile.firstName,
-		city: state.profile.city,
+		location: state.profile.latestLocation,
 		color: state.profile.color,
 		emoji: state.profile.emoji,
 		availableColors: state.colors.colors

@@ -12,6 +12,7 @@ jest.mock('react-navigation', () => {
 		createBottomTabNavigator: () => '',
 		Header: {
 			HEIGHT: 100
-		}
+		},
+		withNavigation: () => {}
 	}
 })

@@ -4,7 +4,6 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import { TouchableOpacity } from 'react-native'
 import EStyleSheet from 'react-native-extended-stylesheet'
-import I18n from '../../../locales/i18n'
 import { createFontStyle } from '../../styles'
 import { LATO, TITILLIUM } from '../../styles/fonts'
 import { BOLD, NORMAL, SEMI_BOLD } from '../../styles/fontStyles'
@@ -27,14 +26,7 @@ class ChatItem extends React.Component {
 		const lastMessageTimeStamp = moment(chat.lastRead)
 		return (
 			<TouchableOpacity onPress={() => onClick(chat)}>
-				<View
-					style={[
-						styles.feedbackContainer,
-						chat.feedback.show && !chat.feedback.given
-							? styles.feedbackContainerLargeSpacing
-							: styles.feedbackContainerSmallSpacing
-					]}
-				>
+				<View style={styles.mainContainer}>
 					<View style={styles.chatItemContainer}>
 						<UserAvatar
 							emoji={chat.partnerEmoji}
@@ -95,32 +87,6 @@ class ChatItem extends React.Component {
 							)}
 						</View>
 					</View>
-					{chat.feedback.show && chat.feedback.given && (
-						<View style={styles.feedbackControlsParent}>
-							<Text style={styles.givenFeedbackText}>
-								{I18n.t('home.feedback_already_given')}
-							</Text>
-						</View>
-					)}
-					{chat.feedback.show && !chat.feedback.given && (
-						<UserColorAwareComponent>
-							{color => (
-								<TouchableOpacity>
-									<View
-										style={[
-											styles.feedbackControlsParent,
-											styles.feedbackGivenParent,
-											{ backgroundColor: color }
-										]}
-									>
-										<Text style={styles.feedbackText}>
-											{I18n.t('home.give_feedback').toUpperCase()}
-										</Text>
-									</View>
-								</TouchableOpacity>
-							)}
-						</UserColorAwareComponent>
-					)}
 				</View>
 			</TouchableOpacity>
 		)
@@ -142,27 +108,19 @@ ChatItem.propTypes = {
 		lastMessage: PropTypes.string,
 		lastRead: PropTypes.string.isRequired,
 		unread: PropTypes.number.isRequired,
-		feedback: PropTypes.shape({
-			show: PropTypes.bool.isRequired,
-			given: PropTypes.bool
-		})
+		feedback: PropTypes.bool.isRequired
 	}).isRequired,
 	onClick: PropTypes.func.isRequired,
 	showUnreadCounter: PropTypes.bool
 }
 
 const styles = EStyleSheet.create({
-	feedbackContainer: {
+	mainContainer: {
 		width: '100%',
 		flexDirection: 'column',
 		borderRadius: 4,
-		backgroundColor: '$darkColor'
-	},
-	feedbackContainerSmallSpacing: {
+		backgroundColor: '$darkColor',
 		marginBottom: 2
-	},
-	feedbackContainerLargeSpacing: {
-		marginBottom: 17
 	},
 	chatItemContainer: {
 		width: '100%',

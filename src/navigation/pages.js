@@ -1,5 +1,5 @@
 import React from 'react'
-import { Image } from 'react-native'
+import { Image, Text, View } from 'react-native'
 /* eslint react/display-name: 0 */
 /* eslint react/prop-types: 0 */
 import {
@@ -7,6 +7,7 @@ import {
 	createBottomTabNavigator,
 	createStackNavigator
 } from 'react-navigation'
+import EStyleSheet from 'react-native-extended-stylesheet'
 import I18n from '../../locales/i18n'
 import ChatIcon from '../assets/images/bottom_chat_icon.png'
 import HomeIcon from '../assets/images/bottom_home_icon.png'
@@ -32,22 +33,44 @@ import EditProfilePage from '../views/pages/edit-profile'
 import MatchingQuestionsPage from '../views/pages/matching-questions/matching-questions-page'
 import ChatMessagesPage from '../views/pages/chat-messages'
 import QuestionsPageProfileEditView from '../views/pages/matching-questions/question-page'
+import FeedbackPage from '../views/pages/feedback'
 import { PAGES_NAMES } from '../enums'
+import { createFontStyle, FONTS } from '../styles'
+import { ConnectedGlobalSpinner } from '../components/Spinner'
 
-const BottomBarNavigationIcon = ({ focused, icon }) => (
+const BottomBarNavigationIcon = ({ focused, icon, label }) => (
 	<UserColorAwareComponent>
 		{color => (
-			<Image
-				style={{
-					width: 20,
-					height: 20,
-					tintColor: focused ? color : COLORS.LUMINOS_GREY
-				}}
-				source={icon}
-			/>
+			<React.Fragment>
+				<Image
+					style={[
+						BottomBarNavStyles.icon,
+						{ tintColor: focused ? color : COLORS.LUMINOS_GREY }
+					]}
+					source={icon}
+				/>
+				{focused && (
+					<Text style={[BottomBarNavStyles.label, { color }]}>{label}</Text>
+				)}
+			</React.Fragment>
 		)}
 	</UserColorAwareComponent>
 )
+
+const BottomBarNavStyles = EStyleSheet.create({
+	icon: {
+		width: 20,
+		height: 20
+	},
+	label: {
+		...createFontStyle(FONTS.LATO),
+		fontSize: 9,
+		letterSpacing: 0.4,
+		lineHeight: 12,
+		textAlign: 'center',
+		paddingTop: 4
+	}
+})
 
 const HomeBottomBar = createBottomTabNavigator(
 	{
@@ -56,7 +79,13 @@ const HomeBottomBar = createBottomTabNavigator(
 			navigationOptions: () => ({
 				title: I18n.t('navigator.chat'),
 				tabBarIcon: ({ focused }) => {
-					return <BottomBarNavigationIcon focused={focused} icon={ChatIcon} />
+					return (
+						<BottomBarNavigationIcon
+							focused={focused}
+							icon={ChatIcon}
+							label={I18n.t('navigator.chat')}
+						/>
+					)
 				},
 				header: null
 			})
@@ -66,7 +95,13 @@ const HomeBottomBar = createBottomTabNavigator(
 			navigationOptions: () => ({
 				title: I18n.t('navigator.home'),
 				tabBarIcon: ({ focused }) => {
-					return <BottomBarNavigationIcon focused={focused} icon={HomeIcon} />
+					return (
+						<BottomBarNavigationIcon
+							focused={focused}
+							icon={HomeIcon}
+							label={I18n.t('navigator.home')}
+						/>
+					)
 				},
 				header: null
 			})
@@ -74,10 +109,14 @@ const HomeBottomBar = createBottomTabNavigator(
 		PROFILE_TAB: {
 			screen: ProfilePage,
 			navigationOptions: () => ({
-				title: I18n.t('navigator.profile'),
+				title: I18n.t('navigator.account'),
 				tabBarIcon: ({ focused }) => {
 					return (
-						<BottomBarNavigationIcon focused={focused} icon={ProfileIcon} />
+						<BottomBarNavigationIcon
+							focused={focused}
+							icon={ProfileIcon}
+							label={I18n.t('navigator.account')}
+						/>
 					)
 				},
 				header: null
@@ -200,17 +239,32 @@ const AppStackNavigator = createStackNavigator({
 		navigationOptions: () => ({
 			header: null
 		})
+	},
+	FEEDBACK_PAGE: {
+		screen: FeedbackPage,
+		navigationOptions: () => ({
+			header: null
+		})
 	}
 })
 
 const AppNavigator = createAppContainer(AppStackNavigator)
 
 const AppStackNavigatorWithGlobalSupport = () => (
-	<AppNavigator
-		ref={navigatorRef => {
-			navigationService.setTopLevelNavigator(navigatorRef)
-		}}
-	/>
+	<View style={AppStyles.appContainer}>
+		<AppNavigator
+			ref={navigatorRef => {
+				navigationService.setTopLevelNavigator(navigatorRef)
+			}}
+		/>
+		<ConnectedGlobalSpinner />
+	</View>
 )
+
+const AppStyles = EStyleSheet.create({
+	appContainer: {
+		flex: 1
+	}
+})
 
 export { AppStackNavigatorWithGlobalSupport, PAGES_NAMES }

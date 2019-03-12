@@ -15,7 +15,12 @@ export const NavigationBottomBar = ({
 	centerComponent
 }) => (
 	<View style={styles.bottom}>
-		<View style={styles.bar}>
+		<View
+			style={[
+				styles.bar,
+				leftHidden && !rightHidden ? styles.barOnlyRightItem : ''
+			]}
+		>
 			{!leftHidden && (
 				<Icon
 					onPress={leftDisabled ? () => {} : onLeftClick}
@@ -49,10 +54,14 @@ const styles = EStyleSheet.create({
 		alignItems: 'center',
 		flexDirection: 'row'
 	},
+	barOnlyRightItem: {
+		justifyContent: 'flex-end'
+	},
 	leftArrow: {
 		color: 'white'
 	},
 	rightArrow: {
+		alignSelf: 'flex-end',
 		color: '#58e2c2'
 	},
 	disabled: {
