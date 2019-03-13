@@ -41,6 +41,14 @@ const defaultFontTypes = EStyleSheet.create({
 		color: '$greyColor',
 		fontSize: 18,
 		letterSpacing: 0.25
+	},
+	Overline: {
+		...createFontStyle(FONTS.TITILLIUM, FONTS_STYLES.SEMI_BOLD),
+		color: 'white',
+		fontSize: 12,
+		lineHeight: 16,
+		textAlign: 'left',
+		letterSpacing: 2
 	}
 })
 

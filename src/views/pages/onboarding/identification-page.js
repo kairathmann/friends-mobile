@@ -82,9 +82,9 @@ class IdentificationPage extends React.Component {
 		<View style={IdentificationPageStyles.spaceBetweenSections}>
 			<Text
 				style={[
-					CommonOnboardingStyles.text,
-					CommonOnboardingStyles.textHeader,
-					CommonOnboardingStyles.space
+					defaultFontTypes.Overline,
+					CommonOnboardingStyles.space,
+					CommonOnboardingStyles.paddingLeft
 				]}
 			>
 				{I18n.t(
@@ -105,9 +105,9 @@ class IdentificationPage extends React.Component {
 		<View style={IdentificationPageStyles.spaceBetweenSections}>
 			<Text
 				style={[
-					CommonOnboardingStyles.text,
-					CommonOnboardingStyles.textHeader,
-					CommonOnboardingStyles.space
+					defaultFontTypes.Overline,
+					CommonOnboardingStyles.space,
+					CommonOnboardingStyles.paddingLeft
 				]}
 			>
 				{I18n.t(
@@ -123,29 +123,21 @@ class IdentificationPage extends React.Component {
 	)
 
 	renderUserAvatarPreview = () => (
-		<View style={IdentificationPageStyles.userAvatarContainer}>
-			<View style={IdentificationPageStyles.userAvatarTextHeader}>
-				<Text
-					style={[
-						CommonOnboardingStyles.text,
-						CommonOnboardingStyles.textHeader,
-						CommonOnboardingStyles.space
-					]}
-				>
-					{I18n.t(
-						'onboarding.identification_page_avatar_preview_section_header'
-					).toUpperCase()}
-				</Text>
-			</View>
+		<View
+			style={[
+				IdentificationPageStyles.userAvatarContainer,
+				IdentificationPageStyles.spaceBetweenSections
+			]}
+		>
 			<LoggedInUserAvatar />
 		</View>
 	)
 
 	renderContent = () => (
 		<View style={CommonOnboardingStyles.formContainer}>
+			{this.renderUserAvatarPreview()}
 			{this.renderColorPickers()}
 			{this.renderEmojiPickers()}
-			{this.renderUserAvatarPreview()}
 		</View>
 	)
 
@@ -165,9 +157,7 @@ class IdentificationPage extends React.Component {
 								leftText={I18n.t('onboarding.sign_up')}
 								totalPage={this.props.onboardingMaxSteps}
 							/>
-							<View
-								style={CommonOnboardingStyles.descriptionContainerMarginBottom}
-							>
+							<View style={CommonOnboardingStyles.descriptionContainerNoMargin}>
 								<Text
 									style={[
 										defaultFontTypes.H4,

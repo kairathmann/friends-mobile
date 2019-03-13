@@ -6,6 +6,12 @@ import BaseInfoStyles from './baseinfo'
 import IdentificationPageStyles from './identification'
 
 const common = {
+	descriptionContainerNoMargin: {
+		flex: 1,
+		justifyContent: 'flex-start',
+		marginLeft: 20,
+		marginRight: 20
+	},
 	descriptionContainerMarginTop: {
 		flex: 1,
 		justifyContent: 'flex-start',
@@ -55,6 +61,9 @@ const common = {
 	horizontalSpace: {
 		marginLeft: 8,
 		marginRight: 8
+	},
+	paddingLeft: {
+		paddingLeft: 8
 	}
 }
 

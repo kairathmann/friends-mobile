@@ -1,5 +1,5 @@
 export default {
-	complete_profile: 'Next, complete your profile...',
+	complete_profile: 'A few more steps to complete your profile...',
 	sign_up: 'Sign Up',
 	public_profile: 'Public profile',
 	secret_profile: 'Secret profile',
@@ -12,7 +12,7 @@ export default {
 	notifications_page_header: 'Enable notifications',
 	notifications_button: 'Allow push notifications',
 	notifications_page_description:
-		'We use push notifications to notify you about new messages from people and updates for experiment rounds.',
+		'We use push notifications to notify you of new messages and updates.',
 	questions_prompt: 'Your Personality Profile.',
 	answer_all_questions_body_1:
 		'We use your answers to a set of questions to build your matching profile.\n',
@@ -32,7 +32,7 @@ export default {
 	telegram_up_to_date: 'Are these up to date?',
 	identification_page_title: 'Welcome!',
 	identification_page_description:
-		'Select a color and symbol to begin. This will generate an avatar that will represent you throughout the app.',
+		'Select a color and symbol to begin.\n\nThis will also create your avatar which represents you in-app.',
 	identification_page_choose_color_section_header: 'Choose your color',
 	identification_page_choose_emoji_section_header: 'Choose your emoji',
 	identification_page_avatar_preview_section_header: 'Icon preview',

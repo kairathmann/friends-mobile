@@ -4,11 +4,10 @@ export default {
 	},
 	userAvatarContainer: {
 		flex: 1,
-		flexDirection: 'row'
-	},
-	userAvatarTextHeader: {
-		marginTop: 20,
-		flex: 1,
-		alignSelf: 'flex-start'
+		marginLeft: 16,
+		marginRight: 16,
+		marginTop: 8,
+		marginBottom: 24,
+		justifyContent: 'flex-start'
 	}
 }
