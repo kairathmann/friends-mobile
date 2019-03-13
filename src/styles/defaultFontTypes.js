@@ -20,6 +20,14 @@ const defaultFontTypes = EStyleSheet.create({
 		lineHeight: 24,
 		letterSpacing: 0.25
 	},
+	Body1: {
+		...createFontStyle(),
+		color: 'white',
+		fontSize: 16,
+		lineHeight: 24,
+		textAlign: 'left',
+		letterSpacing: 0.5
+	},
 	Body2: {
 		...createFontStyle(),
 		textAlign: 'left',

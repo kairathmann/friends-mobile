@@ -46,11 +46,21 @@ class QuestionsBeforePage extends React.Component {
 								</Text>
 								<Text
 									style={[
+										defaultFontTypes.Body1,
+										CommonOnboardingStyles.pageBody
+									]}
+								>
+									{i18n.t('onboarding.answer_all_questions_body_1')}
+								</Text>
+								<Text
+									style={[
 										defaultFontTypes.Body2,
 										CommonOnboardingStyles.pageBody
 									]}
 								>
-									{i18n.t('onboarding.answer_all_questions')}
+									{i18n.t('onboarding.answer_all_questions_body_2', {
+										numQuestions: this.props.questions.length
+									})}
 								</Text>
 							</View>
 							<UserColorAwareComponent>
@@ -78,12 +88,14 @@ class QuestionsBeforePage extends React.Component {
 
 QuestionsBeforePage.propTypes = {
 	navigation: PropTypes.object,
+	questions: PropTypes.array.isRequired,
 	onboardingMaxSteps: PropTypes.number.isRequired,
 	onboardingStepsConfig: PropTypes.object.isRequired
 }
 
 const mapStateToProps = state => {
 	return {
+		questions: state.onboarding.questions,
 		onboardingMaxSteps: state.onboarding.onboardingMaxSteps,
 		onboardingStepsConfig: state.onboarding.onboardingStepsConfig
 	}

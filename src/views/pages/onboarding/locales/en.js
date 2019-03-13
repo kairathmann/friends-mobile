@@ -14,8 +14,10 @@ export default {
 	notifications_page_description:
 		'We use push notifications to notify you about new messages from people and updates for experiment rounds.',
 	questions_prompt: 'Your Personality Profile.',
-	answer_all_questions:
-		'We use your answers to a set of questions to build your personality profile. Select the answer that feels the most true to you. Your answers are private, and by answering them to the best of your ability you increase the quality of your matches. We do not sell data.',
+	answer_all_questions_body_1:
+		'We use your answers to a set of questions to build your matching profile.\n',
+	answer_all_questions_body_2:
+		'Your answers are not publicly visible. By answering to the best of your ability you increase the quality of your matches.\n\nThere are %{numQuestions} questions. You must answer all %{numQuestions} to participate in matching.',
 	auth_phone_number_description: "Let's create your account.",
 	auth_phone_number_caption:
 		'You will receive SMS verification code on this number.',
