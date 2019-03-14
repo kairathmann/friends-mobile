@@ -1,2 +1,1 @@
 *.pbxproj -text
-android/gradle.properties filter=update-luna-keystore

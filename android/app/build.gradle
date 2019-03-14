@@ -123,12 +123,10 @@ android {
     }
     signingConfigs {
         release {
-            if (project.hasProperty('LUNA_RELEASE_STORE_FILE')) {
-                storeFile file(LUNA_RELEASE_STORE_FILE)
-                storePassword LUNA_RELEASE_STORE_PASSWORD
-                keyAlias LUNA_RELEASE_KEY_ALIAS
-                keyPassword LUNA_RELEASE_KEY_PASSWORD
-            }
+            storeFile file("android.jks")
+            storePassword System.getenv("LUNA_KEYSTORE_PASSWORD")
+            keyAlias "lunaconferenceandroidkey"
+            keyPassword System.getenv("LUNA_KEYSTORE_KEY_PASSWORD")
         }
     }
     splits {
