@@ -30,7 +30,7 @@ export const NavigationBottomBar = ({
 				/>
 			)}
 			{centerComponent}
-			{!rightHidden && (
+			{!rightHidden ? (
 				<Icon
 					onPress={rightDisabled ? () => {} : onRightClick}
 					type={'MaterialIcons'}
@@ -41,6 +41,8 @@ export const NavigationBottomBar = ({
 						rightDisabled && styles.disabled
 					]}
 				/>
+			) : (
+				<View style={{ width: 28 }} />
 			)}
 		</View>
 	</View>

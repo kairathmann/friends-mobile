@@ -33,7 +33,7 @@ export function saveSingleAnswer(answerId) {
 					unanswered
 				})
 			)
-			dispatch(setQuestions(unanswered))
+			dispatch(setQuestions({ unanswered, answered }))
 		} catch (err) {
 			dispatch(saveUnansweredError())
 			dispatch(saveAnswersFailure(err))

@@ -8,7 +8,10 @@ import { LOGOUT_USER_AND_CLEAR_DATA } from '../global/action-types'
 
 const initialState = {
 	questionIndex: 0,
-	questions: []
+	questions: {
+		unanswered: [],
+		answered: []
+	}
 }
 
 export default function unansweredWizardReducer(
@@ -19,7 +22,10 @@ export default function unansweredWizardReducer(
 		case SET_QUESTIONS: {
 			return {
 				...state,
-				questionIndex: Math.min(state.questionIndex, payload.length - 1),
+				questionIndex: Math.min(
+					state.questionIndex,
+					payload.unanswered.length - 1
+				),
 				questions: payload
 			}
 		}

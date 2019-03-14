@@ -4,19 +4,35 @@ import React from 'react'
 import EStyleSheet from 'react-native-extended-stylesheet'
 import { defaultFontTypes } from '../../styles'
 
-export function OnboardingHeader({ leftText, pageNumber, totalPage }) {
+export function OnboardingHeader({
+	leftText,
+	rightText,
+	pageNumber,
+	totalPage,
+	styles
+}) {
 	return (
-		<View style={styles.onboardingHeader}>
-			<View style={styles.leftSpace} />
-			<Text style={defaultFontTypes.H6}>{leftText}</Text>
+		<View style={[innerStyles.onboardingHeader, styles.onboardingHeader]}>
+			<View style={innerStyles.leftSpace} />
 			<Text
-				style={[defaultFontTypes.Subtitle1, styles.rightText]}
-			>{`${pageNumber}/${totalPage} `}</Text>
+				style={[defaultFontTypes.H6, innerStyles.leftText, styles.leftText]}
+			>
+				{leftText}
+			</Text>
+			<Text
+				style={[
+					defaultFontTypes.Subtitle1,
+					innerStyles.rightText,
+					styles.rightText
+				]}
+			>
+				{rightText.length === 0 ? `${pageNumber}/${totalPage} ` : rightText}
+			</Text>
 		</View>
 	)
 }
 
-const styles = EStyleSheet.create({
+const innerStyles = EStyleSheet.create({
 	onboardingHeader: {
 		padding: 16,
 		height: 60,
@@ -33,8 +49,20 @@ const styles = EStyleSheet.create({
 	}
 })
 
+OnboardingHeader.defaultProps = {
+	leftText: '',
+	rightText: '',
+	styles: {}
+}
+
 OnboardingHeader.propTypes = {
-	leftText: PropTypes.string.isRequired,
-	pageNumber: PropTypes.number.isRequired,
-	totalPage: PropTypes.number.isRequired
+	styles: PropTypes.shape({
+		onboardingHeader: PropTypes.shape({}),
+		leftText: PropTypes.shape({}),
+		rightText: PropTypes.shape({})
+	}),
+	leftText: PropTypes.string,
+	rightText: PropTypes.string,
+	pageNumber: PropTypes.number,
+	totalPage: PropTypes.number
 }

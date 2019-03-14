@@ -5,10 +5,7 @@ import { navigationService, tokenService } from '../../../services'
 import { PAGES_NAMES } from '../../../navigation/pages'
 import { setProfileInfo } from '../../../store/profile/actions'
 import { setAvailableColors } from '../../../store/colors/actions'
-import {
-	fetchQuestionsSuccess,
-	updateOnboardingConfig
-} from '../../../store/onboarding/actions'
+import { updateOnboardingConfig } from '../../../store/onboarding/actions'
 
 export const startup = () => async dispatch => {
 	try {
@@ -26,14 +23,11 @@ export const startup = () => async dispatch => {
 			let onboardingSteps = {}
 			// fetch questions only if we are not suppose to be redirected to Home Page aka we need to stay in onboarding
 			if (destinationPageForUser !== PAGES_NAMES.HOME_PAGE) {
-				const availableQuestions = await api.fetchQuestions()
 				const onboardingStepsConfig = navigationService.calculateOnboardingSteps(
-					destinationPageForUser,
-					availableQuestions
+					destinationPageForUser
 				)
 				onboardingMaxSteps = onboardingStepsConfig.maxSteps
 				onboardingSteps = onboardingStepsConfig.configurationPerPage
-				dispatch(fetchQuestionsSuccess(availableQuestions))
 				dispatch(updateOnboardingConfig(onboardingMaxSteps, onboardingSteps))
 			}
 			navigationService.navigateAndResetNavigation(destinationPageForUser, {

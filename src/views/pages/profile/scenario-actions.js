@@ -23,7 +23,7 @@ export function fetchQuestions() {
 					unanswered
 				})
 			)
-			dispatch(setQuestions(unanswered))
+			dispatch(setQuestions({ unanswered, answered }))
 		} catch (err) {
 			dispatch(fetchQuestionsFailure(err))
 			showErrorToast(i18n.t('errors.cannot_fetch_questions'))

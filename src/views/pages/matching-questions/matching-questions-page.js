@@ -61,7 +61,7 @@ class MatchingQuestionsPage extends React.Component {
 												{i18n.t('matching_questions.no_questions')}
 											</Text>
 										)}
-										<UnansweredQuestionWizard loadingAction="WIZARD_SAVE_UNANSWERED" />
+										<UnansweredQuestionWizard />
 									</ScrollView>
 								</Tab>
 								<Tab

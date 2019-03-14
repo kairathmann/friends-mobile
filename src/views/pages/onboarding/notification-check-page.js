@@ -105,7 +105,7 @@ NotificationCheckPage.propTypes = {
 
 const mapStateToProps = state => {
 	return {
-		questions: state.onboarding.questions,
+		questions: state.questionsWizard.questions.unanswered,
 		onboardingMaxSteps: state.onboarding.onboardingMaxSteps,
 		onboardingStepsConfig: state.onboarding.onboardingStepsConfig
 	}

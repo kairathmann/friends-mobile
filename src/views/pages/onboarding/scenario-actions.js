@@ -30,18 +30,12 @@ import {
 	telegramEmailSuccess
 } from '../../../store/auth/actions'
 import {
-	fetchQuestionsFailure,
-	fetchQuestionsStart,
-	fetchQuestionsSuccess,
-	saveAnswersFailure,
-	saveAnswersStart,
-	saveAnswersSuccess,
-	showPreviousOnboardingQuestion,
 	updateOnboardingConfig,
 	uploadInfoFailure,
 	uploadInfoStart,
 	uploadInfoSuccess
 } from '../../../store/onboarding/actions'
+import { setQuestions } from '../../../store/unanswered_wizard/actions'
 import { setProfileInfo } from '../../../store/profile/actions'
 import { setAvailableColors } from '../../../store/colors/actions'
 import { hideSpinner, showSpinner } from '../../../store/global/actions'
@@ -67,7 +61,8 @@ export function uploadInfo({ name, location, color, emoji }) {
 			)
 			dispatch(uploadInfoSuccess(result))
 			if (Platform.OS === 'android') {
-				const questionsToBeAnswered = getState().onboarding.questions
+				const questionsToBeAnswered = getState().questionsWizard.questions
+					.unanswered
 				if (questionsToBeAnswered.length === 0) {
 					navigateAndResetNavigation(PAGES_NAMES.HOME_PAGE)
 				} else {
@@ -141,14 +136,16 @@ export const sendVerificationCode = (
 		let onboardingSteps = {}
 		// fetch questions only if we are not suppose to be redirected to Home Page aka we need to stay in onboarding
 		if (destinationPageForUser !== PAGES_NAMES.HOME_PAGE) {
-			const availableQuestions = await api.fetchQuestions()
+			const [unanswered, answered] = await Promise.all([
+				api.fetchQuestions(),
+				api.fetchAnsweredQuestions()
+			])
 			const onboardingStepsConfig = calculateOnboardingSteps(
-				destinationPageForUser,
-				availableQuestions
+				destinationPageForUser
 			)
 			onboardingMaxSteps = onboardingStepsConfig.maxSteps
 			onboardingSteps = onboardingStepsConfig.configurationPerPage
-			dispatch(fetchQuestionsSuccess(availableQuestions))
+			dispatch(setQuestions({ unanswered, answered }))
 		}
 		dispatch(smsTokenVerificationSuccess())
 		dispatch(setAvailableColors(availableColors))
@@ -213,45 +210,8 @@ export const clearSmsTokenVerificationErrorState = () => dispatch =>
 export const clearTelegramEmailErrorState = () => dispatch =>
 	dispatch(clearTelegramEmailError())
 
-export function saveAnswer(answer, shouldGoToHomePage) {
-	return async dispatch => {
-		try {
-			dispatch(showSpinner())
-			dispatch(saveAnswersStart())
-			const answersIds = _.values(answer).map(ans => ans.selected)
-			await api.uploadAnswers(answersIds)
-			dispatch(saveAnswersSuccess())
-			if (shouldGoToHomePage) {
-				navigateAndResetNavigation(PAGES_NAMES.HOME_PAGE)
-			}
-		} catch (err) {
-			const error = getErrorDataFromNetworkException(err)
-			showErrorToast(error)
-			dispatch(saveAnswersFailure(error))
-		} finally {
-			dispatch(hideSpinner())
-		}
-	}
-}
-
-export function fetchQuestions() {
-	return async dispatch => {
-		try {
-			dispatch(fetchQuestionsStart())
-			const result = await api.fetchQuestions()
-			dispatch(fetchQuestionsSuccess(result))
-		} catch (err) {
-			const error = getErrorDataFromNetworkException(err)
-			dispatch(fetchQuestionsFailure(error))
-		}
-	}
-}
-
 export const updateUserColorSelection = color => dispatch =>
 	dispatch(setProfileInfo({ color }))
 
 export const updateUserEmojiSelection = emoji => dispatch =>
 	dispatch(setProfileInfo({ emoji }))
-
-export const showPreviousQuestion = () => dispatch =>
-	dispatch(showPreviousOnboardingQuestion())

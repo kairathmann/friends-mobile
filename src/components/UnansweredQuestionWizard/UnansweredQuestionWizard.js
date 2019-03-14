@@ -19,9 +19,17 @@ class UnansweredQuestionWizard extends React.Component {
 	selectedAnswerId
 
 	onChangeAnswer = answer => {
-		const { saveUnanswered } = this.props
+		const {
+			saveUnanswered,
+			onQuestionsDepleted,
+			currentQuestionToDisplayIndex,
+			questions
+		} = this.props
 		this.selectedAnswerId = answer.id
 		saveUnanswered(answer.id)
+		if (currentQuestionToDisplayIndex === questions.length - 1) {
+			onQuestionsDepleted()
+		}
 	}
 
 	goBack = () => {
@@ -112,14 +120,14 @@ UnansweredQuestionWizard.defaultProps = {
 	leftDisabled: false,
 	rightDisabled: false,
 	onLeftClick: () => ({}),
-	onRightClick: () => ({})
+	onRightClick: () => ({}),
+	onQuestionsDepleted: () => ({})
 }
 
 UnansweredQuestionWizard.propTypes = {
 	questions: PropTypes.array.isRequired,
 	onChangeAnswer: PropTypes.func,
 	isLoading: PropTypes.bool.isRequired,
-	loadingAction: PropTypes.string,
 	leftDisabled: PropTypes.bool,
 	rightDisabled: PropTypes.bool,
 	onLeftClick: PropTypes.func,
@@ -128,13 +136,14 @@ UnansweredQuestionWizard.propTypes = {
 	saveUnanswered: PropTypes.func.isRequired,
 	decrementIndex: PropTypes.func.isRequired,
 	incrementIndex: PropTypes.func.isRequired,
-	currentQuestionToDisplayIndex: PropTypes.number.isRequired
+	currentQuestionToDisplayIndex: PropTypes.number.isRequired,
+	onQuestionsDepleted: PropTypes.func
 }
 
-const mapStateToProps = (state, ownProps) => {
+const mapStateToProps = state => {
 	return {
-		isLoading: createLoadingSelector([ownProps.loadingAction])(state),
-		questions: state.questionsWizard.questions,
+		isLoading: createLoadingSelector(['WIZARD_SAVE_UNANSWERED'])(state),
+		questions: state.questionsWizard.questions.unanswered,
 		currentQuestionToDisplayIndex: state.questionsWizard.questionIndex
 	}
 }
