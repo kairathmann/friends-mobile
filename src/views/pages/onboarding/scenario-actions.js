@@ -1,6 +1,5 @@
 import * as _ from 'lodash'
 import { Platform } from 'react-native'
-import { Answers } from 'react-native-fabric'
 import api from '../../../api/api'
 import { getErrorDataFromNetworkException } from '../../../common/utils'
 import { PAGES_NAMES } from '../../../navigation/pages'
@@ -118,12 +117,7 @@ export const sendVerificationCode = (
 		const userInfo = requestResult.data
 		const userToken = userInfo.authToken
 		const userInfoWithoutToken = _.omit(userInfo, 'authToken')
-		const tokenStored = await tokenService.setToken(userToken)
-		if (!tokenStored.success) {
-			Answers.logCustom('AUTH-TOKEN-COULD-NOT-STORE-ERROR', {
-				error: tokenStored.error
-			})
-		}
+		await tokenService.setToken(userToken)
 		const availableColors = await api.getAvailableColors()
 		let destinationPageForUser = PAGES_NAMES.IDENTIFICATION_PAGE
 		// telegram user always goes to onboarding so execute extra logic only if user is non telegram import
@@ -169,12 +163,7 @@ export const registerTelegramUser = email => async dispatch => {
 		const requestResult = await api.transferTelegramEmail(email)
 		const userInfo = requestResult.data
 		const userToken = userInfo.authToken
-		const tokenStored = await tokenService.setToken(userToken)
-		if (!tokenStored.success) {
-			Answers.logCustom('AUTH-TOKEN-COULD-NOT-STORE-ERROR', {
-				error: tokenStored.error
-			})
-		}
+		await tokenService.setToken(userToken)
 		dispatch(setTelegramUser())
 		dispatch(telegramEmailSuccess())
 		navigate(PAGES_NAMES.AUTH_PHONE_NUMBER_PAGE)

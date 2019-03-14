@@ -1,5 +1,4 @@
 import _ from 'lodash'
-import { Answers } from 'react-native-fabric'
 import I18n from '../../../../locales/i18n'
 import api from '../../../api/api'
 import { navigationService, toastService } from '../../../services'
@@ -207,12 +206,7 @@ export const openChatPageFromNotification = (
 			partnerInfo
 		})
 	} catch (err) {
-		Answers.logCustom(
-			'PUSH-NOTIFICATION-OPENING-CHAT-FROM-NATIVE-PUSH-NOTIFICATION',
-			{
-				error: err.toString()
-			}
-		)
+		/* */
 	}
 }
 
@@ -263,12 +257,7 @@ export const addNewMessagesToChatFromSender = (
 			}
 		}
 	} catch (err) {
-		Answers.logCustom(
-			'PUSH-NOTIFICATION-ADDING-TO-CHAT-MARK-CHAT-AS-READ-ERROR',
-			{
-				error: err.toString()
-			}
-		)
+		/* */
 	}
 }
 

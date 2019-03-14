@@ -51,7 +51,6 @@
 		"setupFiles": [
 			"<rootDir>/__mocks__/react-native-languages.js",
 			"<rootDir>/__mocks__/react-navigation.js",
-			"<rootDir>/__mocks__/react-native-fabric.js",
 			"<rootDir>/__mocks__/react-native-keychain.js",
 			"<rootDir>/__mocks__/react-moment.js",
 			"<rootDir>/__mocks__/react-moment-proptypes.js",
@@ -75,7 +74,6 @@
 		"react-native-config": "0.11.7",
 		"react-native-emoji-input": "https://github.com/lunalabs/react-native-emoji-input/tarball/v1.3.0",
 		"react-native-extended-stylesheet": "0.11.1",
-		"react-native-fabric": "https://github.com/lunalabs/react-native-fabric/tarball/master",
 		"react-native-gesture-handler": "1.0.12",
 		"react-native-i18n": "2.0.15",
 		"react-native-keyboard-aware-scroll-view": "0.8.0",
