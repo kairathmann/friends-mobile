@@ -6,7 +6,8 @@ import {
 	FlatList,
 	KeyboardAvoidingView,
 	Platform,
-	StatusBar
+	StatusBar,
+	TouchableOpacity
 } from 'react-native'
 import { Container, Icon, Text, View } from 'native-base'
 import { SafeAreaView } from 'react-navigation'
@@ -130,12 +131,17 @@ class ChatMessagesPage extends React.Component {
 		const { navigation } = this.props
 		return (
 			<View style={styles.partnerInfoHeaderContainer}>
-				<Icon
+				<TouchableOpacity
 					onPress={() => navigation.goBack()}
-					type={'MaterialIcons'}
-					name={'arrow-back'}
-					style={styles.backArrow}
-				/>
+					hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+				>
+					<Icon
+						onPress={() => navigation.goBack()}
+						type={'MaterialIcons'}
+						name={'arrow-back'}
+						style={styles.backArrow}
+					/>
+				</TouchableOpacity>
 				<View style={styles.partnerInfoHeaderUserNameContainer}>
 					<Text style={styles.partnerInfoHeaderUserNameText}>{firstName}</Text>
 				</View>

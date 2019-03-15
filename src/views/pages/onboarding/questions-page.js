@@ -1,7 +1,7 @@
 import { Container, Content, Text } from 'native-base'
 import PropTypes from 'prop-types'
 import React from 'react'
-import { StatusBar } from 'react-native'
+import { StatusBar, TouchableOpacity } from 'react-native'
 import { SafeAreaView } from 'react-navigation'
 import EStyleSheet from 'react-native-extended-stylesheet'
 import { connect } from 'react-redux'
@@ -85,12 +85,14 @@ class QuestionsPage extends React.Component {
 								bottomBarCenterComponent={
 									currentQuestionToDisplayIndex + 1 >
 									MIN_AMOUNT_OF_ANSWERED_QUESTIONS ? (
-										<Text
+										<TouchableOpacity
 											onPress={this.openAlert}
-											style={styles.finishLaterText}
+											hitSlop={{ top: 14, bottom: 14, left: 0, right: 0 }}
 										>
-											{i18n.t('onboarding.finish_later')}
-										</Text>
+											<Text style={styles.finishLaterText}>
+												{i18n.t('onboarding.finish_later')}
+											</Text>
+										</TouchableOpacity>
 									) : null
 								}
 							/>
