@@ -1,4 +1,4 @@
-import api from '../../api/api'
+import { chatsRequest, feedbackRequest } from '../../api'
 import I18n from '../../../locales/i18n'
 import { FEEDBACK_QUESTIONS_TYPE } from '../../enums'
 import { navigationService, toastService } from '../../services'
@@ -20,7 +20,7 @@ export const fetchFeedbackQuestions = chatId => async (dispatch, getState) => {
 			getState().feedback.questions.length > 0
 		if (!feedbackQuesionsAlreadyFetched) {
 			dispatch(fetchFeedbackQuestionsStarted())
-			const questions = await api.fetchFeedbackQuestions()
+			const questions = await feedbackRequest.fetchFeedbackQuestions()
 			dispatch(fetchFeedbackQuestionsSuccess(questions))
 		}
 		navigationService.navigate(PAGES_NAMES.FEEDBACK_PAGE, { chatId })
@@ -44,7 +44,7 @@ export const saveFeedbackAnswers = (chatId, answers) => async dispatch => {
 				? 'rating_response'
 				: 'text_response']: answer.answer
 		}))
-		await api.saveFeedbackAnswers(chatId, remappedModel)
+		await chatsRequest.saveFeedbackAnswers(chatId, remappedModel)
 		dispatch(saveFeedbackAsnwersSuccess(chatId))
 		navigationService.goBack()
 	} catch (err) {

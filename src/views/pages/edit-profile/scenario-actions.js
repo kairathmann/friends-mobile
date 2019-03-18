@@ -1,4 +1,4 @@
-import api from '../../../api/api'
+import { selfRequest } from '../../../api'
 import { getErrorDataFromNetworkException } from '../../../common/utils'
 import { PAGES_NAMES } from '../../../navigation/pages'
 import { navigate } from '../../../services/navigationService'
@@ -20,7 +20,7 @@ export const updateUserProfile = ({
 	try {
 		dispatch(showSpinner())
 		dispatch(uploadInfoStart())
-		await api.uploadBaseInfo({
+		await selfRequest.uploadBaseInfo({
 			name,
 			location,
 			color: color.id,

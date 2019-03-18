@@ -1,5 +1,5 @@
 import * as _ from 'lodash'
-import api from '../../../api/api'
+import { responsesRequest, questionsRequest } from '../../../api'
 import { showErrorToast } from '../../../services/toastService'
 import { navigate } from '../../../services/navigationService'
 import { PAGES_NAMES } from '../../../enums'
@@ -13,8 +13,11 @@ import { hideSpinner, showSpinner } from '../../../store/global/actions'
 
 const sendAnswerRequest = async answers => {
 	const answersIds = _.values(answers).map(ans => ans.selected)
-	await api.uploadAnswers(answersIds)
-	return Promise.all([api.fetchQuestions(), api.fetchAnsweredQuestions()])
+	await responsesRequest.uploadAnswers(answersIds)
+	return Promise.all([
+		questionsRequest.fetchQuestions(),
+		questionsRequest.fetchAnsweredQuestions()
+	])
 }
 
 export function saveAnswered(answers) {

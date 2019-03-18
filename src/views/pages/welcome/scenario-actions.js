@@ -1,6 +1,6 @@
 import SplashScreen from 'react-native-splash-screen'
 import _ from 'lodash'
-import api from '../../../api/api'
+import { selfRequest, colorsRequest } from '../../../api'
 import { navigationService, tokenService } from '../../../services'
 import { PAGES_NAMES } from '../../../navigation/pages'
 import { setProfileInfo } from '../../../store/profile/actions'
@@ -11,8 +11,8 @@ export const startup = () => async dispatch => {
 	try {
 		const userToken = await tokenService.getToken()
 		if (userToken !== '') {
-			const profileResponse = await api.fetchSelf()
-			const availableColors = await api.getAvailableColors()
+			const profileResponse = await selfRequest.fetchSelf()
+			const availableColors = await colorsRequest.getAvailableColors()
 			const userInfoWithoutToken = _.omit(profileResponse, 'authToken')
 			dispatch(setAvailableColors(availableColors))
 			dispatch(setProfileInfo(userInfoWithoutToken))

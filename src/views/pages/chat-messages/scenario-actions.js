@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import I18n from '../../../../locales/i18n'
-import api from '../../../api/api'
+import { chatsRequest } from '../../../api'
 import { navigationService, toastService } from '../../../services'
 import {
 	addNewMessageToChat,
@@ -29,7 +29,7 @@ export const fetchChatDetailsLatestCleanHistory = chatId => async (
 	try {
 		const currentLoggedUserId = getState().profile.id
 		dispatch(fetchChatDetailsStarted())
-		const chatDetails = await api.getChatMessages(chatId)
+		const chatDetails = await chatsRequest.getChatMessages(chatId)
 		const remappedChatDetails = remapChatDetails(
 			chatDetails,
 			currentLoggedUserId
@@ -58,7 +58,9 @@ export const fetchChatDetailsPreviousMessages = chatId => async (
 		const lastMessageId =
 			currentMessagesInChat.length > 0 ? currentMessagesInChat[0].id : null
 		dispatch(fetchChatDetailsStarted())
-		const chatDetails = await api.getChatMessages(chatId, { lastMessageId })
+		const chatDetails = await chatsRequest.getChatMessages(chatId, {
+			lastMessageId
+		})
 		const remappedChatDetails = remapChatDetails(
 			chatDetails,
 			currentLoggedUserId
@@ -87,7 +89,7 @@ export const fetchChatDetailsMissingMessages = chatId => async (
 				? currentMessagesInChat[currentMessagesInChat.length - 1].id
 				: null
 		dispatch(fetchChatDetailsStarted())
-		const chatDetails = await api.getChatMessages(chatId, {
+		const chatDetails = await chatsRequest.getChatMessages(chatId, {
 			untilMessageId: mostRecentMessageId
 		})
 		const remappedChatDetails = remapChatDetails(
@@ -186,7 +188,7 @@ export const openChatPageFromNotification = (
 					chatId
 				)
 			)
-			await api.getChatMessages(chatId, { limit: 1 })
+			await chatsRequest.getChatMessages(chatId, { limit: 1 })
 			return
 		}
 		if (isChatWithNoSenderOpen) {
@@ -196,7 +198,7 @@ export const openChatPageFromNotification = (
 				partnerInfo
 			})
 			if (unprocessedMessages.length > 0) {
-				await api.getChatMessages(chatId, { limit: 1 })
+				await chatsRequest.getChatMessages(chatId, { limit: 1 })
 			}
 			return
 		}
@@ -244,7 +246,7 @@ export const addNewMessagesToChatFromSender = (
 						chatId
 					)
 				)
-				await api.getChatMessages(chatId, { limit: 1 })
+				await chatsRequest.getChatMessages(chatId, { limit: 1 })
 				return
 			} else {
 				dispatch(
@@ -267,7 +269,7 @@ export const sendTextMessage = (chatId, text, successCallback) => async (
 ) => {
 	try {
 		dispatch(sendChatTextMessageStarted())
-		const sentMessage = await api.sendChatTextMessage(chatId, text)
+		const sentMessage = await chatsRequest.sendChatTextMessage(chatId, text)
 		const currentLoggedUserId = getState().profile.id
 		const remappedNewMessages = remapNewMessagesToChat(
 			[sentMessage],

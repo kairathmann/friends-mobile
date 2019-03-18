@@ -1,6 +1,5 @@
 import * as _ from 'lodash'
 import { Platform } from 'react-native'
-import api from '../../../api/api'
 import { getErrorDataFromNetworkException } from '../../../common/utils'
 import { PAGES_NAMES } from '../../../navigation/pages'
 import { tokenService } from '../../../services'
@@ -34,6 +33,13 @@ import {
 	uploadInfoStart,
 	uploadInfoSuccess
 } from '../../../store/onboarding/actions'
+import {
+	questionsRequest,
+	selfRequest,
+	verificationRequest,
+	colorsRequest,
+	legacyRequest
+} from '../../../api'
 import { setQuestions } from '../../../store/unanswered_wizard/actions'
 import { setProfileInfo } from '../../../store/profile/actions'
 import { setAvailableColors } from '../../../store/colors/actions'
@@ -44,7 +50,7 @@ export function uploadInfo({ name, location, color, emoji }) {
 		try {
 			dispatch(showSpinner())
 			dispatch(uploadInfoStart())
-			const result = await api.uploadBaseInfo({
+			const result = await selfRequest.uploadBaseInfo({
 				name,
 				location,
 				color: color.id,
@@ -88,7 +94,10 @@ export const requestSmsCode = (
 		dispatch(showSpinner())
 		dispatch(setAuthInfo(phoneNumberCountryCode, phoneNumber))
 		dispatch(requestSmsCodeStart())
-		await api.requestSmsCodeMessage(phoneNumberCountryCode, phoneNumber)
+		await verificationRequest.requestSmsCodeMessage(
+			phoneNumberCountryCode,
+			phoneNumber
+		)
 		dispatch(requestSmsCodeSuccess())
 		navigate(PAGES_NAMES.AUTH_VERIFICATION_TOKEN_PAGE)
 	} catch (err) {
@@ -108,17 +117,16 @@ export const sendVerificationCode = (
 	try {
 		dispatch(showSpinner())
 		dispatch(smsTokenVerificationStart())
-		const requestResult = await api.sendVerificationCode(
+		const userInfo = await verificationRequest.sendVerificationCode(
 			phoneNumberCountryCode,
 			phoneNumber,
 			verificationCode,
 			isTelegramUser
 		)
-		const userInfo = requestResult.data
 		const userToken = userInfo.authToken
 		const userInfoWithoutToken = _.omit(userInfo, 'authToken')
 		await tokenService.setToken(userToken)
-		const availableColors = await api.getAvailableColors()
+		const availableColors = await colorsRequest.getAvailableColors()
 		let destinationPageForUser = PAGES_NAMES.IDENTIFICATION_PAGE
 		// telegram user always goes to onboarding so execute extra logic only if user is non telegram import
 		if (!isTelegramUser) {
@@ -131,8 +139,8 @@ export const sendVerificationCode = (
 		// fetch questions only if we are not suppose to be redirected to Home Page aka we need to stay in onboarding
 		if (destinationPageForUser !== PAGES_NAMES.HOME_PAGE) {
 			const [unanswered, answered] = await Promise.all([
-				api.fetchQuestions(),
-				api.fetchAnsweredQuestions()
+				questionsRequest.fetchQuestions(),
+				questionsRequest.fetchAnsweredQuestions()
 			])
 			const onboardingStepsConfig = calculateOnboardingSteps(
 				destinationPageForUser
@@ -160,8 +168,7 @@ export const registerTelegramUser = email => async dispatch => {
 	try {
 		dispatch(showSpinner())
 		dispatch(telegramEmailStart())
-		const requestResult = await api.transferTelegramEmail(email)
-		const userInfo = requestResult.data
+		const userInfo = await legacyRequest.transferTelegramEmail(email)
 		const userToken = userInfo.authToken
 		await tokenService.setToken(userToken)
 		dispatch(setTelegramUser())

@@ -1,4 +1,4 @@
-import api from '../../../api/api'
+import { questionsRequest } from '../../../api'
 import i18n from '../../../../locales/i18n'
 
 import {
@@ -14,8 +14,8 @@ export function fetchQuestions() {
 		try {
 			dispatch(fetchQuestionsStarted())
 			const [unanswered, answered] = await Promise.all([
-				api.fetchQuestions(),
-				api.fetchAnsweredQuestions()
+				questionsRequest.fetchQuestions(),
+				questionsRequest.fetchAnsweredQuestions()
 			])
 			dispatch(
 				fetchQuestionsSuccess({

@@ -1,5 +1,5 @@
 import * as _ from 'lodash'
-import api from '../../api/api'
+import { responsesRequest, questionsRequest } from '../../api'
 import { showErrorToast } from '../../services/toastService'
 import i18n from '../../../locales/i18n'
 import {
@@ -16,8 +16,11 @@ import {
 import { hideSpinner, showSpinner } from '../../store/global/actions'
 
 const sendAnswerRequest = async answerId => {
-	await api.uploadAnswers([answerId])
-	return Promise.all([api.fetchQuestions(), api.fetchAnsweredQuestions()])
+	await responsesRequest.uploadAnswers([answerId])
+	return Promise.all([
+		questionsRequest.fetchQuestions(),
+		questionsRequest.fetchAnsweredQuestions()
+	])
 }
 
 export function saveSingleAnswer(answerId) {

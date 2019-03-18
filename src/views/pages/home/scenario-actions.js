@@ -1,4 +1,4 @@
-import api from '../../../api/api'
+import { roundsRequest } from '../../../api/'
 import {
 	fetchingMyRoundsFailure,
 	fetchingMyRoundsStarted,
@@ -9,7 +9,7 @@ export function fetchMyRounds() {
 	return async dispatch => {
 		try {
 			dispatch(fetchingMyRoundsStarted())
-			const result = await api.fetchRounds()
+			const result = await roundsRequest.fetchRounds()
 			const mappedRounds = result.map(r => ({
 				id: r.id,
 				description: r.description,
