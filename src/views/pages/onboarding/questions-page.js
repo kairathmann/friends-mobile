@@ -19,13 +19,12 @@ import UnansweredQuestionWizard from '../../../components/UnansweredQuestionWiza
 
 class QuestionsPage extends React.Component {
 	PAGE_NAME = PAGES_NAMES.QUESTIONS_PAGE
-	state = {
-		showPopupAlert: false
-	}
 
-	openAlert = () => {
-		if (!this.state.showPopupAlert) {
-			this.setState({ showPopupAlert: true })
+	constructor(props) {
+		super(props)
+		this.state = {
+			showPopupAlert: false,
+			afterDismiss: this.hideAlert
 		}
 	}
 
@@ -35,9 +34,20 @@ class QuestionsPage extends React.Component {
 		}
 	}
 
+	openAlert = () => {
+		if (!this.state.showPopupAlert) {
+			this.setState({ showPopupAlert: true })
+		}
+	}
+
 	continueToHomePage = () => {
-		this.hideAlert()
-		navigationService.navigateAndResetNavigation(PAGES_NAMES.HOME_PAGE)
+		this.setState(
+			{
+				afterDismiss: () =>
+					navigationService.navigateAndResetNavigation(PAGES_NAMES.HOME_PAGE)
+			},
+			this.hideAlert
+		)
 	}
 
 	render() {
@@ -54,7 +64,7 @@ class QuestionsPage extends React.Component {
 						{color => (
 							<Alert
 								visible={showPopupAlert}
-								onDismiss={this.hideAlert}
+								onDismiss={this.state.afterDismiss}
 								title={i18n.t('onboarding.finish_later_alert_title')}
 								message={i18n.t('onboarding.finish_later_alert_message')}
 								actionButtonCallback={this.continueToHomePage}

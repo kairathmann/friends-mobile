@@ -26,6 +26,11 @@ class Alert extends React.Component {
 		}
 	}
 
+	get runningAnimation() {
+		const { status } = this.state
+		return status === ALERT_STATUS.CLOSING || status === ALERT_STATUS.OPENING
+	}
+
 	changeAlertStatus = (status, callback) => {
 		const { animationDurationMs, useAnmiation } = this.props
 		const desiredOpacityValue = status === ALERT_STATUS.CLOSED ? 0 : 1
@@ -60,15 +65,22 @@ class Alert extends React.Component {
 	dismissAlert = () => {
 		const { onDismiss } = this.props
 		const { status } = this.state
-		if (status === ALERT_STATUS.OPENED || status === ALERT_STATUS.OPENING) {
+		if (status === ALERT_STATUS.OPENED) {
 			this.changeAlertStatus(ALERT_STATUS.CLOSED, onDismiss)
 		}
 	}
 
 	showAlert = () => {
 		const { status } = this.state
-		if (status === ALERT_STATUS.CLOSED || status === ALERT_STATUS.CLOSING) {
+		if (status === ALERT_STATUS.CLOSED) {
 			this.changeAlertStatus(ALERT_STATUS.OPENED)
+		}
+	}
+
+	actionButtonCallback = () => {
+		const { actionButtonCallback } = this.props
+		if (!this.runningAnimation) {
+			actionButtonCallback()
 		}
 	}
 
@@ -88,7 +100,6 @@ class Alert extends React.Component {
 			useAnmiation,
 			title,
 			message,
-			actionButtonCallback,
 			actionButtonText,
 			actionButtonStyle
 		} = this.props
@@ -126,13 +137,18 @@ class Alert extends React.Component {
 						<Text style={styles.messageText}>{message}</Text>
 					</ScrollView>
 					<View style={styles.buttonsContainer}>
-						<TouchableOpacity onPress={this.dismissAlert} style={styles.button}>
+						<TouchableOpacity
+							disabled={this.runningAnimation}
+							onPress={this.dismissAlert}
+							style={styles.button}
+						>
 							<Text style={styles.buttonText}>
 								{I18n.t('commons.cancel').toUpperCase()}
 							</Text>
 						</TouchableOpacity>
 						<TouchableOpacity
-							onPress={actionButtonCallback}
+							disabled={this.runningAnimation}
+							onPress={this.actionButtonCallback}
 							style={styles.button}
 						>
 							<Text style={[styles.buttonText, actionButtonStyle]}>
