@@ -66,10 +66,10 @@ def on_close_handle(signum, frame):
     sys.exit(1)
 
 
-def check_react_native_version(required_major=0, required_minor=59):
+def check_matching_react_native_version(required_major=0, required_minor=59, required_micro=1):
     react_native = package_json['dependencies']['react-native']
-    major, minor, _ = [int(ch) for ch in react_native.split('.')]
-    return major >= required_major and minor >= required_minor
+    major, minor, micro = [int(ch) for ch in react_native.split('.')]
+    return major == required_major and minor == required_minor and micro == required_micro
 
 
 def indent_xml(elem, level=0):
@@ -185,7 +185,9 @@ if __name__ == "__main__":
     print('Android SDK path:', args.android_home)
 
     edit_dot_env(args.dot_env, net_ip)
-    if check_react_native_version(): edit_android_config(args.react_native_android_config, net_ip)
+    # That react_config_xml got added at 0.59 and removed at 0.59.2... Keep an eye for any further changes...
+    if check_matching_react_native_version(0, 59, 1) or check_matching_react_native_version(0, 59, 0):
+         edit_android_config(args.react_native_android_config, net_ip)
 
     subprocess.run(["adb", "kill-server"])
     # # TODO: check if any device was detected
