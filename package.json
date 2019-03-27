@@ -22,7 +22,8 @@
 		"metro-react-native-babel-preset": "0.53.0",
 		"prettier": "1.15.3",
 		"pretty-quick": "1.10.0",
-		"react-test-renderer": "16.8.3"
+		"react-test-renderer": "16.8.3",
+		"redux-mock-store": "1.5.3"
 	},
 	"engines": {
 		"node": ">=8.15.0",
@@ -46,9 +47,14 @@
 	},
 	"jest": {
 		"preset": "react-native",
-		"transform": {
-			"^.+\\.(js)$": "<rootDir>/node_modules/react-native/jest/preprocessor.js"
-		},
+		"collectCoverage": true,
+		"collectCoverageFrom": [
+			"src/**/*.{js,jsx}"
+		],
+		"coverageReporters": [
+			"json",
+			"html"
+		],
 		"transformIgnorePatterns": [
 			"/node_modules/(?!native-base)/"
 		],
@@ -59,7 +65,8 @@
 			"<rootDir>/__mocks__/react-moment.js",
 			"<rootDir>/__mocks__/react-moment-proptypes.js",
 			"<rootDir>/__mocks__/react-native-config.js"
-		]
+		],
+		"setupFilesAfterEnv": ["<rootDir>/tests/setup.js"]
 	},
 	"dependencies": {
 		"@mapbox/mapbox-sdk": "0.5.0",
