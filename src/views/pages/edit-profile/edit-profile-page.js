@@ -30,7 +30,6 @@ class EditProfilePage extends React.Component {
 		name: this.props.firstName,
 		location: this.props.location,
 		color: this.props.color,
-		firstName: this.props.firstName,
 		emoji: this.props.emoji,
 		validationEnabled: false
 	}
@@ -67,7 +66,7 @@ class EditProfilePage extends React.Component {
 	}
 
 	validateLocation = location => {
-		return location.fullName.length > 0
+		return location.fullName && location.fullName.length > 0
 	}
 
 	validateColor = selectedColor => {

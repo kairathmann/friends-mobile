@@ -10,6 +10,8 @@
 		"babel-jest": "24.4.0",
 		"babel-preset-env": "1.7.0",
 		"cross-env": "5.2.0",
+		"enzyme": "3.9.0",
+		"enzyme-adapter-react-16": "1.11.2",
 		"eslint": "5.15.3",
 		"eslint-config-prettier": "3.5.0",
 		"eslint-plugin-react": "7.12.4",
@@ -17,11 +19,14 @@
 		"eslint-watch": "4.0.2",
 		"husky": "1.3.1",
 		"jest": "24.4.0",
+		"jest-enzyme": "7.0.2",
 		"jest-react-native": "18.0.0",
+		"jsdom": "14.0.0",
 		"lint-staged": "8.1.0",
 		"metro-react-native-babel-preset": "0.53.0",
 		"prettier": "1.15.3",
 		"pretty-quick": "1.10.0",
+		"react-dom": "16.8.6",
 		"react-test-renderer": "16.8.3",
 		"redux-mock-store": "1.5.3"
 	},
@@ -55,6 +60,7 @@
 			"json",
 			"html"
 		],
+		"testEnvironment": "jsdom",
 		"transformIgnorePatterns": [
 			"/node_modules/(?!native-base)/"
 		],
