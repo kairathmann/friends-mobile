@@ -143,7 +143,8 @@ export const sendVerificationCode = (
 				questionsRequest.fetchAnsweredQuestions()
 			])
 			const onboardingStepsConfig = calculateOnboardingSteps(
-				destinationPageForUser
+				destinationPageForUser,
+				true
 			)
 			onboardingMaxSteps = onboardingStepsConfig.maxSteps
 			onboardingSteps = onboardingStepsConfig.configurationPerPage

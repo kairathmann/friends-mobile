@@ -21,10 +21,10 @@ export const startup = () => async dispatch => {
 			)
 			let onboardingMaxSteps = 0
 			let onboardingSteps = {}
-			// fetch questions only if we are not suppose to be redirected to Home Page aka we need to stay in onboarding
 			if (destinationPageForUser !== PAGES_NAMES.HOME_PAGE) {
 				const onboardingStepsConfig = navigationService.calculateOnboardingSteps(
-					destinationPageForUser
+					destinationPageForUser,
+					false
 				)
 				onboardingMaxSteps = onboardingStepsConfig.maxSteps
 				onboardingSteps = onboardingStepsConfig.configurationPerPage

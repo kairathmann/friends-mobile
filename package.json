@@ -70,7 +70,9 @@
 			"<rootDir>/__mocks__/react-native-keychain.js",
 			"<rootDir>/__mocks__/react-moment.js",
 			"<rootDir>/__mocks__/react-moment-proptypes.js",
-			"<rootDir>/__mocks__/react-native-config.js"
+			"<rootDir>/__mocks__/react-native-config.js",
+			"<rootDir>/__mocks__/axios.js",
+			"<rootDir>/__mocks__/react-native-splash-screen.js"
 		],
 		"setupFilesAfterEnv": ["<rootDir>/tests/setup.js"]
 	},
