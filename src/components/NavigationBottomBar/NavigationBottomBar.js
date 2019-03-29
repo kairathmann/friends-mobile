@@ -1,4 +1,5 @@
 import { Icon, View } from 'native-base'
+import { TouchableOpacity } from 'react-native'
 import PropTypes from 'prop-types'
 import React from 'react'
 import EStyleSheet from 'react-native-extended-stylesheet'
@@ -22,25 +23,35 @@ export const NavigationBottomBar = ({
 			]}
 		>
 			{!leftHidden && (
-				<Icon
+				<TouchableOpacity
 					onPress={leftDisabled ? () => {} : onLeftClick}
-					type={'MaterialIcons'}
-					name={'arrow-back'}
-					style={[styles.leftArrow, leftDisabled && styles.disabled]}
-				/>
+					hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+				>
+					<Icon
+						type={'MaterialIcons'}
+						name={'arrow-back'}
+						style={[styles.leftArrow, leftDisabled && styles.disabled]}
+					/>
+				</TouchableOpacity>
 			)}
 			{centerComponent}
-			{!rightHidden && (
-				<Icon
+			{!rightHidden ? (
+				<TouchableOpacity
 					onPress={rightDisabled ? () => {} : onRightClick}
-					type={'MaterialIcons'}
-					name={customRightIcon ? customRightIcon : 'arrow-forward'}
-					style={[
-						styles.rightArrow,
-						rightArrowColor ? { color: rightArrowColor } : '',
-						rightDisabled && styles.disabled
-					]}
-				/>
+					hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+				>
+					<Icon
+						type={'MaterialIcons'}
+						name={customRightIcon ? customRightIcon : 'arrow-forward'}
+						style={[
+							styles.rightArrow,
+							rightArrowColor ? { color: rightArrowColor } : '',
+							rightDisabled && styles.disabled
+						]}
+					/>
+				</TouchableOpacity>
+			) : (
+				<View style={{ width: 28 }} />
 			)}
 		</View>
 	</View>

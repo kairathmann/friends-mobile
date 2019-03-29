@@ -1,28 +1,17 @@
 buildscript {
     repositories {
-        maven { url 'https://maven.fabric.io/public' }
         maven { url 'https://plugins.gradle.org/m2/' }
     }
 
     dependencies {
-        // These docs use an open ended version so that our plugin
-        // can be updated quickly in response to Android tooling updates
-
-        // We recommend changing it to the latest version from our changelog:
-        // https://docs.fabric.io/android/changelog.html#fabric-gradle-plugin
-        classpath 'io.fabric.tools:gradle:1.+'
         classpath 'gradle.plugin.com.onesignal:onesignal-gradle-plugin:[0.12.1, 0.99.99]'
     }
 }
 
 apply plugin: 'com.onesignal.androidsdk.onesignal-gradle-plugin'
 apply plugin: "com.android.application"
-apply plugin: 'io.fabric'
 apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
 
-repositories {
-    maven { url 'https://maven.fabric.io/public' }
-}
 import com.android.build.OutputFile
 
 /**
@@ -109,7 +98,7 @@ apply from: "../../node_modules/react-native/react.gradle"
  * Upload all the APKs to the Play Store and people will download
  * the correct one based on the CPU architecture of their device.
  */
-def enableSeparateBuildPerCPUArchitecture = false
+def enableSeparateBuildPerCPUArchitecture = true
 
 /**
  * Run Proguard to shrink the Java bytecode in release builds.
@@ -120,21 +109,24 @@ android {
     compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
 
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
     defaultConfig {
         applicationId "com.meetluna.luminos"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 6
-        versionName "0.6.0"
+        versionCode 7
+        versionName "0.7.0"
     }
     signingConfigs {
         release {
-            if (project.hasProperty('LUNA_RELEASE_STORE_FILE')) {
-                storeFile file(LUNA_RELEASE_STORE_FILE)
-                storePassword LUNA_RELEASE_STORE_PASSWORD
-                keyAlias LUNA_RELEASE_KEY_ALIAS
-                keyPassword LUNA_RELEASE_KEY_PASSWORD
-            }
+            storeFile file("android.jks")
+            storePassword System.getenv("LUNA_KEYSTORE_PASSWORD")
+            keyAlias "lunaconferenceandroidkey"
+            keyPassword System.getenv("LUNA_KEYSTORE_KEY_PASSWORD")
         }
     }
     splits {
@@ -142,7 +134,7 @@ android {
             reset()
             enable enableSeparateBuildPerCPUArchitecture
             universalApk false  // If true, also generate a universal APK
-            include "armeabi-v7a", "x86", "arm64-v8a"
+            include "armeabi-v7a", "x86", "arm64-v8a", "x86_64"
         }
     }
     buildTypes {
@@ -157,17 +149,13 @@ android {
         variant.outputs.each { output ->
             // For each separate APK per architecture, set a unique version code as described here:
             // http://tools.android.com/tech-docs/new-build-system/user-guide/apk-splits
-            def versionCodes = ["armeabi-v7a":1, "x86":2, "arm64-v8a": 3]
+            def versionCodes = ["armeabi-v7a":1, "x86":2, "arm64-v8a": 3, "x86_64": 4]
             def abi = output.getFilter(OutputFile.ABI)
             if (abi != null) {  // null for the universal-debug, universal-release variants
                 output.versionCodeOverride =
                         versionCodes.get(abi) * 1048576 + defaultConfig.versionCode
             }
         }
-    }
-    compileOptions {
-        sourceCompatibility 1.8
-        targetCompatibility 1.8
     }
 }
 
@@ -181,7 +169,6 @@ dependencies {
     implementation project(':react-native-onesignal')
     implementation project(':react-native-languages')
     implementation project(':react-native-i18n')
-    implementation project(':react-native-fabric')
     implementation project(':react-native-config')
     implementation project(':react-native-splash-screen')
     implementation fileTree(dir: "libs", include: ["*.jar"])

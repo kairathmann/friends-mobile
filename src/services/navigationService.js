@@ -42,7 +42,7 @@ export const getUserLandingPageBasedOnUserInfo = userInfo => {
 	if (!userInfo.color || userInfo.emoji === '') {
 		return PAGES_NAMES.IDENTIFICATION_PAGE
 	}
-	if (userInfo.firstName === '' && userInfo.city === '') {
+	if (userInfo.firstName === '' && userInfo.latestLocation.name === '') {
 		return PAGES_NAMES.BASEINFO_PAGE
 	}
 	return PAGES_NAMES.HOME_PAGE
@@ -57,19 +57,20 @@ export const getCurrentPage = () => {
 
 export const calculateOnboardingSteps = (
 	desiredLandingPage,
-	availableQuestions
+	comingFromOnboarding
 ) => {
 	if (desiredLandingPage !== PAGES_NAMES.HOME_PAGE) {
-		const questionsCount = availableQuestions.length
 		// if there are no questions to answer then don't count `Questions Before Page` as we don't want to show it
 		const remainingOnboardingPageCount = {
-			[PAGES_NAMES.IDENTIFICATION_PAGE]: 3 - (questionsCount === 0 ? 1 : 0),
-			[PAGES_NAMES.BASEINFO_PAGE]: 2 - (questionsCount === 0 ? 1 : 0)
+			[PAGES_NAMES.IDENTIFICATION_PAGE]: 3,
+			[PAGES_NAMES.BASEINFO_PAGE]: 2
 		}
 		const reamingPages = remainingOnboardingPageCount[desiredLandingPage] || 4
 		// On Android we are skipping request push notifications permissions page so decrease by 1
 		const totalOnboardingSteps =
-			1 + reamingPages + questionsCount + (Platform.OS === 'android' ? -1 : 0)
+			reamingPages +
+			(Platform.OS === 'android' ? -1 : 0) +
+			(comingFromOnboarding ? 1 : 0)
 		const configurationPerOS =
 			ONBOARDING_STEPS_PER_LANDING_PAGE_CONFIGURAION[Platform.OS] ||
 			ONBOARDING_STEPS_PER_LANDING_PAGE_CONFIGURAION['android']

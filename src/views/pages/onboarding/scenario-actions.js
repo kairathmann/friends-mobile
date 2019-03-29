@@ -1,7 +1,5 @@
 import * as _ from 'lodash'
 import { Platform } from 'react-native'
-import { Answers } from 'react-native-fabric'
-import api from '../../../api/api'
 import { getErrorDataFromNetworkException } from '../../../common/utils'
 import { PAGES_NAMES } from '../../../navigation/pages'
 import { tokenService } from '../../../services'
@@ -30,18 +28,19 @@ import {
 	telegramEmailSuccess
 } from '../../../store/auth/actions'
 import {
-	fetchQuestionsFailure,
-	fetchQuestionsStart,
-	fetchQuestionsSuccess,
-	saveAnswersFailure,
-	saveAnswersStart,
-	saveAnswersSuccess,
-	showPreviousOnboardingQuestion,
 	updateOnboardingConfig,
 	uploadInfoFailure,
 	uploadInfoStart,
 	uploadInfoSuccess
 } from '../../../store/onboarding/actions'
+import {
+	questionsRequest,
+	selfRequest,
+	verificationRequest,
+	colorsRequest,
+	legacyRequest
+} from '../../../api'
+import { setQuestions } from '../../../store/unanswered_wizard/actions'
 import { setProfileInfo } from '../../../store/profile/actions'
 import { setAvailableColors } from '../../../store/colors/actions'
 import { hideSpinner, showSpinner } from '../../../store/global/actions'
@@ -51,7 +50,7 @@ export function uploadInfo({ name, location, color, emoji }) {
 		try {
 			dispatch(showSpinner())
 			dispatch(uploadInfoStart())
-			const result = await api.uploadBaseInfo({
+			const result = await selfRequest.uploadBaseInfo({
 				name,
 				location,
 				color: color.id,
@@ -67,7 +66,8 @@ export function uploadInfo({ name, location, color, emoji }) {
 			)
 			dispatch(uploadInfoSuccess(result))
 			if (Platform.OS === 'android') {
-				const questionsToBeAnswered = getState().onboarding.questions
+				const questionsToBeAnswered = getState().questionsWizard.questions
+					.unanswered
 				if (questionsToBeAnswered.length === 0) {
 					navigateAndResetNavigation(PAGES_NAMES.HOME_PAGE)
 				} else {
@@ -94,7 +94,10 @@ export const requestSmsCode = (
 		dispatch(showSpinner())
 		dispatch(setAuthInfo(phoneNumberCountryCode, phoneNumber))
 		dispatch(requestSmsCodeStart())
-		await api.requestSmsCodeMessage(phoneNumberCountryCode, phoneNumber)
+		await verificationRequest.requestSmsCodeMessage(
+			phoneNumberCountryCode,
+			phoneNumber
+		)
 		dispatch(requestSmsCodeSuccess())
 		navigate(PAGES_NAMES.AUTH_VERIFICATION_TOKEN_PAGE)
 	} catch (err) {
@@ -114,22 +117,16 @@ export const sendVerificationCode = (
 	try {
 		dispatch(showSpinner())
 		dispatch(smsTokenVerificationStart())
-		const requestResult = await api.sendVerificationCode(
+		const userInfo = await verificationRequest.sendVerificationCode(
 			phoneNumberCountryCode,
 			phoneNumber,
 			verificationCode,
 			isTelegramUser
 		)
-		const userInfo = requestResult.data
 		const userToken = userInfo.authToken
 		const userInfoWithoutToken = _.omit(userInfo, 'authToken')
-		const tokenStored = await tokenService.setToken(userToken)
-		if (!tokenStored.success) {
-			Answers.logCustom('AUTH-TOKEN-COULD-NOT-STORE-ERROR', {
-				error: tokenStored.error
-			})
-		}
-		const availableColors = await api.getAvailableColors()
+		await tokenService.setToken(userToken)
+		const availableColors = await colorsRequest.getAvailableColors()
 		let destinationPageForUser = PAGES_NAMES.IDENTIFICATION_PAGE
 		// telegram user always goes to onboarding so execute extra logic only if user is non telegram import
 		if (!isTelegramUser) {
@@ -141,14 +138,17 @@ export const sendVerificationCode = (
 		let onboardingSteps = {}
 		// fetch questions only if we are not suppose to be redirected to Home Page aka we need to stay in onboarding
 		if (destinationPageForUser !== PAGES_NAMES.HOME_PAGE) {
-			const availableQuestions = await api.fetchQuestions()
+			const [unanswered, answered] = await Promise.all([
+				questionsRequest.fetchQuestions(),
+				questionsRequest.fetchAnsweredQuestions()
+			])
 			const onboardingStepsConfig = calculateOnboardingSteps(
 				destinationPageForUser,
-				availableQuestions
+				true
 			)
 			onboardingMaxSteps = onboardingStepsConfig.maxSteps
 			onboardingSteps = onboardingStepsConfig.configurationPerPage
-			dispatch(fetchQuestionsSuccess(availableQuestions))
+			dispatch(setQuestions({ unanswered, answered }))
 		}
 		dispatch(smsTokenVerificationSuccess())
 		dispatch(setAvailableColors(availableColors))
@@ -169,15 +169,9 @@ export const registerTelegramUser = email => async dispatch => {
 	try {
 		dispatch(showSpinner())
 		dispatch(telegramEmailStart())
-		const requestResult = await api.transferTelegramEmail(email)
-		const userInfo = requestResult.data
+		const userInfo = await legacyRequest.transferTelegramEmail(email)
 		const userToken = userInfo.authToken
-		const tokenStored = await tokenService.setToken(userToken)
-		if (!tokenStored.success) {
-			Answers.logCustom('AUTH-TOKEN-COULD-NOT-STORE-ERROR', {
-				error: tokenStored.error
-			})
-		}
+		await tokenService.setToken(userToken)
 		dispatch(setTelegramUser())
 		dispatch(telegramEmailSuccess())
 		navigate(PAGES_NAMES.AUTH_PHONE_NUMBER_PAGE)
@@ -213,45 +207,8 @@ export const clearSmsTokenVerificationErrorState = () => dispatch =>
 export const clearTelegramEmailErrorState = () => dispatch =>
 	dispatch(clearTelegramEmailError())
 
-export function saveAnswer(answer, shouldGoToHomePage) {
-	return async dispatch => {
-		try {
-			dispatch(showSpinner())
-			dispatch(saveAnswersStart())
-			const answersIds = _.values(answer).map(ans => ans.selected)
-			await api.uploadAnswers(answersIds)
-			dispatch(saveAnswersSuccess())
-			if (shouldGoToHomePage) {
-				navigateAndResetNavigation(PAGES_NAMES.HOME_PAGE)
-			}
-		} catch (err) {
-			const error = getErrorDataFromNetworkException(err)
-			showErrorToast(error)
-			dispatch(saveAnswersFailure(error))
-		} finally {
-			dispatch(hideSpinner())
-		}
-	}
-}
-
-export function fetchQuestions() {
-	return async dispatch => {
-		try {
-			dispatch(fetchQuestionsStart())
-			const result = await api.fetchQuestions()
-			dispatch(fetchQuestionsSuccess(result))
-		} catch (err) {
-			const error = getErrorDataFromNetworkException(err)
-			dispatch(fetchQuestionsFailure(error))
-		}
-	}
-}
-
 export const updateUserColorSelection = color => dispatch =>
 	dispatch(setProfileInfo({ color }))
 
 export const updateUserEmojiSelection = emoji => dispatch =>
 	dispatch(setProfileInfo({ emoji }))
-
-export const showPreviousQuestion = () => dispatch =>
-	dispatch(showPreviousOnboardingQuestion())

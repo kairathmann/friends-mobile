@@ -18,6 +18,8 @@ import LoggedInUserAvatar from '../../../components/LoggedInUserAvatar'
 import YourProfileIcon from '../../../assets/images/your_profile_icon.png'
 import { PAGES_NAMES } from '../../../navigation/pages'
 import { logOutUser } from '../../common-scenarios'
+import { fetchQuestions } from './scenario-actions'
+import { resetState } from '../../../store/unanswered_wizard/actions'
 
 const ChevronIcon = () => (
 	<Icon style={styles.cardIcon} type={'MaterialIcons'} name={'chevron-right'} />
@@ -46,6 +48,11 @@ SmallCard.propTypes = {
 }
 
 class ProfilePage extends React.Component {
+	componentDidMount() {
+		this.props.resetWizardState()
+		this.props.fetchQuestions()
+	}
+
 	renderYourProfileCard = () => (
 		<BigCard
 			onPress={() => {
@@ -187,7 +194,9 @@ ProfilePage.propTypes = {
 	navigation: PropTypes.object.isRequired,
 	firstName: PropTypes.string.isRequired,
 	city: PropTypes.string.isRequired,
-	logOutUser: PropTypes.func.isRequired
+	logOutUser: PropTypes.func.isRequired,
+	fetchQuestions: PropTypes.func.isRequired,
+	resetWizardState: PropTypes.func
 }
 
 const styles = EStyleSheet.create({
@@ -295,6 +304,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
 	return {
+		resetWizardState: () => dispatch(resetState()),
+		fetchQuestions: () => dispatch(fetchQuestions()),
 		logOutUser: () => dispatch(logOutUser())
 	}
 }

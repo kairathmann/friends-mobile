@@ -78,6 +78,7 @@ class WelcomePage extends React.Component {
 										{I18n.t('welcome_page.legal_terms_beggining')}
 									</Text>
 									<Text
+										testID="WELCOME_PAGE_TERMS_BUTTON"
 										style={[styles.terms, commonStyles.underline]}
 										onPress={() => {
 											this.props.navigation.navigate(PAGES_NAMES.TERMS)
@@ -87,6 +88,7 @@ class WelcomePage extends React.Component {
 									</Text>
 									<Text style={styles.terms}>{I18n.t('welcome_page.and')}</Text>
 									<Text
+										testID="WELCOME_PAGE_POLICY_BUTTON"
 										style={[styles.terms, commonStyles.underline]}
 										onPress={() => {
 											this.props.navigation.navigate(PAGES_NAMES.POLICY)

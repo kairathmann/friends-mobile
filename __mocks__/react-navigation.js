@@ -1,3 +1,5 @@
+import React from 'react'
+
 jest.mock('react-navigation', () => {
 	return {
 		createAppContainer: () => {
@@ -13,6 +15,7 @@ jest.mock('react-navigation', () => {
 		Header: {
 			HEIGHT: 100
 		},
-		withNavigation: () => {}
+		withNavigation: () => {},
+		SafeAreaView: props => <mock-component {...props} />
 	}
 })

@@ -3,6 +3,7 @@ import * as COLORS from './colors'
 import * as FONTS from './fonts'
 import * as FONTS_STYLES from './fontStyles'
 import { createFontStyle } from './fontStyleMaker'
+import { defaultFontTypes } from './defaultFontTypes'
 import {
 	CommonOnboardingStyles,
 	BaseInfoStyles,
@@ -52,6 +53,7 @@ const styles = EStyleSheet.create({
 
 export {
 	createFontStyle,
+	defaultFontTypes,
 	COLORS,
 	FONTS,
 	FONTS_STYLES,

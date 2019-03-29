@@ -3,23 +3,32 @@
 	"version": "0.0.1",
 	"private": true,
 	"devDependencies": {
-		"babel-core": "7.0.0-bridge.0",
+		"@babel/core": "7.4.0",
+		"@babel/runtime": "7.4.2",
+		"@react-native-community/eslint-config": "0.0.3",
 		"babel-eslint": "10.0.1",
-		"babel-jest": "23.6.0",
+		"babel-jest": "24.4.0",
 		"babel-preset-env": "1.7.0",
-		"eslint": "5.12.0",
+		"cross-env": "5.2.0",
+		"enzyme": "3.9.0",
+		"enzyme-adapter-react-16": "1.11.2",
+		"eslint": "5.15.3",
 		"eslint-config-prettier": "3.5.0",
 		"eslint-plugin-react": "7.12.4",
 		"eslint-plugin-react-native": "3.6.0",
 		"eslint-watch": "4.0.2",
 		"husky": "1.3.1",
-		"jest": "24.1.0",
+		"jest": "24.4.0",
+		"jest-enzyme": "7.0.2",
 		"jest-react-native": "18.0.0",
+		"jsdom": "14.0.0",
 		"lint-staged": "8.1.0",
-		"metro-react-native-babel-preset": "0.51.1",
+		"metro-react-native-babel-preset": "0.53.0",
 		"prettier": "1.15.3",
 		"pretty-quick": "1.10.0",
-		"react-test-renderer": "16.7.0"
+		"react-dom": "16.8.6",
+		"react-test-renderer": "16.8.3",
+		"redux-mock-store": "1.5.3"
 	},
 	"engines": {
 		"node": ">=8.15.0",
@@ -30,10 +39,12 @@
 		"watch": "esw -w --changed src/**",
 		"start": "react-native start",
 		"android-dev": "ENVFILE=.env.development react-native run-android",
+		"android-dev-terminal": "cross-env-shell npm run android-dev -- --terminal $REACT_TERMINAL",
 		"android-production": "ENVFILE=.env.production react-native run-android",
 		"android-staging": "ENVFILE=.env.staging react-native run-android",
 		"ios": "react-native run-ios",
 		"test": "jest",
+		"lint": "eslint .",
 		"build-debug-android": "./scripts/build-debug-android.sh",
 		"build-debug-android-dev": "export ENVFILE=.env.development && npm run build-debug-android",
 		"build-debug-android-production": "export ENVFILE=.env.production && npm run build-debug-android",
@@ -41,20 +52,29 @@
 	},
 	"jest": {
 		"preset": "react-native",
-		"transform": {
-			"^.+\\.(js)$": "<rootDir>/node_modules/react-native/jest/preprocessor.js"
-		},
+		"collectCoverage": true,
+		"collectCoverageFrom": [
+			"src/**/*.{js,jsx}"
+		],
+		"coverageReporters": [
+			"json",
+			"html"
+		],
+		"testEnvironment": "jsdom",
 		"transformIgnorePatterns": [
 			"/node_modules/(?!native-base)/"
 		],
 		"setupFiles": [
 			"<rootDir>/__mocks__/react-native-languages.js",
 			"<rootDir>/__mocks__/react-navigation.js",
-			"<rootDir>/__mocks__/react-native-fabric.js",
 			"<rootDir>/__mocks__/react-native-keychain.js",
 			"<rootDir>/__mocks__/react-moment.js",
-			"<rootDir>/__mocks__/react-moment-proptypes.js"
-		]
+			"<rootDir>/__mocks__/react-moment-proptypes.js",
+			"<rootDir>/__mocks__/react-native-config.js",
+			"<rootDir>/__mocks__/axios.js",
+			"<rootDir>/__mocks__/react-native-splash-screen.js"
+		],
+		"setupFilesAfterEnv": ["<rootDir>/tests/setup.js"]
 	},
 	"dependencies": {
 		"@mapbox/mapbox-sdk": "0.5.0",
@@ -64,16 +84,15 @@
 		"lodash": "4.17.11",
 		"moment": "2.23.0",
 		"native-base": "2.11.0",
-		"react": "16.7.0",
+		"react": "16.8.3",
 		"react-moment": "0.8.4",
 		"react-moment-proptypes": "1.6.0",
-		"react-native": "0.58.4",
+		"react-native": "0.59.2",
 		"react-native-camera": "https://github.com/lunalabs/react-native-camera/tarball/master",
 		"react-native-circular-progress": "1.1.0",
 		"react-native-config": "0.11.7",
 		"react-native-emoji-input": "https://github.com/lunalabs/react-native-emoji-input/tarball/v1.3.0",
 		"react-native-extended-stylesheet": "0.11.1",
-		"react-native-fabric": "https://github.com/lunalabs/react-native-fabric/tarball/master",
 		"react-native-gesture-handler": "1.0.12",
 		"react-native-i18n": "2.0.15",
 		"react-native-keyboard-aware-scroll-view": "0.8.0",

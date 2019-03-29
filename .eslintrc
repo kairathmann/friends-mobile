@@ -33,7 +33,7 @@
     "fetch": false,
     "FormData": false,
     "global": false,
-    "jest": false,
+    "jest": true,
     "Map": true,
     "module": false,
     "navigator": false,
@@ -49,6 +49,11 @@
     "window": false,
     "XMLHttpRequest": false,
     "pit": false,
-    "jasmine": true
+    "jasmine": true,
+    "describe": true,
+    "it": true,
+    "expect": true,
+    "beforeEach": true,
+    "afterEach": true
   }
 }

@@ -13,7 +13,6 @@
 		00C302E91ABCBA2D00DB3ED1 /* libRCTNetwork.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302DC1ABCB9D200DB3ED1 /* libRCTNetwork.a */; };
 		00C302EA1ABCBA2D00DB3ED1 /* libRCTVibration.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302E41ABCB9EE00DB3ED1 /* libRCTVibration.a */; };
 		00E356F31AD99517003FC87E /* luminosmobileTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* luminosmobileTests.m */; };
-		0844E1299CE74A0492A532BE /* libSMXCrashlytics.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3054C79D3A054A57839A29CD /* libSMXCrashlytics.a */; };
 		08E994CA3E01419FB7A6F49A /* Octicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1DE97DC8077E41C2A9C2FF8D /* Octicons.ttf */; };
 		11D1A2F320CAFA9E000508D9 /* libRCTAnimation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E9157331DD0AC6500FF2AA8 /* libRCTAnimation.a */; };
 		133E29F31AD74F7200F7D852 /* libRCTLinking.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 78C398B91ACF4ADC00677621 /* libRCTLinking.a */; };
@@ -51,8 +50,6 @@
 		77DFCBD1E3BD47C6B17C6AE3 /* FontAwesome.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3110A903DFBA47F5B51A0966 /* FontAwesome.ttf */; };
 		7830E59E03E84232BE1F54E4 /* FontAwesome5_Solid.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B106E4A191D344669B2182B9 /* FontAwesome5_Solid.ttf */; };
 		7908D9A72200807700EE1022 /* launch_screen.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7908D9A62200807700EE1022 /* launch_screen.jpg */; };
-		798BFB47218C516600AC330C /* Fabric.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 798BFB45218C516500AC330C /* Fabric.framework */; };
-		798BFB48218C516600AC330C /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 798BFB46218C516500AC330C /* Crashlytics.framework */; };
 		79FE75FA2223FD4C00DDC279 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79FE75F92223FD4C00DDC279 /* NotificationService.swift */; };
 		79FE75FE2223FD4C00DDC279 /* OneSignalNotificationServiceExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 79FE75F72223FD4C00DDC279 /* OneSignalNotificationServiceExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		79FE763D2223FDA600DDC279 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79FE763C2223FDA600DDC279 /* UIKit.framework */; };
@@ -428,20 +425,6 @@
 			remoteGlobalIDString = 2D2A28471D9B043800D4039D;
 			remoteInfo = "RNLanguages-tvOS";
 		};
-		84DB3937219C39E9007F3BA6 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 856189ABA4E441ED98989F4E /* SMXCrashlytics.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = D8D9DB831C6D03DB009FBC0E;
-			remoteInfo = SMXCrashlytics;
-		};
-		84DB3939219C39E9007F3BA6 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 856189ABA4E441ED98989F4E /* SMXCrashlytics.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 6463C84C1EBA12A60095B8CD;
-			remoteInfo = "SMXCrashlytics-tvOS";
-		};
 		84DB393C219C39E9007F3BA6 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 4416D2128F8A4E6EA88F3A3F /* SplashScreen.xcodeproj */;
@@ -560,7 +543,6 @@
 		2D02E47B1E0B4A5D006451C7 /* luminosmobile-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "luminosmobile-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D02E4901E0B4A5D006451C7 /* luminosmobile-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "luminosmobile-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D16E6891FA4F8E400B85C8A /* libReact.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libReact.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		3054C79D3A054A57839A29CD /* libSMXCrashlytics.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libSMXCrashlytics.a; sourceTree = "<group>"; };
 		3110A903DFBA47F5B51A0966 /* FontAwesome.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome.ttf; path = "../node_modules/native-base/Fonts/FontAwesome.ttf"; sourceTree = "<group>"; };
 		36DBAD862D234CEDA091DD9C /* EvilIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = EvilIcons.ttf; path = "../node_modules/native-base/Fonts/EvilIcons.ttf"; sourceTree = "<group>"; };
 		379CF6EDD5464D1AB71A69DB /* AntDesign.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = AntDesign.ttf; path = "../node_modules/native-base/Fonts/AntDesign.ttf"; sourceTree = "<group>"; };
@@ -577,8 +559,6 @@
 		7908D9A62200807700EE1022 /* launch_screen.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = launch_screen.jpg; path = luminosmobile/launch_screen.jpg; sourceTree = "<group>"; };
 		7942D83F218C81C200C23735 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
 		7942D840218C81CE00C23735 /* pl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pl; path = pl.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
-		798BFB45218C516500AC330C /* Fabric.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Fabric.framework; path = Crashlytics/Fabric.framework; sourceTree = "<group>"; };
-		798BFB46218C516500AC330C /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Crashlytics.framework; path = Crashlytics/Crashlytics.framework; sourceTree = "<group>"; };
 		79FE75F72223FD4C00DDC279 /* OneSignalNotificationServiceExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = OneSignalNotificationServiceExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		79FE75F92223FD4C00DDC279 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
 		79FE75FB2223FD4C00DDC279 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -588,7 +568,6 @@
 		79FE7642222400EF00DDC279 /* OneSignalNotificationServiceExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = OneSignalNotificationServiceExtension.entitlements; sourceTree = "<group>"; };
 		832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTText.xcodeproj; path = "../node_modules/react-native/Libraries/Text/RCTText.xcodeproj"; sourceTree = "<group>"; };
 		8478F77C21E4CBBB0013BDCB /* luminosmobile.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = luminosmobile.entitlements; path = luminosmobile/luminosmobile.entitlements; sourceTree = "<group>"; };
-		856189ABA4E441ED98989F4E /* SMXCrashlytics.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = SMXCrashlytics.xcodeproj; path = "../node_modules/react-native-fabric/ios/SMXCrashlytics.xcodeproj"; sourceTree = "<group>"; };
 		8A5979B09A524A39AF809356 /* libRNFetchBlob.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNFetchBlob.a; sourceTree = "<group>"; };
 		8C589968C82E4E859EB8F832 /* FontAwesome5_Brands.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome5_Brands.ttf; path = "../node_modules/native-base/Fonts/FontAwesome5_Brands.ttf"; sourceTree = "<group>"; };
 		9B4E8608F4DF4215BAAFE105 /* Titillium Web-SemiBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Titillium Web-SemiBold.ttf"; path = "../src/assets/fonts/Titillium Web-SemiBold.ttf"; sourceTree = "<group>"; };
@@ -650,13 +629,10 @@
 				133E29F31AD74F7200F7D852 /* libRCTLinking.a in Frameworks */,
 				00C302E91ABCBA2D00DB3ED1 /* libRCTNetwork.a in Frameworks */,
 				139105C61AF99C1200B5F7CC /* libRCTSettings.a in Frameworks */,
-				798BFB48218C516600AC330C /* Crashlytics.framework in Frameworks */,
 				832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */,
 				00C302EA1ABCBA2D00DB3ED1 /* libRCTVibration.a in Frameworks */,
 				139FDEF61B0652A700C62182 /* libRCTWebSocket.a in Frameworks */,
-				798BFB47218C516600AC330C /* Fabric.framework in Frameworks */,
 				AFA4EB68ECAC4FFF8EA445ED /* libReactNativeConfig.a in Frameworks */,
-				0844E1299CE74A0492A532BE /* libSMXCrashlytics.a in Frameworks */,
 				26EC93DB4B15434494D17E61 /* libRNI18n.a in Frameworks */,
 				ECA61F8D35D44438803B8CB6 /* libRNLanguages.a in Frameworks */,
 				CB1B51E1FAE8416090C0421B /* libSplashScreen.a in Frameworks */,
@@ -916,7 +892,6 @@
 			isa = PBXGroup;
 			children = (
 				F9A6CBB339D04D5B911E5F15 /* libReactNativeConfig.a */,
-				3054C79D3A054A57839A29CD /* libSMXCrashlytics.a */,
 				425552BD7DEE4900AAE9A3C9 /* libRNI18n.a */,
 				A0E34908463C42089E481B6B /* libRNLanguages.a */,
 				64DB76AB43E74826917CA5E7 /* libSplashScreen.a */,
@@ -963,7 +938,6 @@
 				00C302DF1ABCB9EE00DB3ED1 /* RCTVibration.xcodeproj */,
 				139FDEE61B06529A00C62182 /* RCTWebSocket.xcodeproj */,
 				9CF836966E0D4D808A870870 /* ReactNativeConfig.xcodeproj */,
-				856189ABA4E441ED98989F4E /* SMXCrashlytics.xcodeproj */,
 				D9518A986D4A42EE802693CD /* RNI18n.xcodeproj */,
 				221218FB02ED41EFA55F650D /* RNLanguages.xcodeproj */,
 				4416D2128F8A4E6EA88F3A3F /* SplashScreen.xcodeproj */,
@@ -991,8 +965,6 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
-				798BFB46218C516500AC330C /* Crashlytics.framework */,
-				798BFB45218C516500AC330C /* Fabric.framework */,
 				13B07FAE1A68108700A75B9A /* luminosmobile */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* luminosmobileTests */,
@@ -1031,15 +1003,6 @@
 			isa = PBXGroup;
 			children = (
 				8478F77B21E4CB9F0013BDCB /* libRCTOneSignal.a */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
-		84DB3926219C39E9007F3BA6 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				84DB3938219C39E9007F3BA6 /* libSMXCrashlytics.a */,
-				84DB393A219C39E9007F3BA6 /* libSMXCrashlytics.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1147,7 +1110,6 @@
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
-				798BFAFD218C4E4600AC330C /* ShellScript */,
 				79FE763B2223FD4C00DDC279 /* Embed App Extensions */,
 			);
 			buildRules = (
@@ -1229,7 +1191,6 @@
 						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
 					13B07F861A680F5B00A75B9A = {
-						DevelopmentTeam = 6D9P9D4UA7;
 						SystemCapabilities = {
 							com.apple.ApplicationGroups.iOS = {
 								enabled = 1;
@@ -1369,10 +1330,6 @@
 				{
 					ProductGroup = 792C44C421F33A7D00E2C1A6 /* Products */;
 					ProjectRef = B1E8EC68633B4B978CD78890 /* RNSVG.xcodeproj */;
-				},
-				{
-					ProductGroup = 84DB3926219C39E9007F3BA6 /* Products */;
-					ProjectRef = 856189ABA4E441ED98989F4E /* SMXCrashlytics.xcodeproj */;
 				},
 				{
 					ProductGroup = 84DB3928219C39E9007F3BA6 /* Products */;
@@ -1706,20 +1663,6 @@
 			remoteRef = 84DB3933219C39E9007F3BA6 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		84DB3938219C39E9007F3BA6 /* libSMXCrashlytics.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libSMXCrashlytics.a;
-			remoteRef = 84DB3937219C39E9007F3BA6 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		84DB393A219C39E9007F3BA6 /* libSMXCrashlytics.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libSMXCrashlytics.a;
-			remoteRef = 84DB3939219C39E9007F3BA6 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
 		84DB393D219C39E9007F3BA6 /* libSplashScreen.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -1886,20 +1829,6 @@
 			shellPath = /bin/sh;
 			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh";
 		};
-		798BFAFD218C4E4600AC330C /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"$(BUILT_PRODUCTS_DIR)/$(INFOPLIST_PATH)",
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Crashlytics/Fabric.framework/run\" @@LUNA_FABRIC_API_KEY@@ @@LUNA_FABRIC_BUILD_SECRET@@\n";
-		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -1992,7 +1921,6 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-config/ios/ReactNativeConfig/**",
-					"$(SRCROOT)/../node_modules/react-native-fabric/ios/SMXCrashlytics/**",
 					"$(SRCROOT)/../node_modules/react-native-i18n/ios",
 					"$(SRCROOT)/../node_modules/react-native-languages/ios",
 					"$(SRCROOT)/../node_modules/react-native-splash-screen/ios",
@@ -2008,14 +1936,7 @@
 				INFOPLIST_FILE = luminosmobileTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-lc++",
@@ -2035,7 +1956,6 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-config/ios/ReactNativeConfig/**",
-					"$(SRCROOT)/../node_modules/react-native-fabric/ios/SMXCrashlytics/**",
 					"$(SRCROOT)/../node_modules/react-native-i18n/ios",
 					"$(SRCROOT)/../node_modules/react-native-languages/ios",
 					"$(SRCROOT)/../node_modules/react-native-splash-screen/ios",
@@ -2051,14 +1971,7 @@
 				INFOPLIST_FILE = luminosmobileTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-lc++",
@@ -2078,7 +1991,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
-				DEVELOPMENT_TEAM = 6D9P9D4UA7;
+				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Crashlytics",
@@ -2086,7 +1999,6 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-config/ios/ReactNativeConfig/**",
-					"$(SRCROOT)/../node_modules/react-native-fabric/ios/SMXCrashlytics/**",
 					"$(SRCROOT)/../node_modules/react-native-i18n/ios",
 					"$(SRCROOT)/../node_modules/react-native-languages/ios",
 					"$(SRCROOT)/../node_modules/react-native-splash-screen/ios",
@@ -2124,7 +2036,7 @@
 				CODE_SIGN_ENTITLEMENTS = luminosmobile/luminosmobile.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 6D9P9D4UA7;
+				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Crashlytics",
@@ -2132,7 +2044,6 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-config/ios/ReactNativeConfig/**",
-					"$(SRCROOT)/../node_modules/react-native-fabric/ios/SMXCrashlytics/**",
 					"$(SRCROOT)/../node_modules/react-native-i18n/ios",
 					"$(SRCROOT)/../node_modules/react-native-languages/ios",
 					"$(SRCROOT)/../node_modules/react-native-splash-screen/ios",
@@ -2177,7 +2088,6 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-config/ios/ReactNativeConfig/**",
-					"$(SRCROOT)/../node_modules/react-native-fabric/ios/SMXCrashlytics/**",
 					"$(SRCROOT)/../node_modules/react-native-i18n/ios",
 					"$(SRCROOT)/../node_modules/react-native-languages/ios",
 					"$(SRCROOT)/../node_modules/react-native-splash-screen/ios",
@@ -2192,14 +2102,7 @@
 				);
 				INFOPLIST_FILE = "luminosmobile-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-lc++",
@@ -2227,7 +2130,6 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-config/ios/ReactNativeConfig/**",
-					"$(SRCROOT)/../node_modules/react-native-fabric/ios/SMXCrashlytics/**",
 					"$(SRCROOT)/../node_modules/react-native-i18n/ios",
 					"$(SRCROOT)/../node_modules/react-native-languages/ios",
 					"$(SRCROOT)/../node_modules/react-native-splash-screen/ios",
@@ -2242,14 +2144,7 @@
 				);
 				INFOPLIST_FILE = "luminosmobile-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-lc++",
@@ -2276,7 +2171,6 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-config/ios/ReactNativeConfig/**",
-					"$(SRCROOT)/../node_modules/react-native-fabric/ios/SMXCrashlytics/**",
 					"$(SRCROOT)/../node_modules/react-native-i18n/ios",
 					"$(SRCROOT)/../node_modules/react-native-languages/ios",
 					"$(SRCROOT)/../node_modules/react-native-splash-screen/ios",
@@ -2291,14 +2185,7 @@
 				);
 				INFOPLIST_FILE = "luminosmobile-tvOSTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-lc++",
@@ -2325,7 +2212,6 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-config/ios/ReactNativeConfig/**",
-					"$(SRCROOT)/../node_modules/react-native-fabric/ios/SMXCrashlytics/**",
 					"$(SRCROOT)/../node_modules/react-native-i18n/ios",
 					"$(SRCROOT)/../node_modules/react-native-languages/ios",
 					"$(SRCROOT)/../node_modules/react-native-splash-screen/ios",
@@ -2340,14 +2226,7 @@
 				);
 				INFOPLIST_FILE = "luminosmobile-tvOSTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-lc++",

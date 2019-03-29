@@ -8,7 +8,6 @@ import EStyleSheet from 'react-native-extended-stylesheet'
 import validator from 'validator'
 import { NavigationBottomBar } from '../../../components/NavigationBottomBar/NavigationBottomBar'
 import TextInput from '../../../components/TextInput/TextInput'
-import { createFontStyle, styles as commonStyles } from '../../../styles'
 import * as COLORS from '../../../styles/colors'
 import I18n from '../../../../locales/i18n'
 import * as FONTS from '../../../styles/fonts'
@@ -20,6 +19,12 @@ import {
 	clearTelegramEmailErrorState,
 	registerTelegramUser
 } from './scenario-actions'
+import {
+	defaultFontTypes,
+	CommonOnboardingStyles,
+	createFontStyle,
+	styles as commonStyles
+} from '../../../styles'
 
 const NOT_VALID_EMAIL_ADDRESS_ERROR = I18n.t('errors.email_invalid')
 
@@ -122,11 +127,23 @@ class AuthTelegramEmailPage extends React.Component {
 				<SafeAreaView style={commonStyles.safeAreaView}>
 					<Container style={commonStyles.content}>
 						<Content contentContainerStyle={commonStyles.scrollableContent}>
-							<View style={styles.descriptionContainer}>
-								<Text style={styles.headerText}>
+							<View
+								style={CommonOnboardingStyles.descriptionContainerMarginTop}
+							>
+								<Text
+									style={[
+										defaultFontTypes.H4,
+										CommonOnboardingStyles.pageHeading
+									]}
+								>
 									{I18n.t('onboarding.auth_telegram_email_title')}
 								</Text>
-								<Text style={[styles.descriptionText]}>
+								<Text
+									style={[
+										defaultFontTypes.Body2,
+										CommonOnboardingStyles.pageBody
+									]}
+								>
 									{I18n.t('onboarding.auth_telegram_email_description')}
 								</Text>
 							</View>
@@ -148,30 +165,6 @@ class AuthTelegramEmailPage extends React.Component {
 }
 
 const styles = EStyleSheet.create({
-	descriptionContainer: {
-		flex: 1,
-		justifyContent: 'center',
-		marginLeft: 20,
-		marginRight: 20
-	},
-	headerText: {
-		...createFontStyle(FONTS.LATO),
-		textAlign: 'center',
-		color: 'white',
-		fontSize: 35,
-		letterSpacing: 0.25,
-		marginBottom: 12
-	},
-	descriptionText: {
-		...createFontStyle(FONTS.LATO),
-		textAlign: 'center',
-		color: 'white',
-		fontSize: 14,
-		lineHeight: 18,
-		letterSpacing: 0.25,
-		marginLeft: 30,
-		marginRight: 30
-	},
 	emailControlContainer: {
 		flex: 1,
 		marginLeft: 16,

@@ -4,13 +4,16 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { StatusBar } from 'react-native'
 import { SafeAreaView } from 'react-navigation'
-import EStyleSheet from 'react-native-extended-stylesheet'
 import i18n from '../../../../locales/i18n'
 import { NavigationBottomBar } from '../../../components/NavigationBottomBar/NavigationBottomBar'
 import { OnboardingHeader } from '../../../components/OnboardingHeader/OnboardingHeader'
 import UserColorAwareComponent from '../../../components/UserColorAwareComponent'
 import { PAGES_NAMES } from '../../../navigation/pages'
-import { createFontStyle, styles as commonStyles } from '../../../styles'
+import {
+	defaultFontTypes,
+	CommonOnboardingStyles,
+	styles as commonStyles
+} from '../../../styles'
 import * as COLORS from '../../../styles/colors'
 
 class QuestionsBeforePage extends React.Component {
@@ -30,12 +33,34 @@ class QuestionsBeforePage extends React.Component {
 								leftText={i18n.t('onboarding.sign_up')}
 								totalPage={this.props.onboardingMaxSteps}
 							/>
-							<View style={styles.indent}>
-								<Text style={styles.text}>
+							<View
+								style={CommonOnboardingStyles.descriptionContainerMarginBottom}
+							>
+								<Text
+									style={[
+										defaultFontTypes.H4,
+										CommonOnboardingStyles.pageHeading
+									]}
+								>
 									{i18n.t('onboarding.questions_prompt')}
 								</Text>
-								<Text style={styles.smallerText}>
-									{i18n.t('onboarding.answer_all_questions')}
+								<Text
+									style={[
+										defaultFontTypes.Body1,
+										CommonOnboardingStyles.pageBody
+									]}
+								>
+									{i18n.t('onboarding.answer_all_questions_body_1')}
+								</Text>
+								<Text
+									style={[
+										defaultFontTypes.Body2,
+										CommonOnboardingStyles.pageBody
+									]}
+								>
+									{i18n.t('onboarding.answer_all_questions_body_2', {
+										numQuestions: this.props.questions.length
+									})}
 								</Text>
 							</View>
 							<UserColorAwareComponent>
@@ -61,36 +86,16 @@ class QuestionsBeforePage extends React.Component {
 	}
 }
 
-const styles = EStyleSheet.create({
-	indent: {
-		marginLeft: 36,
-		marginRight: 36
-	},
-	text: {
-		...createFontStyle(),
-		color: 'white',
-		fontSize: 36,
-		textAlign: 'center',
-		marginTop: 48
-	},
-	smallerText: {
-		...createFontStyle(),
-		color: 'white',
-		fontSize: 15,
-		lineHeight: 24,
-		textAlign: 'center',
-		marginTop: 24
-	}
-})
-
 QuestionsBeforePage.propTypes = {
 	navigation: PropTypes.object,
+	questions: PropTypes.array.isRequired,
 	onboardingMaxSteps: PropTypes.number.isRequired,
 	onboardingStepsConfig: PropTypes.object.isRequired
 }
 
 const mapStateToProps = state => {
 	return {
+		questions: state.questionsWizard.questions.unanswered,
 		onboardingMaxSteps: state.onboarding.onboardingMaxSteps,
 		onboardingStepsConfig: state.onboarding.onboardingStepsConfig
 	}

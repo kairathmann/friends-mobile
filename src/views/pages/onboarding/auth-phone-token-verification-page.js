@@ -8,9 +8,13 @@ import { NavigationEvents, SafeAreaView } from 'react-navigation'
 import EStyleSheet from 'react-native-extended-stylesheet'
 import validator from 'validator'
 import { NavigationBottomBar } from '../../../components/NavigationBottomBar/NavigationBottomBar'
-import { OnboardingHeader } from '../../../components/OnboardingHeader/OnboardingHeader'
 import TextInput from '../../../components/TextInput/TextInput'
-import { createFontStyle, styles as commonStyles } from '../../../styles'
+import {
+	createFontStyle,
+	defaultFontTypes,
+	CommonOnboardingStyles,
+	styles as commonStyles
+} from '../../../styles'
 import * as COLORS from '../../../styles/colors'
 import I18n from '../../../../locales/i18n'
 import * as FONTS from '../../../styles/fonts'
@@ -258,16 +262,23 @@ class AuthPageTokenVerificationPage extends React.Component {
 				<SafeAreaView style={commonStyles.safeAreaView}>
 					<Container style={commonStyles.content}>
 						<Content contentContainerStyle={commonStyles.scrollableContent}>
-							<OnboardingHeader
-								pageNumber={2}
-								leftText={I18n.t('onboarding.sign_up')}
-								totalPage={2}
-							/>
-							<View style={styles.descriptionContainer}>
-								<Text style={styles.headerText}>
+							<View
+								style={CommonOnboardingStyles.descriptionContainerMarginTop}
+							>
+								<Text
+									style={[
+										defaultFontTypes.H4,
+										CommonOnboardingStyles.pageHeading
+									]}
+								>
 									{I18n.t('onboarding.auth_verification_code_header')}
 								</Text>
-								<Text style={styles.descriptionText}>
+								<Text
+									style={[
+										defaultFontTypes.Body2,
+										CommonOnboardingStyles.pageBody
+									]}
+								>
 									{I18n.t('onboarding.auth_verification_code_description')}
 								</Text>
 							</View>
@@ -291,30 +302,6 @@ class AuthPageTokenVerificationPage extends React.Component {
 }
 
 const styles = EStyleSheet.create({
-	descriptionContainer: {
-		flex: 1,
-		justifyContent: 'center',
-		marginLeft: 20,
-		marginRight: 20
-	},
-	headerText: {
-		...createFontStyle(FONTS.LATO),
-		textAlign: 'center',
-		color: 'white',
-		fontSize: 32,
-		letterSpacing: 0.25,
-		marginBottom: 30
-	},
-	descriptionText: {
-		...createFontStyle(FONTS.LATO),
-		textAlign: 'center',
-		color: 'white',
-		fontSize: 14,
-		lineHeight: 18,
-		letterSpacing: 0.25,
-		marginLeft: 40,
-		marginRight: 40
-	},
 	verificationCodeControlContainer: {
 		flex: 1,
 		justifyContent: 'center',
@@ -323,7 +310,7 @@ const styles = EStyleSheet.create({
 	verificationCodeInputsContainer: {
 		flex: 2,
 		flexDirection: 'row',
-		alignItems: 'flex-end'
+		alignItems: 'flex-start'
 	},
 	singleVerificationCodeInputContainer: {
 		marginLeft: 4,

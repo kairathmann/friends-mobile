@@ -6,6 +6,36 @@ import BaseInfoStyles from './baseinfo'
 import IdentificationPageStyles from './identification'
 
 const common = {
+	descriptionContainerNoMargin: {
+		flex: 1,
+		justifyContent: 'flex-start',
+		marginLeft: 20,
+		marginRight: 20
+	},
+	descriptionContainerMarginTop: {
+		flex: 1,
+		justifyContent: 'flex-start',
+		marginLeft: 20,
+		marginRight: 20,
+		marginTop: 60
+	},
+	descriptionContainerMarginBottom: {
+		flex: 1,
+		justifyContent: 'flex-start',
+		marginLeft: 20,
+		marginRight: 20,
+		marginBottom: 32
+	},
+	pageHeading: {
+		marginLeft: 16,
+		marginRight: 16,
+		marginBottom: 30,
+		paddingTop: 24
+	},
+	pageBody: {
+		marginLeft: 16,
+		marginRight: 16
+	},
 	formContainer: {
 		margin: 16
 	},
@@ -31,17 +61,20 @@ const common = {
 	horizontalSpace: {
 		marginLeft: 8,
 		marginRight: 8
+	},
+	paddingLeft: {
+		paddingLeft: 8
 	}
 }
 
-const commonStylesCreared = EStyleSheet.create(common)
+const commonStylesCreated = EStyleSheet.create(common)
 const BaseInfoStylesCreated = EStyleSheet.create(BaseInfoStyles)
 const IdentificationPageStylesCreated = EStyleSheet.create(
 	IdentificationPageStyles
 )
 
 export {
-	commonStylesCreared as CommonOnboardingStyles,
+	commonStylesCreated as CommonOnboardingStyles,
 	BaseInfoStylesCreated as BaseInfoStyles,
 	IdentificationPageStylesCreated as IdentificationPageStyles
 }

@@ -19,6 +19,7 @@ import {
 import {
 	styles as commonStyles,
 	BaseInfoStyles,
+	defaultFontTypes,
 	CommonOnboardingStyles
 } from '../../../styles'
 import * as COLORS from '../../../styles/colors'
@@ -101,9 +102,7 @@ class BaseinfoPage extends React.Component {
 								<LoggedInUserAvatar />
 								<Text
 									style={[
-										CommonOnboardingStyles.text,
-										BaseInfoStyles.lato,
-										CommonOnboardingStyles.completeText,
+										defaultFontTypes.Body2,
 										CommonOnboardingStyles.verticalSpace
 									]}
 								>
@@ -113,9 +112,9 @@ class BaseinfoPage extends React.Component {
 							<View style={CommonOnboardingStyles.formContainer}>
 								<Text
 									style={[
-										CommonOnboardingStyles.text,
-										CommonOnboardingStyles.textHeader,
-										CommonOnboardingStyles.space
+										defaultFontTypes.Overline,
+										CommonOnboardingStyles.space,
+										CommonOnboardingStyles.paddingLeft
 									]}
 								>
 									{I18n.t('onboarding.public_profile').toUpperCase()}
@@ -139,9 +138,9 @@ class BaseinfoPage extends React.Component {
 								{this.renderUserCityInput()}
 								<Text
 									style={[
-										CommonOnboardingStyles.text,
-										CommonOnboardingStyles.textHeader,
-										CommonOnboardingStyles.space
+										defaultFontTypes.Overline,
+										CommonOnboardingStyles.space,
+										CommonOnboardingStyles.paddingLeft
 									]}
 								>
 									{I18n.t('onboarding.secret_profile').toUpperCase()}

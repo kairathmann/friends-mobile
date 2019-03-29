@@ -9,7 +9,7 @@ export default class QuestionItem extends React.Component {
 	shouldComponentUpdate = nextProps => {
 		return (
 			nextProps.selectedAnswer !== this.props.selectedAnswer ||
-			nextProps.answered !== this.props.answered
+			nextProps.text !== this.props.text
 		)
 	}
 

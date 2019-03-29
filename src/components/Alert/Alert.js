@@ -1,3 +1,23 @@
+/*
+
+The MIT License (MIT)
+
+Copyright (c) 2016 Jack Lam jacklam718@gmail.com
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"),
+to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense,
+and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+This component is based on: https://github.com/jacklam718/react-native-popup-dialog
+*/
+
 import React from 'react'
 import { Animated, ScrollView, TouchableOpacity, View } from 'react-native'
 import { Text } from 'native-base'
@@ -24,6 +44,11 @@ class Alert extends React.Component {
 				this.dismissAlert()
 			}
 		}
+	}
+
+	get runningAnimation() {
+		const { status } = this.state
+		return status === ALERT_STATUS.CLOSING || status === ALERT_STATUS.OPENING
 	}
 
 	changeAlertStatus = (status, callback) => {
@@ -60,15 +85,22 @@ class Alert extends React.Component {
 	dismissAlert = () => {
 		const { onDismiss } = this.props
 		const { status } = this.state
-		if (status === ALERT_STATUS.OPENED || status === ALERT_STATUS.OPENING) {
+		if (status === ALERT_STATUS.OPENED) {
 			this.changeAlertStatus(ALERT_STATUS.CLOSED, onDismiss)
 		}
 	}
 
 	showAlert = () => {
 		const { status } = this.state
-		if (status === ALERT_STATUS.CLOSED || status === ALERT_STATUS.CLOSING) {
+		if (status === ALERT_STATUS.CLOSED) {
 			this.changeAlertStatus(ALERT_STATUS.OPENED)
+		}
+	}
+
+	actionButtonCallback = () => {
+		const { actionButtonCallback } = this.props
+		if (!this.runningAnimation) {
+			actionButtonCallback()
 		}
 	}
 
@@ -88,7 +120,6 @@ class Alert extends React.Component {
 			useAnmiation,
 			title,
 			message,
-			actionButtonCallback,
 			actionButtonText,
 			actionButtonStyle
 		} = this.props
@@ -126,13 +157,18 @@ class Alert extends React.Component {
 						<Text style={styles.messageText}>{message}</Text>
 					</ScrollView>
 					<View style={styles.buttonsContainer}>
-						<TouchableOpacity onPress={this.dismissAlert} style={styles.button}>
+						<TouchableOpacity
+							disabled={this.runningAnimation}
+							onPress={this.dismissAlert}
+							style={styles.button}
+						>
 							<Text style={styles.buttonText}>
 								{I18n.t('commons.cancel').toUpperCase()}
 							</Text>
 						</TouchableOpacity>
 						<TouchableOpacity
-							onPress={actionButtonCallback}
+							disabled={this.runningAnimation}
+							onPress={this.actionButtonCallback}
 							style={styles.button}
 						>
 							<Text style={[styles.buttonText, actionButtonStyle]}>
